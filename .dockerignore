@@ -17,3 +17,6 @@
 /cvat-cli
 /profiles
 **/__pycache__
+
+/.runtime
+**/dist

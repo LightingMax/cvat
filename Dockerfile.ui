@@ -1,11 +1,11 @@
-FROM node:lts-slim AS cvat-ui
+FROM node:24-bookworm-slim AS cvat-ui
 
 ENV TERM=xterm \
     LANG='C.UTF-8'  \
     LC_ALL='C.UTF-8'
 
 # Install dependencies
-RUN npm install -g corepack
+RUN corepack enable
 COPY .yarnrc.yml /tmp/
 COPY package.json /tmp/
 COPY yarn.lock /tmp/

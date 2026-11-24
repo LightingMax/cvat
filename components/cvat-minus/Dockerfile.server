@@ -1,0 +1,5 @@
+# The fork uses the CVAT 2.83.0 runtime and its locked Python/system dependencies.
+FROM cvat/server:v2.83.0@sha256:eb86a2f59786c7887b6b1f529852d0af125f536ed3891cc19a7b57bd532b8522
+COPY cvat/apps/dataset_manager/task.py /opt/cvat/cvat/apps/dataset_manager/task.py
+COPY cvat/apps/engine/models.py cvat/apps/engine/views.py /opt/cvat/cvat/apps/engine/
+COPY cvat/apps/engine/migrations/0111_annotation_merge_submission.py /opt/cvat/cvat/apps/engine/migrations/

@@ -1,0 +1,60 @@
+name: CVAT Minus images
+on:
+  push:
+    branches: [minus]
+  pull_request:
+    branches: [minus]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: minus-images-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Build server and UI
+        run: |
+          ./minus config --quiet
+          ./minus build cvat_server cvat_ui
+      - name: Start a fresh installation
+        run: |
+          ./minus up -d --no-build --pull missing minus_gateway cvat_worker_import cvat_worker_chunks
+          curl --retry 90 --retry-all-errors --retry-delay 3 --max-time 8 -fsS http://localhost:8091/api/server/about
+          ./minus exec -T cvat_server python manage.py migrate --check
+      - name: Test video intervals and local drafts in Chrome
+        run: |
+          python -m venv "$RUNNER_TEMP/minus-test"
+          "$RUNNER_TEMP/minus-test/bin/pip" install requests playwright
+          if ! command -v ffmpeg >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq ffmpeg
+          fi
+          ffmpeg -v error -f lavfi -i color=blue:size=640x360:rate=30 -frames:v 180 -pix_fmt yuv420p "$RUNNER_TEMP/test.mp4"
+          "$RUNNER_TEMP/minus-test/bin/python" components/cvat-minus/check_release.py --base http://localhost:8091 --video "$RUNNER_TEMP/test.mp4"
+      - name: Publish the verified image pair
+        if: github.repository == 'LightingMax/cvat' && github.ref == 'refs/heads/minus' && github.event_name != 'pull_request'
+        env:
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+          for image in server ui; do
+            ref="ghcr.io/lightingmax/cvat-minus/$image:sha-$GITHUB_SHA"
+            docker tag "cvat-minus/$image:local" "$ref"
+            docker push "$ref"
+            echo "\`$ref\`" >> "$GITHUB_STEP_SUMMARY"
+          done
+      - name: Diagnose failed installation
+        if: failure()
+        run: ./minus ps -a

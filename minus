@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+exec docker compose -p "${CVAT_MINUS_PROJECT:-cvat_minus}" -f docker-compose.yml -f docker-compose.minus.yml "$@"

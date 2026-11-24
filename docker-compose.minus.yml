@@ -1,0 +1,94 @@
+# Use ./minus so Compose also loads the matching upstream configuration.
+name: cvat_minus
+
+x-server-image: &server-image ${CVAT_MINUS_REGISTRY:-cvat-minus}/server:${CVAT_MINUS_TAG:-local}
+
+services:
+
+  cvat_db:
+    container_name: !reset null
+
+  cvat_redis_inmem:
+    container_name: !reset null
+
+  cvat_redis_ondisk:
+    container_name: !reset null
+
+  cvat_server:
+    container_name: !reset null
+    image: *server-image
+    build:
+      context: .
+      labels:
+        org.opencontainers.image.source: https://github.com/LightingMax/cvat
+      dockerfile: components/cvat-minus/Dockerfile.server
+    labels: !reset {}
+
+  cvat_worker_utils:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_import:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_export:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_annotation:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_webhooks:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_quality_reports:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_chunks:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_worker_consensus:
+    container_name: !reset null
+    image: *server-image
+
+  cvat_ui:
+    container_name: !reset null
+    image: ${CVAT_MINUS_REGISTRY:-cvat-minus}/ui:${CVAT_MINUS_TAG:-local}
+    build:
+      context: .
+      labels:
+        org.opencontainers.image.source: https://github.com/LightingMax/cvat
+      dockerfile: Dockerfile.ui
+    labels: !reset {}
+
+  cvat_opa:
+    container_name: !reset null
+
+  cvat_clickhouse:
+    container_name: !reset null
+
+  cvat_vector:
+    container_name: !reset null
+
+  cvat_grafana:
+    container_name: !reset null
+    profiles: [upstream-routing]
+
+  traefik:
+    container_name: !reset null
+    profiles: [upstream-routing]
+
+  minus_gateway:
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    depends_on: [cvat_server, cvat_ui]
+    networks: [cvat]
+    ports:
+      - "127.0.0.1:${CVAT_MINUS_PORT:-8091}:8080"
+    volumes:
+      - ./components/cvat-minus/gateway.conf:/etc/nginx/conf.d/default.conf:ro
