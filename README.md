@@ -42,6 +42,8 @@ export CVAT_MINUS_TAG=sha-$(git rev-parse HEAD)
 
 ## 我怎样跟进上游
 
+GitHub Actions 每天生成一份只读巡检报告，列出上游最新稳定版、两份草案的评审情况，以及最近七天更新的相关 Issue。报告保存在每次运行的 Summary 中，也可以手动运行。[上游巡检记录](https://github.com/LightingMax/cvat/actions/workflows/minus-upstream.yml)
+
 - **版本**：`minus` 是维护分支，按 CVAT Community 稳定版集成。日常关注上游 `develop` 的相关修复。发布新稳定版时，从 `minus` 拉更新分支，合入对应 tag，核对后端镜像基底、依赖、迁移编号和 Compose 变化，再运行同一套回归。README 的基线随实际合并更新。
 - **Issue**：优先处理能在合成视频上复现的动作区间、标注保存和多人编辑问题。修复 PR 记录上游链接、复现步骤、受影响版本和验证结果。上游已合并相同修复时，验证通过后移除本地重复实现。欢迎在本 fork 提交问题。[CVAT Minus Issues](https://github.com/LightingMax/cvat/issues)
 - **服务升级**：容器构建和标注服务部署是两个步骤。升级使用同一提交的 UI、server 和 worker。涉及数据库迁移时，先在数据副本演练，备份数据库、媒体和配置，再安排升级。回滚涉及数据库时使用与旧镜像匹配的备份。
