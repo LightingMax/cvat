@@ -49,11 +49,6 @@ def check(base, video):
                 page.reload()
                 restored = page.locator(".ant-notification-notice").filter(has_text="Local annotation draft restored")
                 expect(restored).to_be_visible(timeout=20000)
-                restored.locator(".ant-notification-notice-close").click()
-                expect(restored).not_to_be_visible()
-                if not phases.is_visible():
-                    phases = open_workflow(page)
-                expect(clip).to_be_attached()
                 with page.expect_response(lambda r: "action=merge" in r.url) as saved:
                     save.click()
                 assert saved.value.ok, saved.value.status

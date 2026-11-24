@@ -31,7 +31,7 @@ cd cvat-minus
 
 打开 [本机 CVAT Minus](http://localhost:8091)，新建一个视频任务，进入 Job 后切到 **Video understanding**。如需改端口，在运行命令前设置 `CVAT_MINUS_PORT`。查看服务状态用 `./minus ps`，停止服务并保留卷用 `./minus stop`。
 
-CI 在全新数据库上启动容器，用合成视频检查同名 Tag 与动作轨道、断网后恢复草稿、重复保存和版本冲突。检查通过后，以同一 Git 提交号发布 Linux amd64 的 UI 与 server 镜像。所有 worker 使用同一份 server 镜像。若使用预构建镜像，选择一次**成功发布**的工作流运行，取其完整提交号，并在相同提交的检出目录执行以下命令。[构建和发布记录](https://github.com/LightingMax/cvat/actions/workflows/minus-images.yml)
+CI 在全新数据库上启动容器，用合成视频检查同名 Tag 与动作轨道、断网后恢复草稿、重复保存和版本冲突。检查通过后，以同一 Git 提交号发布 Linux amd64 的 UI 与 server 镜像。所有 worker 使用同一份 server 镜像。GHCR 私有镜像需要先使用有读取权限的 GitHub 账号登录；公开仓库提供完整的源码构建入口。若使用预构建镜像，选择一次**成功发布**的工作流运行，取其完整提交号，并在相同提交的检出目录执行以下命令。[构建和发布记录](https://github.com/LightingMax/cvat/actions/workflows/minus-images.yml)
 
 ```sh
 export CVAT_MINUS_REGISTRY=ghcr.io/lightingmax/cvat-minus
