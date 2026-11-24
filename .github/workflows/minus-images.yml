@@ -52,7 +52,12 @@ jobs:
           for image in server ui; do
             ref="ghcr.io/lightingmax/cvat-minus/$image:sha-$GITHUB_SHA"
             docker tag "cvat-minus/$image:local" "$ref"
-            docker push "$ref"
+            for attempt in 1 2 3; do
+              if docker push --platform linux/amd64 "$ref"; then break; fi
+              if [ "$attempt" -eq 3 ]; then exit 1; fi
+              sleep $((attempt * 5))
+            done
+            docker manifest inspect "$ref" >/dev/null
             echo "\`$ref\`" >> "$GITHUB_STEP_SUMMARY"
           done
       - name: Diagnose failed installation
