@@ -153,13 +153,15 @@ function RightGroup(props: Props): JSX.Element {
             </Button>
             <div>
                 <Select
+                    key={workspace === Workspace.ACTION_PHASES ? 'video-understanding' : 'annotation'}
                     popupClassName='cvat-workspace-selector-dropdown'
                     className='cvat-workspace-selector'
                     onChange={changeWorkspace}
                     value={workspace}
                 >
                     {Object.values(Workspace).map((ws) => {
-                        if (jobInstance.mediaType !== 'audio' && ws === Workspace.AUDIO) {
+                        if ((ws === Workspace.AUDIO && jobInstance.mediaType !== 'audio') ||
+                            (ws === Workspace.ACTION_PHASES && jobInstance.mode !== 'interpolation')) {
                             return null;
                         }
                         if (jobInstance.dimension === DimensionType.DIMENSION_3D) {

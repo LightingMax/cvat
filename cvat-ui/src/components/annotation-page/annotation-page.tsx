@@ -53,21 +53,21 @@ export default function AnnotationPageComponent(props: Props): JSX.Element {
 
     useEffect(() => {
         saveLogs();
-        const root = window.document.getElementById('root');
-        if (root) {
-            root.style.minHeight = '720px';
-        }
-
         return () => {
             saveLogs();
             closeJob();
             EventRecorder.logger = null;
-
-            if (root) {
-                root.style.minHeight = '';
-            }
         };
     }, []);
+
+    useEffect(() => {
+        const root = document.getElementById('root');
+        if (!root) return undefined;
+        root.style.minHeight = workspace === Workspace.ACTION_PHASES ? '360px' : '720px';
+        return () => {
+            root.style.minHeight = '';
+        };
+    }, [workspace]);
 
     useEffect(() => {
         if (job === null && !fetching) {
@@ -164,6 +164,7 @@ export default function AnnotationPageComponent(props: Props): JSX.Element {
                 {workspace === Workspace.SINGLE_SHAPE && <SingleShapeWorkspace />}
                 {workspace === Workspace.ATTRIBUTES && <AttributeAnnotationWorkspace />}
                 {workspace === Workspace.TAGS && <TagAnnotationWorkspace />}
+                {workspace === Workspace.ACTION_PHASES && <TagAnnotationWorkspace phases />}
                 {workspace === Workspace.REVIEW && <ReviewAnnotationsWorkspace />}
             </Layout.Content>
             {job.dimension === DimensionType.DIMENSION_2D &&

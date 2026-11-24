@@ -1717,6 +1717,21 @@ class TrackedShapeAttributeVal(AttributeVal):
     )
 
 
+class AnnotationMergeSubmission(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    user_id = models.PositiveIntegerField()
+    submission = models.UUIDField()
+    digest = models.CharField(max_length=64)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=("job", "user_id", "submission"),
+                name="annotation_merge_submission_unique",
+            ),
+        ]
+
+
 class LabeledInterval(Annotation, ScoredAnnotationMixin):
     start = models.PositiveIntegerField()
     "Must be within the task frame bounds."

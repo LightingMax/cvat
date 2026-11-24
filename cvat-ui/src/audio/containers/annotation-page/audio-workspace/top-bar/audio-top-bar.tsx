@@ -10,7 +10,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
     changeWorkspaceAsync,
     collectStatisticsAsync,
-    saveAnnotationsAsync,
     setForceExitAnnotationFlag as setForceExitAnnotationFlagAction,
     showFilters as showFiltersAction,
     showStatistics as showStatisticsAction,
@@ -32,8 +31,6 @@ interface StateToProps {
     saving: boolean;
     undoAction?: string;
     redoAction?: string;
-    autoSave: boolean;
-    autoSaveInterval: number;
     workspace: Workspace;
     keyMap: KeyMap;
     normalizedKeyMap: Record<string, string>;
@@ -44,7 +41,6 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
-    onSaveAnnotation(): void;
     showStatistics(sessionInstance: Job): void;
     showFilters(): void;
     audioUndo(): void;
@@ -76,7 +72,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
             },
         },
         settings: {
-            workspace: { autoSave, autoSaveInterval },
         },
         shortcuts: { keyMap, normalizedKeyMap },
     } = state;
@@ -90,8 +85,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
             annotationsHistory.undo[annotationsHistory.undo.length - 1][0] : undefined,
         redoAction: annotationsHistory.redo.length ?
             annotationsHistory.redo[annotationsHistory.redo.length - 1][0] : undefined,
-        autoSave,
-        autoSaveInterval,
         workspace,
         keyMap,
         normalizedKeyMap,
@@ -104,9 +97,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
 
 function mapDispatchToProps(dispatch: any): DispatchToProps {
     return {
-        onSaveAnnotation(): void {
-            dispatch(saveAnnotationsAsync());
-        },
         showStatistics(sessionInstance: Job): void {
             dispatch(collectStatisticsAsync(sessionInstance));
             dispatch(showStatisticsAction(true));
@@ -138,14 +128,12 @@ function mapDispatchToProps(dispatch: any): DispatchToProps {
 type Props = StateToProps & DispatchToProps & RouteComponentProps;
 
 class AudioTopBarContainer extends React.PureComponent<Props> {
-    private autoSaveInterval: number | undefined;
     private unblock: any;
 
     public componentDidMount(): void {
         const {
-            autoSaveInterval, history, jobInstance, setForceExitAnnotationFlag,
+            history, jobInstance, setForceExitAnnotationFlag,
         } = this.props;
-        this.autoSaveInterval = window.setInterval(this.autoSave.bind(this), autoSaveInterval);
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
@@ -172,17 +160,7 @@ class AudioTopBarContainer extends React.PureComponent<Props> {
         window.addEventListener('beforeunload', this.beforeUnloadCallback);
     }
 
-    public componentDidUpdate(prevProps: Props): void {
-        const { autoSaveInterval } = this.props;
-
-        if (autoSaveInterval !== prevProps.autoSaveInterval) {
-            if (this.autoSaveInterval) window.clearInterval(this.autoSaveInterval);
-            this.autoSaveInterval = window.setInterval(this.autoSave.bind(this), autoSaveInterval);
-        }
-    }
-
     public componentWillUnmount(): void {
-        window.clearInterval(this.autoSaveInterval);
         window.removeEventListener('beforeunload', this.beforeUnloadCallback);
         this.unblock();
     }
@@ -223,14 +201,6 @@ class AudioTopBarContainer extends React.PureComponent<Props> {
         }
         return undefined;
     };
-
-    private autoSave(): void {
-        const { autoSave, saving, onSaveAnnotation } = this.props;
-
-        if (autoSave && !saving) {
-            onSaveAnnotation();
-        }
-    }
 
     public render(): JSX.Element {
         const {

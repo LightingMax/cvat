@@ -16,7 +16,6 @@ import {
     deleteFrameAsync,
     redoActionAsync,
     restoreFrameAsync,
-    saveAnnotationsAsync,
     searchAnnotationsAsync,
     searchChaptersAsync,
     setForceExitAnnotationFlag as setForceExitAnnotationFlagAction,
@@ -63,8 +62,6 @@ interface StateToProps {
     canvasUndoAction?: string;
     canvasRedoAction?: string;
     canvasHistorySource?: CanvasHistorySource;
-    autoSave: boolean;
-    autoSaveInterval: number;
     showDeletedFrames: boolean;
     workspace: Workspace;
     keyMap: KeyMap;
@@ -81,10 +78,9 @@ interface StateToProps {
 }
 
 interface DispatchToProps {
-    onChangeFrame(frame: number, fillBuffer?: boolean, frameStep?: number): void;
+    onChangeFrame(frame: number, fillBuffer?: boolean, frameStep?: number, nextFrameStep?: boolean): void;
     onSwitchPlay(playing: boolean): void;
     switchShowSearchPallet(visible: boolean): void;
-    onSaveAnnotation(): void;
     showStatistics(sessionInstance: Job): void;
     showFilters(): void;
     undo(): void;
@@ -149,8 +145,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
         settings: {
             player: { frameSpeed, frameStep, showDeletedFrames },
             workspace: {
-                autoSave,
-                autoSaveInterval,
             },
         },
         shortcuts: { keyMap, normalizedKeyMap },
@@ -185,8 +179,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
         canvasUndoAction,
         canvasRedoAction,
         canvasHistorySource,
-        autoSave,
-        autoSaveInterval,
         showDeletedFrames,
         workspace,
         keyMap,
@@ -205,14 +197,11 @@ function mapStateToProps(state: CombinedState): StateToProps {
 
 function mapDispatchToProps(dispatch: any): DispatchToProps {
     return {
-        onChangeFrame(frame: number, fillBuffer?: boolean, frameStep?: number): void {
-            dispatch(changeFrameAsync(frame, fillBuffer, frameStep));
+        onChangeFrame(frame: number, fillBuffer?: boolean, frameStep?: number, nextFrameStep?: boolean): void {
+            dispatch(changeFrameAsync(frame, fillBuffer, frameStep, undefined, undefined, nextFrameStep));
         },
         onSwitchPlay(playing: boolean): void {
             dispatch(switchPlay(playing));
-        },
-        onSaveAnnotation(): void {
-            dispatch(saveAnnotationsAsync());
         },
         showStatistics(sessionInstance: Job): void {
             dispatch(collectStatisticsAsync(sessionInstance));
@@ -275,7 +264,6 @@ type Props = StateToProps & DispatchToProps & RouteComponentProps;
 
 class AnnotationTopBarContainer extends React.PureComponent<Props> {
     private inputFrameRef: React.RefObject<HTMLInputElement>;
-    private autoSaveInterval: number | undefined;
     private isWaitingForPlayDelay: boolean;
     private unblock: any;
 
@@ -287,9 +275,8 @@ class AnnotationTopBarContainer extends React.PureComponent<Props> {
 
     public componentDidMount(): void {
         const {
-            autoSaveInterval, history, jobInstance, setForceExitAnnotationFlag,
+            history, jobInstance, setForceExitAnnotationFlag,
         } = this.props;
-        this.autoSaveInterval = window.setInterval(this.autoSave.bind(this), autoSaveInterval);
 
         // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this;
@@ -316,18 +303,11 @@ class AnnotationTopBarContainer extends React.PureComponent<Props> {
         window.addEventListener('beforeunload', this.beforeUnloadCallback);
     }
 
-    public componentDidUpdate(prevProps: Props): void {
-        const { autoSaveInterval } = this.props;
-
-        if (autoSaveInterval !== prevProps.autoSaveInterval) {
-            if (this.autoSaveInterval) window.clearInterval(this.autoSaveInterval);
-            this.autoSaveInterval = window.setInterval(this.autoSave.bind(this), autoSaveInterval);
-        }
+    public componentDidUpdate(): void {
         this.handlePlayIfNecessary();
     }
 
     public componentWillUnmount(): void {
-        window.clearInterval(this.autoSaveInterval);
         window.removeEventListener('beforeunload', this.beforeUnloadCallback);
         this.unblock();
     }
@@ -512,7 +492,7 @@ class AnnotationTopBarContainer extends React.PureComponent<Props> {
             }
 
             if (navigationType === NavigationType.REGULAR) {
-                this.changeFrame(newFrame);
+                this.changeFrame(newFrame, true);
             } else if (navigationType === NavigationType.FILTERED) {
                 searchAnnotations(jobInstance, newFrame, stopFrame);
             } else if (navigationType === NavigationType.CHAPTER) {
@@ -702,18 +682,10 @@ class AnnotationTopBarContainer extends React.PureComponent<Props> {
         return undefined;
     };
 
-    private autoSave(): void {
-        const { autoSave, saving, onSaveAnnotation } = this.props;
-
-        if (autoSave && !saving) {
-            onSaveAnnotation();
-        }
-    }
-
-    private changeFrame(frame: number): void {
+    private changeFrame(frame: number, nextFrameStep?: boolean): void {
         const { onChangeFrame } = this.props;
         if (isAbleToChangeFrame(frame)) {
-            onChangeFrame(frame);
+            onChangeFrame(frame, undefined, undefined, nextFrameStep);
         }
     }
 

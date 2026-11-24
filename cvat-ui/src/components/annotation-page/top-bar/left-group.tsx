@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Col } from 'antd/lib/grid';
 import Icon, { CheckCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import Modal from 'antd/lib/modal';
@@ -11,7 +12,7 @@ import Button from 'antd/lib/button';
 import Text from 'antd/lib/typography/Text';
 
 import { UndoIcon, RedoIcon } from 'icons';
-import { ActiveControl } from 'reducers';
+import { ActiveControl, CombinedState } from 'reducers';
 import { RectDrawingMethod } from 'cvat-canvas-wrapper';
 import { registerComponentShortcuts } from 'actions/shortcuts-actions';
 import AnnotationMenuComponent from 'components/annotation-page/top-bar/annotation-menu';
@@ -83,10 +84,11 @@ function LeftGroup(props: Props): JSX.Element {
         },
     };
 
+    const reviewing = useSelector((state: CombinedState) => state.annotation.annotations.saving.reviewing);
     return (
         <>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
-            { saving && (
+            { saving && !reviewing && (
                 <Modal
                     open
                     destroyOnClose

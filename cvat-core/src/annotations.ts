@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import type { Label } from './labels';
 import { Storage } from './storage';
 import serverProxy from './server-proxy';
 import AnnotationsCollection from './annotations-collection';
@@ -14,6 +15,7 @@ import { Task, Job } from './session';
 import { ArgumentError } from './exceptions';
 import { getFramesMeta, getJobFramesMetaSync } from './frames';
 import { JobType } from './enums';
+import { SerializedCollection } from './server-response-types';
 
 const jobCollectionCache = new WeakMap<Task | Job, { collection: AnnotationsCollection; saver: AnnotationsSaver; }>();
 const taskCollectionCache = new WeakMap<Task | Job, { collection: AnnotationsCollection; saver: AnnotationsSaver; }>();
@@ -54,6 +56,10 @@ export function getCollection(session): AnnotationsCollection {
     );
 }
 
+export function addSessionLabels(session: Job, labels: Label[]): void {
+    jobCollectionCache.get(session)?.collection.addLabels(labels);
+}
+
 export function getSaver(session): AnnotationsSaver {
     const sessionType = session instanceof Task ? 'task' : 'job';
     const { collection } = getCache(sessionType);
@@ -80,6 +86,64 @@ export function getHistory(session): AnnotationsHistory {
     return initiatedHistory;
 }
 
+async function buildAnnotationCollection(
+    session: Job | Task,
+    serializedAnnotations: SerializedCollection,
+    history: AnnotationsHistory,
+): Promise<AnnotationsCollection> {
+    const sessionType = session instanceof Task ? 'task' : 'job';
+    // Get meta information about frames
+    const frameMeta = await getFramesMeta(sessionType, session.id);
+    const frameNumbers = frameMeta.getSegmentFrameNumbers(session instanceof Job ? session.startFrame : 0);
+
+    const collection = new AnnotationsCollection({
+        // Job collections use real job metadata. Task collections use constant defaults because
+        // task-level annotations are not tied to a particular job type or consensus replica set.
+        jobType: session instanceof Job ? session.type : JobType.ANNOTATION,
+        stopFrame: session instanceof Job ? session.stopFrame : session.size - 1,
+        labels: session.labels,
+        dimension: session.dimension,
+        replicasCount: session instanceof Job ? session.replicasCount : undefined,
+        framesInfo: {
+            isFrameDeleted: session instanceof Job ?
+                (frame: number) => !!getJobFramesMetaSync(session.id).deletedFrames[frame] :
+                (frame: number) => !!frameMeta.deletedFrames[frame],
+            ...frameMeta.frames.reduce((acc, frameInfo, idx) => {
+                // keep only static information
+                acc[frameNumbers[idx]] = {
+                    width: frameInfo.width,
+                    height: frameInfo.height,
+                };
+                return acc;
+            }, {}),
+        },
+        history,
+    });
+
+    collection.import(serializedAnnotations);
+    return collection;
+}
+
+export async function normalizeJobAnnotationRevision(
+    job: Job, annotations: SerializedCollection,
+): Promise<SerializedCollection> {
+    const collection = await buildAnnotationCollection(job, annotations, new AnnotationsHistory());
+    return collection.export();
+}
+
+export async function installJobAnnotationRevision(job: Job, annotations: SerializedCollection): Promise<void> {
+    const history = new AnnotationsHistory();
+    const collection = await buildAnnotationCollection(job, annotations, history);
+    const active = jobCollectionCache.get(job);
+    if (active?.saver.adoptSavedAnnotations(collection.export())) {
+        const existing = active.collection;
+        jobCollectionCache.set(job, { collection: existing, saver: new AnnotationsSaver(existing, job) });
+    } else {
+        jobCollectionCache.set(job, { collection, saver: new AnnotationsSaver(collection, job) });
+        jobHistoryCache.set(job, history);
+    }
+}
+
 async function getAnnotationsFromServer(session: Job | Task): Promise<void> {
     const sessionType = session instanceof Task ? 'task' : 'job';
     const cache = getCache(sessionType);
@@ -87,36 +151,8 @@ async function getAnnotationsFromServer(session: Job | Task): Promise<void> {
     if (!cache.collection.has(session)) {
         const serializedAnnotations = await serverProxy.annotations.getAnnotations(sessionType, session.id);
 
-        // Get meta information about frames
-        const frameMeta = await getFramesMeta(sessionType, session.id);
-        const frameNumbers = frameMeta.getSegmentFrameNumbers(session instanceof Job ? session.startFrame : 0);
-
-        const history = cache.history.has(session) ? cache.history.get(session) : new AnnotationsHistory();
-        const collection = new AnnotationsCollection({
-            // Job collections use real job metadata. Task collections use constant defaults because
-            // task-level annotations are not tied to a particular job type or consensus replica set.
-            jobType: session instanceof Job ? session.type : JobType.ANNOTATION,
-            stopFrame: session instanceof Job ? session.stopFrame : session.size - 1,
-            labels: session.labels,
-            dimension: session.dimension,
-            replicasCount: session instanceof Job ? session.replicasCount : undefined,
-            framesInfo: {
-                isFrameDeleted: session instanceof Job ?
-                    (frame: number) => !!getJobFramesMetaSync(session.id).deletedFrames[frame] :
-                    (frame: number) => !!frameMeta.deletedFrames[frame],
-                ...frameMeta.frames.reduce((acc, frameInfo, idx) => {
-                    // keep only static information
-                    acc[frameNumbers[idx]] = {
-                        width: frameInfo.width,
-                        height: frameInfo.height,
-                    };
-                    return acc;
-                }, {}),
-            },
-            history,
-        });
-
-        collection.import(serializedAnnotations);
+        const history = cache.history.get(session) ?? new AnnotationsHistory();
+        const collection = await buildAnnotationCollection(session, serializedAnnotations, history);
         const saver = new AnnotationsSaver(collection, session);
         cache.collection.set(session, { collection, saver });
         cache.history.set(session, history);

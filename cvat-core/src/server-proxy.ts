@@ -1873,6 +1873,47 @@ async function getAnnotations(
     return response.data;
 }
 
+export interface JobAnnotationRevision {
+    revision: string;
+    annotations: SerializedCollection;
+}
+
+export interface JobAnnotationSubmission {
+    revision: string;
+    submission: string;
+    create: Partial<SerializedCollection>;
+    update: Partial<SerializedCollection>;
+    delete: Partial<SerializedCollection>;
+}
+
+export async function readJobAnnotationRevision(id: number): Promise<JobAnnotationRevision> {
+    try {
+        const response = await Axios.get(`${config.backendAPI}/jobs/${id}/annotations`, {
+            params: { include_revision: true },
+        });
+        if (typeof response.data.revision !== 'string') {
+            throw new ServerError('This server does not support versioned annotation saves.', 501);
+        }
+        return response.data;
+    } catch (error) {
+        if (error instanceof ServerError) throw error;
+        throw generateError(error);
+    }
+}
+
+export async function submitJobAnnotationRevision(
+    id: number, submission: JobAnnotationSubmission,
+): Promise<JobAnnotationRevision> {
+    try {
+        const response = await Axios.patch(`${config.backendAPI}/jobs/${id}/annotations`, submission, {
+            params: { action: 'merge' },
+        });
+        return response.data;
+    } catch (error) {
+        throw generateError(error);
+    }
+}
+
 async function updateAnnotations(
     session: 'task' | 'job',
     id: number,

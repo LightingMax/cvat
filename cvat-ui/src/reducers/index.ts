@@ -962,6 +962,7 @@ export interface AnnotationState {
             delay: number;
             changeTime: number | null;
             changeFrameEvent: Event | null;
+            nextFrameStep?: boolean;
         };
         navigationType: NavigationType;
         ranges: string;
@@ -1007,6 +1008,7 @@ export interface AnnotationState {
         saving: {
             forceExit: boolean;
             uploading: boolean;
+            reviewing: boolean;
         };
         zLayer: {
             min: number;
@@ -1047,6 +1049,7 @@ export enum Workspace {
     ATTRIBUTES = 'Attribute annotation',
     SINGLE_SHAPE = 'Single shape',
     TAGS = 'Tag annotation',
+    ACTION_PHASES = 'Video understanding',
     REVIEW = 'Review',
     AUDIO = 'Audio annotation',
 }

@@ -21,6 +21,7 @@ import logger, { EventScope } from 'cvat-logger';
 import { getCVATStore } from 'cvat-store';
 import changeObjectOrientation from 'utils/change-object-orientation';
 import { sanitizeSelectedObjectIDs } from 'utils/multi-selection';
+import { saveAnnotationDraft, startAnnotationDraft } from 'utils/annotation-drafts';
 
 import {
     ActiveControl,
@@ -89,6 +90,7 @@ export function receiveAnnotationsParameters(): AnnotationsParameters {
 export enum AnnotationActionTypes {
     GET_JOB = 'GET_JOB',
     GET_JOB_SUCCESS = 'GET_JOB_SUCCESS',
+    SYNC_JOB_LABELS = 'SYNC_JOB_LABELS',
     GET_JOB_FAILED = 'GET_JOB_FAILED',
     UPDATE_JOB_SUCCESS = 'UPDATE_CURRENT_SUCCESS',
     CLOSE_JOB = 'CLOSE_JOB',
@@ -97,6 +99,8 @@ export enum AnnotationActionTypes {
     CHANGE_FRAME_FAILED = 'CHANGE_FRAME_FAILED',
     SAVE_ANNOTATIONS = 'SAVE_ANNOTATIONS',
     SAVE_ANNOTATIONS_SUCCESS = 'SAVE_ANNOTATIONS_SUCCESS',
+    SAVE_ANNOTATIONS_CANCELLED = 'SAVE_ANNOTATIONS_CANCELLED',
+    REVIEW_ANNOTATION_CONFLICTS = 'REVIEW_ANNOTATION_CONFLICTS',
     SAVE_ANNOTATIONS_FAILED = 'SAVE_ANNOTATIONS_FAILED',
     SWITCH_PLAY = 'SWITCH_PLAY',
     CONFIRM_CANVAS_READY = 'CONFIRM_CANVAS_READY',
@@ -368,8 +372,10 @@ async function fetchAnnotations(predefinedFrame?: number): Promise<{
         states = lockStatesForReviewWorkspace(states);
     }
 
-    const intervals = jobInstance.dimension === DimensionType.DIMENSION_1D ?
-        await jobInstance.annotations.intervals(filters) : [];
+    const isAudio = jobInstance.dimension === DimensionType.DIMENSION_1D;
+    const fetchVideoPhases = workspace === Workspace.ACTION_PHASES && typeof predefinedFrame === 'undefined';
+    const intervals = isAudio || fetchVideoPhases ?
+        await jobInstance.annotations.intervals(isAudio ? filters : []) : [];
     const history = await jobInstance.actions.get();
 
     return {
@@ -1097,6 +1103,7 @@ export function changeFrameAsync(
     frameStep?: number,
     forceUpdate?: boolean,
     skipSelectionHistory?: boolean,
+    nextFrameStep?: boolean,
 ): ThunkAction {
     return async (dispatch: ThunkDispatch, getState: () => CombinedState): Promise<void> => {
         const { jobInstance: job, frame } = receiveAnnotationsParameters();
@@ -1193,6 +1200,7 @@ export function changeFrameAsync(
                 type: AnnotationActionTypes.CHANGE_FRAME_SUCCESS,
                 payload: {
                     number: toFrame,
+                    nextFrameStep,
                     data,
                     filename: data.filename,
                     relatedFiles: data.relatedFiles,
@@ -1464,6 +1472,7 @@ export function getJobAsync({
             }
 
             await job.logger.log(EventScope.loadJob, { duration: Date.now() - start });
+            if (state.auth.user) await startAnnotationDraft(job, state.auth.user);
 
             const openTime = Date.now();
             dispatch({
@@ -1506,8 +1515,9 @@ export function getJobAsync({
     };
 }
 
-export function saveAnnotationsAsync(): ThunkAction {
-    return async (dispatch: ThunkDispatch): Promise<void> => {
+export function saveAnnotationsAsync(): ThunkAction<Promise<boolean>> {
+    return async (dispatch: ThunkDispatch, getState): Promise<boolean> => {
+        if (getState().annotation.annotations.saving.uploading) return false;
         const { jobInstance } = receiveAnnotationsParameters();
 
         dispatch({
@@ -1518,9 +1528,15 @@ export function saveAnnotationsAsync(): ThunkAction {
         try {
             const saveJobEvent = await jobInstance.logger.log(EventScope.saveJob, {}, true);
 
-            await jobInstance.frames.save();
-            await jobInstance.annotations.save();
+            const persisted = await saveAnnotationDraft(jobInstance, (reviewing) => {
+                dispatch({ type: AnnotationActionTypes.REVIEW_ANNOTATION_CONFLICTS, payload: { reviewing } });
+            });
             await saveJobEvent.close();
+            if (!persisted) {
+                dispatch({ type: AnnotationActionTypes.SAVE_ANNOTATIONS_CANCELLED, payload: {} });
+                return false;
+            }
+            await jobInstance.frames.save();
             dispatch(saveLogsAsync());
 
             if (jobInstance instanceof cvat.classes.Job && jobInstance.state === cvat.enums.JobState.NEW) {
@@ -1533,6 +1549,7 @@ export function saveAnnotationsAsync(): ThunkAction {
             });
 
             dispatch(fetchAnnotationsAsync());
+            return true;
         } catch (error) {
             dispatch({
                 type: AnnotationActionTypes.SAVE_ANNOTATIONS_FAILED,
@@ -1552,7 +1569,7 @@ export function finishCurrentJobAsync(onSuccess: () => void): ThunkAction {
         const beforeCallbacks = state.plugins.callbacks.annotationPage.header.menu.beforeJobFinish;
         const { jobInstance } = receiveAnnotationsParameters();
 
-        await dispatch(saveAnnotationsAsync());
+        if (!await dispatch(saveAnnotationsAsync())) return;
 
         for await (const callback of beforeCallbacks) {
             const result = await callback();

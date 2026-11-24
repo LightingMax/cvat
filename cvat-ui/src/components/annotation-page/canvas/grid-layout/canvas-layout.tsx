@@ -5,7 +5,9 @@
 import './styles.scss';
 import 'react-grid-layout/css/styles.css';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+    useCallback, useEffect, useRef, useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import RGL, { WidthProvider } from 'react-grid-layout';
 import PropTypes from 'prop-types';
@@ -40,13 +42,18 @@ import defaultLayout, { ItemLayout, ViewType } from './canvas-layout.conf';
 
 const ReactGridLayout = WidthProvider(RGL);
 
-const ViewFabric = (itemLayout: ItemLayout): JSX.Element => {
+interface CanvasOverlays {
+    showObjectOverlays?: boolean;
+    showFrameTagOverlays?: boolean;
+}
+
+const ViewFabric = (itemLayout: ItemLayout, overlays: CanvasOverlays): JSX.Element => {
     const { viewType: type, offset } = itemLayout;
 
     let component = null;
     switch (type) {
         case ViewType.CANVAS:
-            component = <CanvasWrapperComponent />;
+            component = <CanvasWrapperComponent {...overlays} />;
             break;
         case ViewType.CANVAS_3D:
             component = <PerspectiveViewComponent />;
@@ -143,7 +150,9 @@ const fitLayout = (type: DimensionType, layoutConfig: ItemLayout[]): ItemLayout[
     return updatedLayout;
 };
 
-function CanvasLayout({ type }: { type?: DimensionType }): JSX.Element {
+function CanvasLayout({
+    type, fitContainer = false, showObjectOverlays, showFrameTagOverlays,
+}: CanvasOverlays & { type?: DimensionType; fitContainer?: boolean }): JSX.Element {
     const {
         relatedFiles,
         canvasInstance,
@@ -154,20 +163,25 @@ function CanvasLayout({ type }: { type?: DimensionType }): JSX.Element {
         canvasBackgroundColor: state.settings.player.canvasBackgroundColor,
     }), shallowEqual);
 
-    const computeRowHeight = (): number => {
+    const content = useRef<HTMLElement>(null);
+    const computeRowHeight = useCallback((): number => {
+        if (fitContainer) {
+            const height = content.current?.clientHeight ?? 0;
+            return Math.max(0, height / config.CANVAS_WORKSPACE_ROWS - config.CANVAS_WORKSPACE_MARGIN);
+        }
         const container = window.document.getElementsByClassName('cvat-annotation-header')[0];
         let containerHeight = window.innerHeight;
         if (container) {
             containerHeight = window.innerHeight - container.getBoundingClientRect().bottom;
             // https://github.com/react-grid-layout/react-grid-layout/issues/628#issuecomment-1228453084
-            return Math.floor(
-                (containerHeight - config.CANVAS_WORKSPACE_MARGIN * (config.CANVAS_WORKSPACE_ROWS)) /
+            return Math.max(0, Math.floor(
+                (containerHeight - config.CANVAS_WORKSPACE_MARGIN * config.CANVAS_WORKSPACE_ROWS) /
                 config.CANVAS_WORKSPACE_ROWS,
-            );
+            ));
         }
 
         return 0;
-    };
+    }, [fitContainer]);
 
     const getLayout = useCallback(() => (
         defaultLayout[(type as DimensionType).toUpperCase() as '2D' | '3D'][Math.min(relatedFiles, 3)]
@@ -201,17 +215,31 @@ function CanvasLayout({ type }: { type?: DimensionType }): JSX.Element {
         return () => {
             window.removeEventListener('resize', onResize);
         };
-    }, [fitCanvas]);
+    }, [computeRowHeight, fitCanvas]);
 
     useEffect(() => {
-        setRowHeight(computeRowHeight());
-    }, []);
+        const element = content.current;
+        const measure = (): void => setRowHeight(computeRowHeight());
+        measure();
+        if (!fitContainer || !element) return undefined;
+        const observer = new ResizeObserver(measure);
+        observer.observe(element);
+        return () => observer.disconnect();
+    }, [computeRowHeight, fitContainer]);
+
+    useEffect(() => {
+        if (!fitContainer || !rowHeight) return undefined;
+        const frame = window.requestAnimationFrame(fitCanvas);
+        return () => window.cancelAnimationFrame(frame);
+    }, [fitContainer, fitCanvas, rowHeight]);
 
     useUpdateEffect(() => {
         window.dispatchEvent(new Event('resize'));
     }, [layoutConfig]);
 
-    const children = layoutConfig.map((value: ItemLayout) => ViewFabric(value));
+    const children = layoutConfig.map((value: ItemLayout) => ViewFabric(value, {
+        showObjectOverlays, showFrameTagOverlays,
+    }));
     const layout = layoutConfig.map((value: ItemLayout) => ({
         x: value.x,
         y: value.y,
@@ -284,7 +312,7 @@ function CanvasLayout({ type }: { type?: DimensionType }): JSX.Element {
     );
 
     return (
-        <Layout.Content>
+        <Layout.Content ref={content}>
             { !!rowHeight && (
                 <ReactGridLayout
                     cols={config.CANVAS_WORKSPACE_COLS}

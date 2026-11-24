@@ -3,7 +3,9 @@
 #
 # SPDX-License-Identifier: MIT
 
+import hashlib
 import io
+import json
 import itertools
 from collections import OrderedDict, defaultdict
 from collections.abc import Callable, Generator, Sequence
@@ -13,9 +15,10 @@ from enum import Enum
 
 from datumaro.components.errors import DatasetError, DatasetImportError, DatasetNotFoundError
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.db.models.query import Prefetch, QuerySet
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import APIException, ValidationError
 
 from cvat.apps.dataset_manager.annotation import AnnotationIR, AnnotationManager
 from cvat.apps.dataset_manager.bindings import (
@@ -543,7 +546,12 @@ class JobAnnotation:
         self._save_tracks_to_db(data["tracks"])
         self._save_intervals_to_db(data["intervals"])
 
+    def lock_for_write(self):
+        models.Job.objects.select_for_update().only("pk").get(pk=self.db_job.pk)
+
+    @transaction.atomic
     def create(self, data):
+        self.lock_for_write()
         data = self._validate_input_annotations(data)
 
         self._create(data)
@@ -552,7 +560,9 @@ class JobAnnotation:
         if not self._data_is_empty(self.data):
             self._set_updated_date()
 
+    @transaction.atomic
     def put(self, data):
+        self.lock_for_write()
         data = self._validate_input_annotations(data)
 
         deleted_data = self._delete()
@@ -566,7 +576,9 @@ class JobAnnotation:
         if not deleted_data_is_empty or not self._data_is_empty(self.data):
             self._set_updated_date()
 
+    @transaction.atomic
     def update(self, data):
+        self.lock_for_write()
         data = self._validate_input_annotations(data)
 
         # in case with "update" must be called prior any annotations in database changes
@@ -680,7 +692,9 @@ class JobAnnotation:
         self.reset()
         return deleted_data
 
+    @transaction.atomic
     def delete(self, data=None):
+        self.lock_for_write()
         deleted_data = self._delete(data)
         if not self._data_is_empty(deleted_data):
             self._set_updated_date()
@@ -1278,6 +1292,72 @@ def get_job_data(pk, *, streaming: bool = False):
     return annotation.data
 
 
+class AnnotationRevisionConflict(APIException):
+    status_code = 409
+    default_detail = "The job annotations changed. Reload the revision and review the merge."
+
+
+def _annotation_digest(value):
+    return hashlib.sha256(
+        json.dumps(value, cls=DjangoJSONEncoder, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+
+
+def _annotation_snapshot(job_id):
+    annotation = JobAnnotation(job_id)
+    annotation.init_from_db()
+    data = annotation.data
+    return {"revision": _annotation_digest(data), "annotations": data}
+
+
+@transaction.atomic
+def get_job_annotation_revision(job_id):
+    models.Job.objects.select_for_update().only("pk").get(pk=job_id)
+    return _annotation_snapshot(job_id)
+
+
+@transaction.atomic
+def merge_job_annotation_revision(job_id, revision, submission, actions, *, user_id):
+    annotation = JobAnnotation(job_id)
+    annotation.lock_for_write()
+    digest = _annotation_digest([revision, actions])
+    receipt = models.AnnotationMergeSubmission.objects.filter(
+        job_id=job_id, user_id=user_id, submission=submission,
+    ).first()
+    if receipt is not None:
+        if receipt.digest != digest:
+            raise ValidationError("The submission ID has already been used for other changes.")
+        return _annotation_snapshot(job_id)
+
+    current = _annotation_snapshot(job_id)
+    if current["revision"] != revision:
+        raise AnnotationRevisionConflict()
+
+    for kind in ("tags", "shapes", "tracks", "intervals"):
+        current_ids = {item["id"] for item in current["annotations"][kind]}
+        affected_ids = [
+            item.get("id")
+            for action in (PatchAction.UPDATE, PatchAction.DELETE)
+            for item in actions[action][kind]
+        ]
+        if len(set(affected_ids)) != len(affected_ids) or set(affected_ids) - current_ids:
+            raise ValidationError(f"Invalid or repeated IDs in the submitted {kind}.")
+
+    for action, method in (
+        (PatchAction.UPDATE, annotation.update),
+        (PatchAction.DELETE, annotation.delete),
+        (PatchAction.CREATE, annotation.create),
+    ):
+        if not annotation._data_is_empty(actions[action]):
+            method(actions[action])
+
+    final = _annotation_snapshot(job_id)
+    models.AnnotationMergeSubmission.objects.create(
+        job_id=job_id, user_id=user_id, submission=submission, digest=digest,
+    )
+    return final
+
+
 @silk_profile(name="POST job data")
 @transaction.atomic
 def put_job_data(pk, data: AnnotationIR | dict, *, db_job: models.Job | None = None):
@@ -1430,6 +1510,7 @@ def import_job_annotations(
 
     av_scan_paths(src_file)
     job = JobAnnotation(job_id, prefetch_images=True)
+    job.lock_for_write()
 
     importer = make_importer(format_name)
     with open(src_file, "rb") as f:

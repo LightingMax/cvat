@@ -382,6 +382,35 @@ export default class AnnotationsSaver {
         }
     }
 
+    // Keep the existing objects and undo history when the server saved exactly the local edits.
+    // A merged result can contain remote edits and must be loaded as a new collection.
+    adoptSavedAnnotations(saved: SerializedCollection): boolean {
+        const current: SerializedCollection = this.collection.export();
+        const aligned: SerializedCollection = { tags: [], shapes: [], tracks: [], intervals: [] };
+        const comparable = (item: CollectionObject): object => JSON.parse(JSON.stringify(item, (key, value) => (
+            key === 'clientID' || key === 'id' ? undefined : value
+        )));
+        for (const kind of COLLECTION_KEYS) {
+            if (current[kind].length !== saved[kind].length) return false;
+            const byID = new Map(saved[kind].map((item) => [item.id, item] as const));
+            const existingIDs = new Set<number>(current[kind].map((item) => item.id));
+            const align = [];
+            for (const item of current[kind]) {
+                const value = comparable(item);
+                const match = item.id === undefined ?
+                    Array.from(byID.values()).find((candidate) => (
+                        !existingIDs.has(candidate.id) && _.isEqual(value, comparable(candidate))
+                    )) : byID.get(item.id);
+                if (!match || !_.isEqual(value, comparable(match))) return false;
+                align.push(match);
+                byID.delete(match.id);
+            }
+            Object.assign(aligned, { [kind]: align });
+        }
+        this._updateSavedObjects(aligned, this._extractClientIDs(current));
+        return true;
+    }
+
     async save(onUpdateArg?: (message: string) => void): Promise<void> {
         const onUpdate = typeof onUpdateArg === 'function' ? onUpdateArg : (message) => {
             console.log(message);

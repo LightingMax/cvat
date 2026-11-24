@@ -2548,6 +2548,9 @@ class JobViewSet(
                     "/api/jobs/id/dataset/export?save_images=False"
                 )
 
+            if request.query_params.get("include_revision") == "true":
+                return Response(dm.task.get_job_annotation_revision(self._object.pk))
+
             annotations = dm.task.get_job_data(self._object.pk)
             return Response(annotations)
 
@@ -2572,6 +2575,35 @@ class JobViewSet(
             return Response(status=status.HTTP_204_NO_CONTENT)
         elif request.method == "PATCH":
             action = self.request.query_params.get("action", None)
+            if action == "merge":
+                from uuid import UUID
+
+                body = request.data
+                if not isinstance(body, dict):
+                    raise serializers.ValidationError("Expected an annotation submission object.")
+                revision = body.get("revision")
+                if not isinstance(revision, str) or len(revision) != 64:
+                    raise serializers.ValidationError("An annotation revision is required.")
+                try:
+                    submission = UUID(str(body.get("submission")))
+                except ValueError:
+                    raise serializers.ValidationError("A valid submission ID is required.")
+
+                actions = {}
+                for operation in dm.task.PatchAction:
+                    serializer = LabeledDataSerializer(
+                        data=body.get(operation, {}),
+                        context={"annotation_action": operation},
+                    )
+                    serializer.is_valid(raise_exception=True)
+                    actions[operation] = serializer.validated_data
+                try:
+                    data = dm.task.merge_job_annotation_revision(
+                        pk, revision, submission, actions, user_id=request.user.pk,
+                    )
+                except (AttributeError, IntegrityError) as e:
+                    return Response(data=str(e), status=status.HTTP_400_BAD_REQUEST)
+                return Response(data)
             if action not in dm.task.PatchAction.values():
                 raise serializers.ValidationError(
                     "Please specify a correct 'action' for the request"

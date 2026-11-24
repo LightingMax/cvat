@@ -2,7 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { CombinedState } from 'reducers';
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Col } from 'antd/lib/grid';
 import Icon, { LoadingOutlined } from '@ant-design/icons';
 import Modal from 'antd/lib/modal';
@@ -74,10 +76,11 @@ function AudioLeftGroup(props: Props): JSX.Element {
         },
     };
 
+    const reviewing = useSelector((state: CombinedState) => state.annotation.annotations.saving.reviewing);
     return (
         <>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
-            { saving && (
+            { saving && !reviewing && (
                 <Modal
                     open
                     destroyOnClose
