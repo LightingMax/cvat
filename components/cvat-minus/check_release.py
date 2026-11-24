@@ -1,5 +1,6 @@
 """Exercise the release images in a disposable stack with registration enabled."""
 import argparse
+import re
 import sys
 from pathlib import Path
 from uuid import uuid4
@@ -39,7 +40,7 @@ def check(base, video):
                 clip = phases.locator('button[title="reviewed · 2–7"]')
                 expect(clip).to_be_attached()
                 save = page.locator(".cvat-annotation-header-save-button")
-                merge = "**/annotations?action=merge*"
+                merge = re.compile(r"/annotations\?(?:[^#]*&)?action=merge(?:&|$)")
                 page.route(merge, lambda route: route.abort())
                 with page.expect_event("requestfailed", predicate=lambda r: "action=merge" in r.url):
                     save.click()
