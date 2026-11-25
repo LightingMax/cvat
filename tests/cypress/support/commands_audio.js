@@ -20,9 +20,10 @@ const WAVEFORM_TIMEOUT = 30000;
 function removeAudioAnnotations({ save = false } = {}) {
     cy.get('.cvat-audio-regions-list-wrapper').then(($list) => {
         if ($list.find('.cvat-audio-region-item').length) {
-            cy.removeAnnotations();
             if (save) {
-                cy.saveJob('PUT');
+                cy.clearAnnotationsAndSave();
+            } else {
+                cy.removeAnnotations();
             }
             cy.get('.cvat-audio-region-item').should('have.length', 0);
         }

@@ -256,9 +256,13 @@ context('Simplify polygons feature', { scrollBehavior: false }, () => {
     after(() => {
         if (taskId !== null) {
             // Persist the cleanup so beforeunload does not block Cypress's final iframe navigation.
-            cy.saveJob('PUT');
+            cy.clickSaveAnnotationView();
             cy.get('.cvat-annotation-header-save-button')
                 .should('not.have.class', 'cvat-annotation-disabled-header-button');
+            cy.request(`/api/jobs/${jobId}/annotations`).its('body').then(({ shapes, tracks }) => {
+                expect(shapes).to.be.empty;
+                expect(tracks).to.be.empty;
+            });
             cy.headlessDeleteTask(taskId);
         }
     });

@@ -98,8 +98,7 @@ context('Import annotations for frames with dots in name.', { browser: '!firefox
             cy.closeNotification('.cvat-notification-notice-export-job-start');
             cy.downloadExport();
             cy.goBack();
-            cy.removeAnnotations();
-            cy.saveJob('PUT');
+            cy.clearAnnotationsAndSave();
             cy.get('#cvat_canvas_shape_1').should('not.exist');
             cy.get('#cvat-objects-sidebar-state-item-1').should('not.exist');
 

@@ -104,8 +104,7 @@ context('Single object annotation mode', { scrollBehavior: false }, () => {
     }
 
     function resetAfterTestCase() {
-        cy.removeAnnotations();
-        cy.saveJob('PUT');
+        cy.clearAnnotationsAndSave();
     }
 
     before(() => {

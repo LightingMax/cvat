@@ -68,8 +68,7 @@ context('Canvas 3D functionality. Export as a dataset.', () => {
                 cy.verifyDownload(file);
             });
             cy.goBack();
-            cy.removeAnnotations();
-            cy.saveJob('PUT');
+            cy.clearAnnotationsAndSave();
         });
     });
 });

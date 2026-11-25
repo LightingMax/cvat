@@ -156,53 +156,40 @@ context('Test annotations saving works correctly', () => {
             // client id 9
             cy.createTag(generalLabel.name);
 
-            let createCounter = 0;
-            let deleteCounter = 0;
-            let updateCounter = 0;
+            cy.intercept('PATCH', `/api/jobs/${jobId}/annotations**action=merge**`).as('mergeAnnotations');
+            function checkSave(action, count, expectedTags, cleared = false) {
+                cy.clickSaveAnnotationView();
+                cy.wait('@mergeAnnotations').then(({ request, response }) => {
+                    expect(response.statusCode).to.equal(200);
+                    const edits = request.body[action];
+                    expect(edits.tracks).to.have.length(4);
+                    expect(edits.shapes).to.have.length(4);
+                    expect(edits.tags).to.have.length(expectedTags);
+                    const saved = response.body.annotations;
+                    expect(saved.tracks).to.have.length(cleared ? 0 : 4);
+                    expect(saved.shapes).to.have.length(cleared ? 0 : 4);
+                    expect(saved.tags).to.have.length(cleared ? 0 : 1);
+                });
+                const saveButton = '.cvat-annotation-header-save-button';
+                cy.get(saveButton).should('have.text', 'Save');
+                cy.clickSaveAnnotationView();
+                cy.get(saveButton).should('have.text', 'Save');
+                cy.get('@mergeAnnotations.all').should('have.length', count);
+            }
 
-            cy.intercept('PATCH', `/api/jobs/${jobId}/annotations**action=create**`, () => createCounter++).as('createJobAnnotations');
-            cy.intercept('PATCH', `/api/jobs/${jobId}/annotations**action=delete`, () => deleteCounter++).as('deleteJobAnnotations');
-            cy.intercept('PATCH', `/api/jobs/${jobId}/annotations**action=update`, () => updateCounter++).as('updateJobAnnotations');
-
-            cy.saveJob();
-            cy.wait('@createJobAnnotations').then((interception) => {
-                const { shapes, tags, tracks } = interception.response.body;
-                expect(tracks.length).to.be.equal(4);
-                expect(shapes.length).to.be.equal(4);
-                expect(tags.length).to.be.equal(1);
-            });
-            cy.saveJob();
-
+            checkSave('create', 1, 1);
             for (const clientId of [1, 2, 3, 4, 5, 6, 7, 13]) {
                 useShortcut(clientId, 'q');
             }
 
-            cy.saveJob();
-            cy.wait('@updateJobAnnotations').then((interception) => {
-                const { shapes, tags, tracks } = interception.response.body;
-                expect(tracks.length).to.be.equal(4);
-                expect(shapes.length).to.be.equal(4);
-                expect(tags.length).to.be.equal(0);
-            });
-            cy.saveJob();
+            checkSave('update', 2, 0);
 
             for (const clientId of [1, 2, 3, 4, 5, 6, 7, 13, 19]) {
                 useShortcut(clientId, '{shift}{del}');
                 cy.get(`#cvat-objects-sidebar-state-item-${clientId}`).should('not.exist');
             }
 
-            cy.saveJob();
-            cy.wait('@deleteJobAnnotations').then((interception) => {
-                const { shapes, tags, tracks } = interception.response.body;
-                expect(tracks.length).to.be.equal(4);
-                expect(shapes.length).to.be.equal(4);
-                expect(tags.length).to.be.equal(1);
-            });
-            cy.saveJob().then(() => {
-                expect(createCounter).to.be.equal(1);
-                expect(deleteCounter).to.be.equal(1);
-                expect(updateCounter).to.be.equal(1);
-            });
+            checkSave('delete', 3, 1, true);
         });
     });
 

@@ -47,8 +47,7 @@ context('Canvas 3D functionality. Save a job. Remove annotations.', () => {
         });
 
         it('Remove annotations. Save the job.', () => {
-            cy.removeAnnotations();
-            cy.saveJob('PUT');
+            cy.clearAnnotationsAndSave();
             cy.get('Saving changes on the server').should('not.exist');
             cy.get('.cvat-objects-sidebar-state-item').should('not.exist');
             // eslint-disable-next-line cypress/no-unnecessary-waiting
