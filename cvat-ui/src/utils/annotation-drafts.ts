@@ -288,7 +288,7 @@ export async function saveAnnotationDraft(
 
     for (let attempt = 0; attempt < 3; attempt++) {
         const version = await readJobAnnotationRevision(job.id);
-        const remote = comparableAnnotations(await normalizeJobAnnotationRevision(job, version.annotations));
+        const remote = clean(await normalizeJobAnnotationRevision(job, version.annotations));
         if (kinds.some((kind) => remote[kind].length !== version.annotations[kind].length)) {
             throw new Error('Some server annotations could not be loaded. Reload the job before saving your draft.');
         }

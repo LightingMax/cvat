@@ -149,10 +149,11 @@ export function changedTrackKeyframes(base: SerializedCollection, draft: Seriali
 export function mergeAnnotations(
     base: SerializedCollection,
     local: SerializedCollection,
-    remote: SerializedCollection,
+    snapshot: SerializedCollection,
     stopFrame: number,
     useLocal: Set<string> = new Set(),
 ): AnnotationMerge {
+    const remote = comparableAnnotations(snapshot);
     const result: AnnotationMerge = {
         create: {}, update: {}, delete: {}, conflicts: [],
     };
@@ -163,7 +164,7 @@ export function mergeAnnotations(
         const theirs = new Map<number, Annotation>(remote[kind].map((item) => [item.id, item] as const));
         const created: Annotation[] = local[kind].filter((item) => item.id === undefined);
         const updated: Annotation[] = [];
-        const deleted: Annotation[] = [];
+        const deletedIDs = new Set<number>();
 
         for (const [id, initial] of before) {
             const mine = yours.get(id);
@@ -200,13 +201,14 @@ export function mergeAnnotations(
             }
             if (isEqual(merged, current)) continue;
             if (merged && current) updated.push(merged);
-            else if (current) deleted.push(current);
+            else if (current) deletedIDs.add(current.id);
             else if (merged) created.push({ ...merged, id: undefined });
         }
 
         Object.assign(result.create, { [kind]: created });
         Object.assign(result.update, { [kind]: updated });
-        Object.assign(result.delete, { [kind]: deleted });
+        // The delete API requires server IDs on skeleton elements as well as their parents.
+        Object.assign(result.delete, { [kind]: snapshot[kind].filter((item) => deletedIDs.has(item.id)) });
     }
     return result;
 }
