@@ -153,6 +153,23 @@ async function persistDraft(session: DraftSession): Promise<void> {
     session.recovered.splice(0);
 }
 
+export async function resetDraftAfterImport(job: Job): Promise<void> {
+    const previous = sessions.get(job);
+    if (!previous) return;
+    const base = clean(await job.annotations.export());
+    sessions.set(job, {
+        draft: {
+            id: createSubmissionId(),
+            scope: previous.draft.scope,
+            base,
+            annotations: base,
+            labels: job.labels.map((label) => label.toJSON()),
+            savedAt: Date.now(),
+        },
+        recovered: [],
+    });
+}
+
 export async function startAnnotationDraft(job: Job, user: { id: number; username: string }): Promise<void> {
     try {
         const scope = JSON.stringify([user.id, user.username, job.taskId, job.id]);
@@ -211,10 +228,10 @@ function rejectedSubmission(error: unknown): boolean {
 }
 
 async function installSavedAnnotations(
-    job: Job, local: Annotations, saved: JobAnnotationRevision,
+    job: Job, expectedSession: DraftSession, local: Annotations, saved: JobAnnotationRevision,
 ): Promise<void> {
     const session = sessions.get(job);
-    if (!session) return;
+    if (session !== expectedSession) return;
     const current = clean(await job.annotations.export());
     const changedSinceSave = !isEqual(current, local);
     let { base } = session.draft;
@@ -257,7 +274,7 @@ export async function saveAnnotationDraft(
         try {
             const saved = await submitJobAnnotationRevision(job.id, existing.request);
             if (isEqual(existing.local, local)) {
-                await installSavedAnnotations(job, local, saved);
+                await installSavedAnnotations(job, session, local, saved);
                 return true;
             }
             session.draft.pendingSubmission = undefined;
@@ -316,7 +333,7 @@ export async function saveAnnotationDraft(
         await persistDraft(session);
         try {
             const saved = await submitJobAnnotationRevision(job.id, request);
-            await installSavedAnnotations(job, local, saved);
+            await installSavedAnnotations(job, session, local, saved);
             return true;
         } catch (error) {
             if (rejectedSubmission(error)) session.draft.pendingSubmission = undefined;

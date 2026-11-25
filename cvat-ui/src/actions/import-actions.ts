@@ -7,6 +7,7 @@ import { createAction, ActionUnion, ThunkAction } from 'utils/redux';
 import {
     getCore, Storage, Job, Task, Project, ProjectOrTaskOrJob,
 } from 'cvat-core-wrapper';
+import { resetDraftAfterImport } from 'utils/annotation-drafts';
 import { getProjectsAsync } from './projects-actions';
 import { AnnotationActionTypes, fetchAnnotationsAsync } from './annotation-actions';
 import {
@@ -129,8 +130,11 @@ export const importDatasetAsync = (
                 );
 
                 await listenForImport(rqID);
-                await (instance as Job).annotations.clear({ reload: true });
-                await (instance as Job).actions.clear();
+                const activeJob = getState().annotation.job.instance;
+                const job = activeJob?.id === instance.id ? activeJob : instance as Job;
+                await job.annotations.clear({ reload: true });
+                await job.actions.clear();
+                await resetDraftAfterImport(job);
 
                 // first set empty objects list
                 // to escape some problems in canvas when shape with the same
