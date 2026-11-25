@@ -154,8 +154,7 @@ context('Tests for source and target storage.', () => {
             cy.waitForFileUploadToCloudStorage();
 
             // remove annotations
-            cy.removeAnnotations();
-            cy.saveJob('PUT');
+            cy.clearAnnotationsAndSave();
             cy.get('#cvat_canvas_shape_1').should('not.exist');
             cy.get('#cvat-objects-sidebar-state-item-1').should('not.exist');
         });

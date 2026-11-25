@@ -2,9 +2,17 @@
 
 我维护这个 fork，是因为在视频上标动作时，我需要回答两个问题：这个动作从哪一帧开始、在哪一帧结束？网络断了，刚才改过的标注还能不能找回来？
 
-CVAT 提供了标注工具、数据模型、权限系统和部署环境。我的工作是在这个基础上补上自己日常需要的功能。等待上游讨论、评审和发布的时间，有时比我的项目能等的时间长，所以我先在这里维护能用的版本，再把适合通用场景的改动单独提交给上游。名字里的 **Minus** 表示我承担的维护范围很小。每次升级都会写明对应的 CVAT 版本，方便大家决定是否跟进。
+CVAT 提供了标注工具、数据模型、权限系统和部署环境。
+我的工作是在这个基础上补上自己日常需要的功能。
+等待上游讨论、评审和发布的时间，有时比我的项目能等的时间长，所以我先在这里维护能用的版本，再把适合通用场景的改动单独提交给上游。
+名字里的 **Minus** 表示我承担的维护范围很小。
+每次升级都会写明对应的 CVAT 版本，方便大家决定是否跟进。
 
-CVAT Minus is an independent fork of CVAT Community maintained by LightingMax. It adds a video action timeline and recoverable annotation saves. The current base is **CVAT v2.83.0**, commit `678221a53665`. CVAT and its original contributors retain credit for the upstream software. [Upstream release](https://github.com/cvat-ai/cvat/releases/tag/v2.83.0) · [License](LICENSE)
+CVAT Minus is an independent fork of CVAT Community maintained by LightingMax.
+It adds a video action timeline and recoverable annotation saves.
+The current base is **CVAT v2.84.0**, commit `a2faa79245d1`.
+CVAT and its original contributors retain credit for the upstream software.
+[Upstream release](https://github.com/cvat-ai/cvat/releases/tag/v2.84.0) · [License](LICENSE)
 
 ## 和上游相比，多了什么？
 
@@ -19,7 +27,8 @@ CVAT Minus is an independent fork of CVAT Community maintained by LightingMax. I
 
 ## 启动 CVAT Minus
 
-准备 Git、Docker Engine 和带有 `!reset` 支持的 Docker Compose v2.24.4 或更新版本。下面的命令从源码构建本 fork 的前端和服务端，使用独立的 `cvat_minus` Compose 项目、网络和数据卷，默认入口为本机 8091。
+准备 Git、Docker Engine 和带有 `!reset` 支持的 Docker Compose v2.24.4 或更新版本。
+下面的命令从源码构建本 fork 的前端和服务端，使用独立的 `cvat_minus` Compose 项目、网络和数据卷，默认入口为本机 8091。
 
 ```sh
 git clone --branch minus https://github.com/LightingMax/cvat.git cvat-minus
@@ -29,9 +38,16 @@ cd cvat-minus
 ./minus exec cvat_server python manage.py createsuperuser
 ```
 
-打开 [本机 CVAT Minus](http://localhost:8091)，新建一个视频任务，进入 Job 后切到 **Video understanding**。如需改端口，在运行命令前设置 `CVAT_MINUS_PORT`。查看服务状态用 `./minus ps`，停止服务并保留卷用 `./minus stop`。
+打开 [本机 CVAT Minus](http://localhost:8091)，新建一个视频任务，进入 Job 后切到 **Video understanding**。
+如需改端口，在运行命令前设置 `CVAT_MINUS_PORT`。
+查看服务状态用 `./minus ps`，停止服务并保留卷用 `./minus stop`。
 
-CI 在全新数据库上启动容器，用合成视频检查同名 Tag 与动作轨道、断网后恢复草稿、重复保存和版本冲突。检查通过后，以同一 Git 提交号发布 Linux amd64 的 UI 与 server 镜像。所有 worker 使用同一份 server 镜像。GHCR 私有镜像需要先使用有读取权限的 GitHub 账号登录；公开仓库提供完整的源码构建入口。若使用预构建镜像，选择一次**成功发布**的工作流运行，取其完整提交号，并在相同提交的检出目录执行以下命令。[构建和发布记录](https://github.com/LightingMax/cvat/actions/workflows/minus-images.yml)
+CI 在全新数据库上启动容器，用合成视频检查同名 Tag 与动作轨道、断网后恢复草稿、重复保存和版本冲突。
+检查通过后，以同一 Git 提交号发布 Linux amd64 的 UI 与 server 镜像。
+所有 worker 使用同一份 server 镜像。
+GHCR 私有镜像需要先使用有读取权限的 GitHub 账号登录；公开仓库提供完整的源码构建入口。
+若使用预构建镜像，选择一次**成功发布**的工作流运行，取其完整提交号，并在相同提交的检出目录执行以下命令。
+[构建和发布记录](https://github.com/LightingMax/cvat/actions/workflows/minus-images.yml)
 
 ```sh
 export CVAT_MINUS_REGISTRY=ghcr.io/lightingmax/cvat-minus
@@ -44,10 +60,15 @@ export CVAT_MINUS_TAG=sha-$(git rev-parse HEAD)
 
 GitHub Actions 每天生成一份只读巡检报告，列出上游最新稳定版、两份草案的评审情况，以及最近七天更新的相关 Issue。报告保存在每次运行的 Summary 中，也可以手动运行。[上游巡检记录](https://github.com/LightingMax/cvat/actions/workflows/minus-upstream.yml)
 
-- **版本**：`minus` 是维护分支，按 CVAT Community 稳定版集成。日常关注上游 `develop` 的相关修复。发布新稳定版时，从 `minus` 拉更新分支，合入对应 tag，核对后端镜像基底、依赖、迁移编号和 Compose 变化，再运行同一套回归。README 的基线随实际合并更新。
+- **版本**：`minus` 是维护分支，按 CVAT Community 稳定版集成。
+  日常关注上游 `develop` 的相关修复。
+  发布新稳定版时，从 `minus` 拉更新分支，合入对应 tag，核对后端镜像基底、依赖、迁移编号和 Compose 变化，再运行同一套回归。
+  README 的基线随实际合并更新。
 - **Issue**：优先处理能在合成视频上复现的动作区间、标注保存和多人编辑问题。修复 PR 记录上游链接、复现步骤、受影响版本和验证结果。上游已合并相同修复时，验证通过后移除本地重复实现。欢迎在本 fork 提交问题。[CVAT Minus Issues](https://github.com/LightingMax/cvat/issues)
 - **服务升级**：容器构建和标注服务部署是两个步骤。升级使用同一提交的 UI、server 和 worker。涉及数据库迁移时，先在数据副本演练，备份数据库、媒体和配置，再安排升级。回滚涉及数据库时使用与旧镜像匹配的备份。
-- **上游讨论**：动作区间提案和键盘快捷键各自有独立的上游草案，可直接查看评审进展。[动作区间 PR](https://github.com/cvat-ai/cvat/pull/11492) · [键盘快捷键 PR](https://github.com/cvat-ai/cvat/pull/11493) · [视频级标注讨论](https://github.com/cvat-ai/cvat/issues/4952)
+- **上游讨论**：动作区间提案和键盘快捷键各自有独立的上游草案，可直接查看评审进展。
+  [动作区间 PR](https://github.com/cvat-ai/cvat/pull/11492) · [键盘快捷键 PR](https://github.com/cvat-ai/cvat/pull/11493) ·
+  [视频级标注讨论](https://github.com/cvat-ai/cvat/issues/4952)
 
 ## CVAT Community 原项目说明
 

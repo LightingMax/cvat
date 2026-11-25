@@ -76,8 +76,7 @@ context('Canvas 3D functionality. Dump/upload annotation. "Velodyne Points" form
                 cy.verifyDownload(annotationVCArchiveNameCustomName);
             });
             cy.goBack();
-            cy.removeAnnotations();
-            cy.saveJob('PUT');
+            cy.clearAnnotationsAndSave();
             cy.get('#cvat-objects-sidebar-state-item-1').should('not.exist');
         });
 

@@ -90,6 +90,7 @@ async function buildAnnotationCollection(
     session: Job | Task,
     serializedAnnotations: SerializedCollection,
     history: AnnotationsHistory,
+    nextClientID?: () => number,
 ): Promise<AnnotationsCollection> {
     const sessionType = session instanceof Task ? 'task' : 'job';
     // Get meta information about frames
@@ -118,6 +119,7 @@ async function buildAnnotationCollection(
             }, {}),
         },
         history,
+        nextClientID,
     });
 
     collection.import(serializedAnnotations);
@@ -127,18 +129,20 @@ async function buildAnnotationCollection(
 export async function normalizeJobAnnotationRevision(
     job: Job, annotations: SerializedCollection,
 ): Promise<SerializedCollection> {
-    const collection = await buildAnnotationCollection(job, annotations, new AnnotationsHistory());
+    let clientID = 0;
+    const collection = await buildAnnotationCollection(job, annotations, new AnnotationsHistory(), () => ++clientID);
     return collection.export();
 }
 
 export async function installJobAnnotationRevision(job: Job, annotations: SerializedCollection): Promise<void> {
-    const history = new AnnotationsHistory();
-    const collection = await buildAnnotationCollection(job, annotations, history);
+    const normalized = await normalizeJobAnnotationRevision(job, annotations);
     const active = jobCollectionCache.get(job);
-    if (active?.saver.adoptSavedAnnotations(collection.export())) {
+    if (active?.saver.adoptSavedAnnotations(normalized)) {
         const existing = active.collection;
         jobCollectionCache.set(job, { collection: existing, saver: new AnnotationsSaver(existing, job) });
     } else {
+        const history = new AnnotationsHistory();
+        const collection = await buildAnnotationCollection(job, annotations, history);
         jobCollectionCache.set(job, { collection, saver: new AnnotationsSaver(collection, job) });
         jobHistoryCache.set(job, history);
     }

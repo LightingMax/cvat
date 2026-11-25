@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: MIT
 
 import React, { useState } from 'react';
-import { ColorPicker, Form, Input, Modal } from 'antd/lib';
+import {
+    ColorPicker, Form, Input, Modal,
+} from 'antd/lib';
 import Alert from 'antd/lib/alert';
 import Text from 'antd/lib/typography/Text';
 
@@ -20,7 +22,9 @@ interface Props {
 }
 
 export default function ActionTrackDialog(props: Props): JSX.Element {
-    const { trackName, initialColor, slot, defaultKey, initialKeys, onCancel, onSave } = props;
+    const {
+        trackName, initialColor, slot, defaultKey, initialKeys, onCancel, onSave,
+    } = props;
     const [form] = Form.useForm<{ name: string }>();
     const [color, setColor] = useState(initialColor);
     const [keyOverride, setKeyOverride] = useState<string[]>();

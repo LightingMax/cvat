@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-    AppstoreOutlined, CaretRightOutlined, CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined, EyeInvisibleOutlined,
+    AppstoreOutlined, CaretRightOutlined, CloseOutlined, DeleteOutlined, DownloadOutlined, EditOutlined,
+    EyeInvisibleOutlined,
     EyeOutlined, FastBackwardOutlined, FastForwardOutlined, PlusOutlined, SettingOutlined, VerticalAlignBottomOutlined,
 } from '@ant-design/icons';
 import Button from 'antd/lib/button';
@@ -35,7 +36,9 @@ import { ThunkDispatch } from 'utils/redux';
 import ActionTrackDialog from './action-track-dialog';
 import { ACTION_KEYS, actionShortcutID, getShortcutCombination } from './phase-shortcuts';
 import PhaseTimeline, { Edge, Hover } from './phase-timeline';
-import { draftEnd, DraftRange, mergeClips, PhaseClip, Range } from './phase-clips';
+import {
+    draftEnd, DraftRange, mergeClips, PhaseClip, Range,
+} from './phase-clips';
 
 type RecordingMode = 'toggle' | 'hold';
 type Draft = DraftRange & { source: RecordingMode | 'manual' | 'shortcut-hold' };
@@ -193,7 +196,7 @@ export default function ActionPhases(props: Props): JSX.Element {
     }
 
     function togglePlayback(): void {
-        const player = getCVATStore().getState().annotation.player;
+        const { player } = getCVATStore().getState().annotation;
         if (player.playing || player.frame.number < stopFrame) dispatch(switchPlay(!player.playing));
     }
 
@@ -208,9 +211,9 @@ export default function ActionPhases(props: Props): JSX.Element {
     function switchTrack(direction: number): void {
         const trackIDs = [null, ...visibleLabels.map(({ id }) => id as number)];
         const current = Math.max(0, trackIDs.indexOf(activeTrackRef.current));
-        const next = trackIDs[(current + direction + trackIDs.length) % trackIDs.length];
-        activate(next);
-        const row = next === null ? '.cvat-action-phase-playback' : `[data-track-id="${next}"]`;
+        const nextTrack = trackIDs[(current + direction + trackIDs.length) % trackIDs.length];
+        activate(nextTrack);
+        const row = nextTrack === null ? '.cvat-action-phase-playback' : `[data-track-id="${nextTrack}"]`;
         panel.current?.querySelector<HTMLButtonElement>(`${row} .cvat-action-phase-track-label`)
             ?.focus({ preventScroll: true });
     }
@@ -265,7 +268,7 @@ export default function ActionPhases(props: Props): JSX.Element {
     }
 
     function startDraft(target: Label, source: Draft['source'], position?: number): void {
-        const player = getCVATStore().getState().annotation.player;
+        const { player } = getCVATStore().getState().annotation;
         if ((position === undefined && player.frame.data?.deleted) || draftMap.current.has(target.id as number)) return;
         const start = position ?? player.frame.number;
         activate(target.id as number);
@@ -300,14 +303,18 @@ export default function ActionPhases(props: Props): JSX.Element {
         }
         if (!absorbed.length) {
             const [id] = await job.annotations.put([
-                AudioIntervalState.create({ label: target, start, stop, source: Source.MANUAL }),
+                AudioIntervalState.create({
+                    label: target, start, stop, source: Source.MANUAL,
+                }),
             ]);
             return id;
         }
         const removed = await Promise.all(absorbed.map((item) => item.export()));
         const { attributes, group, score } = removed[0];
         await job.annotations.commit({
-            intervals: [{ label_id: target.id as number, start, stop, source: Source.MANUAL, attributes, group, score }],
+            intervals: [{
+                label_id: target.id as number, start, stop, source: Source.MANUAL, attributes, group, score,
+            }],
         }, { intervals: removed }, null);
         const merged = (await job.annotations.intervals([])).find((item) => (
             item.label.id === target.id && item.start === start && item.stop === stop
@@ -320,7 +327,7 @@ export default function ActionPhases(props: Props): JSX.Element {
         const id = target.id as number;
         const draft = draftMap.current.get(id);
         if (!draft) return;
-        const player = getCVATStore().getState().annotation.player;
+        const { player } = getCVATStore().getState().annotation;
         const current = position ?? draftEnd(draft, player.frame.number);
         const end = draft.source === 'hold' || draft.source === 'shortcut-hold' ?
             Math.max(draft.start, current) : current;
@@ -387,7 +394,8 @@ export default function ActionPhases(props: Props): JSX.Element {
         }
 
         const scope = job.projectId === null ? 'task' : 'project';
-        const willSave = job.annotations.hasUnsavedChanges() || !!Object.keys(state.job.meta?.getUpdated() ?? {}).length;
+        const willSave = job.annotations.hasUnsavedChanges() ||
+            !!Object.keys(state.job.meta?.getUpdated() ?? {}).length;
         Modal.confirm({
             title: `Delete action track "${actionName(target)}"?`,
             content: (
@@ -616,7 +624,10 @@ export default function ActionPhases(props: Props): JSX.Element {
             />
         </div>
     );
+    const { VIDEO_ACTION_TOGGLE: toggleKey, VIDEO_ACTION_HOLD: holdKey } = normalizedKeyMap;
     const dialogShortcut = trackDialog?.slot == null ? undefined : actionShortcutID(trackDialog.slot);
+
+    const { colors } = getCore().enums;
 
     return (
         <section
@@ -632,11 +643,13 @@ export default function ActionPhases(props: Props): JSX.Element {
                         size='small'
                         icon={<PlusOutlined />}
                         aria-label='Add action track'
-                        onClick={() => setTrackDialog({ slot: labels.length < ACTION_KEYS.length ? labels.length : null })}
+                        onClick={() => setTrackDialog({
+                            slot: labels.length < ACTION_KEYS.length ? labels.length : null,
+                        })}
                     />
                 </CVATTooltip>
-                <CVATTooltip title={live ? `Confirm action ${normalizedKeyMap.VIDEO_ACTION_TOGGLE}` :
-                    `Start action ${normalizedKeyMap.VIDEO_ACTION_TOGGLE} · Hold to play and record ${normalizedKeyMap.VIDEO_ACTION_HOLD}`}
+                <CVATTooltip title={live ? `Confirm action ${toggleKey}` :
+                    `Start action ${toggleKey} · Hold to play and record ${holdKey}`}
                 >
                     <Button
                         type='text'
@@ -731,9 +744,11 @@ export default function ActionPhases(props: Props): JSX.Element {
                 drafts={drafts}
                 slots={slots}
                 bindings={bindings}
-                onEditShortcut={(target) => setTrackDialog({ label: target, slot: slots.get(target.id as number) ?? null })}
+                onEditShortcut={(target) => setTrackDialog({
+                    label: target, slot: slots.get(target.id as number) ?? null,
+                })}
                 playbackShortcut={normalizedKeyMap.VIDEO_PLAYBACK_TRACK}
-                onDeleteTrack={(target) => { void requestDeleteTrack(target); }}
+                onDeleteTrack={requestDeleteTrack}
                 startFrame={startFrame}
                 stopFrame={stopFrame}
                 frame={frame}
@@ -797,7 +812,9 @@ export default function ActionPhases(props: Props): JSX.Element {
                                 disabled={selected.locked}
                                 onClick={() => {
                                     change(async () => {
-                                        const records = await Promise.all(selected.members.map((item) => item.export()));
+                                        const records = await Promise.all(
+                                            selected.members.map((item) => item.export()),
+                                        );
                                         await job.annotations.commit({}, { intervals: records }, null);
                                         setSelectedID(null);
                                     });
@@ -825,7 +842,7 @@ export default function ActionPhases(props: Props): JSX.Element {
             {trackDialog && (
                 <ActionTrackDialog
                     trackName={trackDialog.label && actionName(trackDialog.label)}
-                    initialColor={trackDialog.label?.color ?? getCore().enums.colors[labels.length % getCore().enums.colors.length]}
+                    initialColor={trackDialog.label?.color ?? colors[labels.length % colors.length]}
                     slot={trackDialog.slot}
                     defaultKey={trackDialog.slot === null ? undefined : ACTION_KEYS[trackDialog.slot]}
                     initialKeys={dialogShortcut ? keyMap[dialogShortcut]?.sequences ?? [] : []}

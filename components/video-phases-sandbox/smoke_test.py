@@ -1,4 +1,5 @@
 """Exercise the sandbox against a disposable local fixture, using real Chrome."""
+
 import argparse
 import json
 import re
@@ -35,12 +36,17 @@ def wait_for_ui(deadline_seconds=240):
 def prepare_job(api, base, video):
     username = f"phase_demo_{secrets.token_hex(4)}"
     password = secrets.token_urlsafe(24)
-    auth = result(api.post(f"{base}/api/auth/register", json={
-        "username": username,
-        "email": f"{username}@example.com",
-        "password1": password,
-        "password2": password,
-    }))
+    auth = result(
+        api.post(
+            f"{base}/api/auth/register",
+            json={
+                "username": username,
+                "email": f"{username}@example.com",
+                "password1": password,
+                "password2": password,
+            },
+        )
+    )
     api.headers["Authorization"] = f"Token {auth['key']}"
     labels = [
         {"name": "p_placement", "color": "#137b80", "type": "interval", "attributes": []},
@@ -51,37 +57,71 @@ def prepare_job(api, base, video):
         {"name": f"extra_{index}", "color": "#3b6276", "type": "interval", "attributes": []}
         for index in range(4, 10)
     )
-    labels.extend([
-        {"name": "instrument", "color": "#e65a22", "type": "rectangle", "attributes": []},
-        {"name": "extra_10", "color": "#52994a", "type": "tag", "attributes": []},
-        {"name": "reviewed", "color": "#4c694a", "type": "tag", "attributes": []},
-    ])
-    task = result(api.post(f"{base}/api/tasks", json={"name": "Action phases | synthetic video", "labels": labels}))
+    labels.extend(
+        [
+            {"name": "instrument", "color": "#e65a22", "type": "rectangle", "attributes": []},
+            {"name": "extra_10", "color": "#52994a", "type": "tag", "attributes": []},
+            {"name": "reviewed", "color": "#4c694a", "type": "tag", "attributes": []},
+        ]
+    )
+    task = result(
+        api.post(
+            f"{base}/api/tasks", json={"name": "Action phases | synthetic video", "labels": labels}
+        )
+    )
     with video.open("rb") as movie:
-        request = result(api.post(
-            f'{base}/api/tasks/{task["id"]}/data',
-            data={"image_quality": 70},
-            files={"client_files[0]": (video.name, movie, "video/mp4")},
-        ))
+        request = result(
+            api.post(
+                f'{base}/api/tasks/{task["id"]}/data',
+                data={"image_quality": 70},
+                files={"client_files[0]": (video.name, movie, "video/mp4")},
+            )
+        )
     deadline = time.monotonic() + 90
     while time.monotonic() < deadline:
         request_state = result(api.get(f'{base}/api/requests/{request["rq_id"]}'))
         if request_state["status"] == "finished":
             jobs = result(api.get(f"{base}/api/jobs", params={"task_id": task["id"]}))
             job_id = jobs["results"][0]["id"]
-            job_labels = result(api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100}))["results"]
+            job_labels = result(
+                api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100})
+            )["results"]
             label_ids = {label["name"]: label["id"] for label in job_labels}
-            result(api.patch(f"{base}/api/jobs/{job_id}/annotations", params={"action": "create"}, json={
-                "version": 0,
-                "tags": [{"label_id": label_ids["reviewed"], "frame": 0, "group": 0, "source": "manual", "attributes": []}],
-                "shapes": [{
-                    "type": "rectangle", "label_id": label_ids["instrument"], "frame": 0, "group": 0, "z_order": 0,
-                    "source": "manual", "occluded": False, "outside": False, "rotation": 0, "attributes": [],
-                    "points": [130, 90, 300, 240],
-                }],
-                "tracks": [],
-                "intervals": [],
-            }))
+            result(
+                api.patch(
+                    f"{base}/api/jobs/{job_id}/annotations",
+                    params={"action": "create"},
+                    json={
+                        "version": 0,
+                        "tags": [
+                            {
+                                "label_id": label_ids["reviewed"],
+                                "frame": 0,
+                                "group": 0,
+                                "source": "manual",
+                                "attributes": [],
+                            }
+                        ],
+                        "shapes": [
+                            {
+                                "type": "rectangle",
+                                "label_id": label_ids["instrument"],
+                                "frame": 0,
+                                "group": 0,
+                                "z_order": 0,
+                                "source": "manual",
+                                "occluded": False,
+                                "outside": False,
+                                "rotation": 0,
+                                "attributes": [],
+                                "points": [130, 90, 300, 240],
+                            }
+                        ],
+                        "tracks": [],
+                        "intervals": [],
+                    },
+                )
+            )
             return username, password, task["id"], job_id
         if request_state["status"] == "failed":
             raise RuntimeError(f'Test upload failed: {request_state.get("message")}')
@@ -107,7 +147,11 @@ def seek(page, phases, frame):
 
 
 def displayed_frame(phases):
-    return int(phases.locator(".cvat-action-phase-details > .ant-typography").first.inner_text().split()[-1])
+    return int(
+        phases.locator(".cvat-action-phase-details > .ant-typography")
+        .first.inner_text()
+        .split()[-1]
+    )
 
 
 def wait_for_frame(page, frame):
@@ -160,7 +204,9 @@ def record(page, phases, key, start, end):
 def toggle_option(page, label, option):
     page.get_by_role("button", name="Recording settings", exact=True).click()
     control = page.get_by_role("combobox", name=label, exact=True)
-    control.locator("xpath=ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' ant-select ')][1]").click()
+    control.locator(
+        "xpath=ancestor::div[contains(concat(' ', normalize-space(@class), ' '), ' ant-select ')][1]"
+    ).click()
     page.locator(".ant-select-dropdown:visible").get_by_text(option, exact=True).click()
     page.get_by_role("button", name="Playback", exact=True).click()
 
@@ -216,16 +262,22 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         expect(phases.locator('[data-recording="true"]')).to_have_count(0)
         expect(phases.get_by_text("Step [C]", exact=False)).to_have_count(0)
         for key, target in (
-            ("Tab", place), ("Tab", transfer), ("Shift+Tab", place), ("Shift+Tab", playback),
+            ("Tab", place),
+            ("Tab", transfer),
+            ("Shift+Tab", place),
+            ("Shift+Tab", playback),
             ("Shift+Tab", phases.get_by_role("button", name="extra_9 action track", exact=True)),
-            ("Tab", playback), ("Tab", place),
+            ("Tab", playback),
+            ("Tab", place),
         ):
             page.keyboard.press(key)
             expect(target).to_have_attribute("aria-pressed", "true")
             expect(target).to_be_focused()
         expect(phases.get_by_text("Frame 0", exact=True)).to_be_visible()
         expect(phases.locator('[data-recording="true"]')).to_have_count(0)
-        expect(phases.locator('.cvat-action-phase-track[data-active="true"]')).to_have_css("outline-style", "solid")
+        expect(phases.locator('.cvat-action-phase-track[data-active="true"]')).to_have_css(
+            "outline-style", "solid"
+        )
         expect(track(phases, "p_placement")).to_have_css("background-color", "rgb(241, 241, 241)")
         expect(track(phases, "p_transfer")).to_have_css("background-color", "rgb(241, 241, 241)")
         page.keyboard.press("Escape")
@@ -274,7 +326,9 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         add_track = page.get_by_role("dialog", name="Add action track", exact=True)
         expect(add_track).to_be_visible()
         add_track.get_by_role("textbox", name="Name").fill("extra_10")
-        expect(add_track.get_by_role("textbox", name="Recording shortcut", exact=True)).to_have_value("0")
+        expect(
+            add_track.get_by_role("textbox", name="Recording shortcut", exact=True)
+        ).to_have_value("0")
         add_track.locator(".ant-color-picker-trigger").click()
         page.locator(".ant-color-picker-hex-input input").fill("8354a2")
         add_track.locator("input").first.click()
@@ -283,9 +337,15 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         new_track = phases.get_by_role("button", name="extra_10 action track", exact=True)
         expect(new_track).to_have_attribute("aria-pressed", "true")
         expect(clip(phases, "p_placement · 12–32")).to_be_visible()
-        saved_labels = result(api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100}))["results"]
-        assert any(x["name"] == "extra_10 [interval]" and x["color"].lower() == "#8354a2" and x["type"] == "interval"
-                   for x in saved_labels)
+        saved_labels = result(
+            api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100})
+        )["results"]
+        assert any(
+            x["name"] == "extra_10 [interval]"
+            and x["color"].lower() == "#8354a2"
+            and x["type"] == "interval"
+            for x in saved_labels
+        )
         seek(page, phases, 74)
         page.keyboard.press("Numpad0")
         expect(phases.get_by_role("button", name="Draft extra_10", exact=True)).to_be_visible()
@@ -313,7 +373,9 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         settings = page.get_by_role("dialog", name="Settings", exact=True)
         settings.get_by_role("tab", name="Shortcuts").click()
         settings.get_by_placeholder("Search for a shortcut here...").fill("Action track 10")
-        shortcut_row = settings.locator(".cvat-shortcuts-settings-collapse-item").filter(has_text="Action track 10")
+        shortcut_row = settings.locator(".cvat-shortcuts-settings-collapse-item").filter(
+            has_text="Action track 10"
+        )
         expect(settings.get_by_text("Video understanding", exact=True)).to_be_visible()
         expect(shortcut_row.locator(".ant-select-selection-item")).to_have_text("y")
         shortcut_row.locator("input").focus()
@@ -331,9 +393,13 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         record(page, phases, "Numpad2", 40, 64)
         merged = clip(phases, "p_transfer · 20–70")
         expect(merged).to_be_visible()
-        expect(track(phases, "p_transfer").locator("button.cvat-action-phase-segment")).to_have_count(1)
+        expect(
+            track(phases, "p_transfer").locator("button.cvat-action-phase-segment")
+        ).to_have_count(1)
         record(page, phases, "2", 100, 109)
-        expect(track(phases, "p_transfer").locator("button.cvat-action-phase-segment")).to_have_count(2)
+        expect(
+            track(phases, "p_transfer").locator("button.cvat-action-phase-segment")
+        ).to_have_count(2)
 
         area = merged.bounding_box()
         assert area
@@ -358,9 +424,15 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         merged.hover(position=left)
         expect(start_handle).to_have_attribute("data-edge-target", "true")
         expect(end_handle).to_have_attribute("data-edge-target", "false")
-        left_style = start_handle.evaluate("(el) => [getComputedStyle(el, '::before').height, getComputedStyle(el, '::before').backgroundColor]")
-        right_style = end_handle.evaluate("(el) => [getComputedStyle(el, '::before').height, getComputedStyle(el, '::before').backgroundColor]")
-        assert left_style[0] == "18px" and right_style[0] == "10px" and left_style[1] == right_style[1]
+        left_style = start_handle.evaluate(
+            "(el) => [getComputedStyle(el, '::before').height, getComputedStyle(el, '::before').backgroundColor]"
+        )
+        right_style = end_handle.evaluate(
+            "(el) => [getComputedStyle(el, '::before').height, getComputedStyle(el, '::before').backgroundColor]"
+        )
+        assert (
+            left_style[0] == "18px" and right_style[0] == "10px" and left_style[1] == right_style[1]
+        )
         merged.hover(position=right)
         expect(start_handle).to_have_attribute("data-edge-target", "false")
         expect(end_handle).to_have_attribute("data-edge-target", "true")
@@ -378,13 +450,17 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         expect(release).to_have_count(0)
         transfer.click()
         page.keyboard.press("Tab")
-        expect(phases.get_by_role("button", name="extra_4 action track")).to_have_attribute("aria-pressed", "true")
+        expect(phases.get_by_role("button", name="extra_4 action track")).to_have_attribute(
+            "aria-pressed", "true"
+        )
         expect(release).to_have_count(0)
         phases.get_by_role("button", name="Show hidden tracks").click()
         expect(release).to_be_visible()
         transfer.click()
         page.keyboard.press("Tab")
-        expect(phases.get_by_role("button", name="p_release action track")).to_have_attribute("aria-pressed", "true")
+        expect(phases.get_by_role("button", name="p_release action track")).to_have_attribute(
+            "aria-pressed", "true"
+        )
         phases.get_by_role("button", name="Collapse hidden tracks").click()
         expect(release).to_have_count(0)
 
@@ -468,8 +544,16 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         save(page)
         saved = result(api.get(annotation_url))
         assert sorted((item["start"], item["stop"]) for item in saved["intervals"]) == [
-            (12, 33), (20, 71), (25, 37), (74, 79), (82, 86), (88, 94), (100, 110),
-            (120, confirmed_end + 1), (151, 153), (159, last_end + 1),
+            (12, 33),
+            (20, 71),
+            (25, 37),
+            (74, 79),
+            (82, 86),
+            (88, 94),
+            (100, 110),
+            (120, confirmed_end + 1),
+            (151, 153),
+            (159, last_end + 1),
         ]
         assert len(saved["tags"]) == 1 and saved["tags"][0]["frame"] == 0
         assert len(saved["shapes"]) == 1 and saved["shapes"][0]["points"] == [130, 90, 300, 240]
@@ -478,7 +562,9 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         expect(clip(phases, "p_transfer · 20–70")).to_be_visible()
         expect(clip(phases, "p_transfer · 100–109")).to_be_visible()
         expect(clip(phases, "extra_10 · 88–93")).to_be_visible()
-        expect(phases.get_by_role("button", name="Change extra_10 shortcut", exact=True)).to_have_text("Y, U")
+        expect(
+            phases.get_by_role("button", name="Change extra_10 shortcut", exact=True)
+        ).to_have_text("Y, U")
         expect(track(phases, "p_release")).to_have_count(0)
         phases.get_by_role("button", name="Show hidden tracks").click()
         expect(clip(phases, "p_release · 25–36")).to_be_visible()
@@ -488,12 +574,24 @@ def browser_test(api, base, username, password, task_id, job_id, output):
             phases.get_by_role("button", name="Export JSON").click()
         pending.value.save_as(output / "job-action-phases.json")
         exported = json.loads((output / "job-action-phases.json").read_text())
-        assert sorted((item["label"], item["start_frame"], item["end_frame"]) for item in exported["intervals"]) == [
-            ("extra_10", 74, 78), ("extra_10", 82, 85), ("extra_10", 88, 93),
-            ("p_placement", 12, 32), ("p_placement", 120, confirmed_end), ("p_release", 25, 36),
-            ("p_transfer", 20, 70), ("p_transfer", 100, 109), ("p_transfer", 151, 152), ("p_transfer", 159, last_end),
+        assert sorted(
+            (item["label"], item["start_frame"], item["end_frame"])
+            for item in exported["intervals"]
+        ) == [
+            ("extra_10", 74, 78),
+            ("extra_10", 82, 85),
+            ("extra_10", 88, 93),
+            ("p_placement", 12, 32),
+            ("p_placement", 120, confirmed_end),
+            ("p_release", 25, 36),
+            ("p_transfer", 20, 70),
+            ("p_transfer", 100, 109),
+            ("p_transfer", 151, 152),
+            ("p_transfer", 159, last_end),
         ]
-        notification_close = page.locator(".cvat-notification-continue-job .ant-notification-notice-close")
+        notification_close = page.locator(
+            ".cvat-notification-continue-job .ant-notification-notice-close"
+        )
         if notification_close.is_visible():
             notification_close.click()
         clip(phases, "p_transfer · 20–70").click()
@@ -509,7 +607,9 @@ def browser_test(api, base, username, password, task_id, job_id, output):
         def choose_delete():
             phases.get_by_role("button", name="Options for extra_10", exact=True).click()
             page.get_by_role("menuitem", name="Delete track").click()
-            confirmation = page.locator(".ant-modal-confirm").filter(has_text='Delete action track "extra_10"?')
+            confirmation = page.locator(".ant-modal-confirm").filter(
+                has_text='Delete action track "extra_10"?'
+            )
             expect(confirmation).to_contain_text("all of its intervals across this task")
             return confirmation
 
@@ -529,24 +629,32 @@ def browser_test(api, base, username, password, task_id, job_id, output):
 
         confirmation = choose_delete()
         confirmation.screenshot(path=output / "delete-track-confirmation.png")
-        with page.expect_response(lambda item: "/labels/" in item.url and item.request.method == "DELETE") as removed:
+        with page.expect_response(
+            lambda item: "/labels/" in item.url and item.request.method == "DELETE"
+        ) as removed:
             confirmation.get_by_role("button", name="Save and delete", exact=True).click()
         assert removed.value.status == 204
         expect(confirmation).not_to_be_visible()
         expect(phases.get_by_text("Frame 33", exact=True)).to_be_visible()
         expect(track(phases, "extra_10")).to_have_count(0)
         expect(clip(phases, "p_placement · 12–33")).to_be_visible()
-        updated_labels = result(api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100}))["results"]
+        updated_labels = result(
+            api.get(f"{base}/api/labels", params={"job_id": job_id, "page_size": 100})
+        )["results"]
         assert "extra_10 [interval]" not in {item["name"] for item in updated_labels}
         assert any(item["name"] == "extra_10" and item["type"] == "tag" for item in updated_labels)
-        deleted_label_id = next(item["id"] for item in saved_labels if item["name"] == "extra_10 [interval]")
+        deleted_label_id = next(
+            item["id"] for item in saved_labels if item["name"] == "extra_10 [interval]"
+        )
         remaining = result(api.get(annotation_url))
         assert all(item["label_id"] != deleted_label_id for item in remaining["intervals"])
         assert (12, 34) in {(item["start"], item["stop"]) for item in remaining["intervals"]}
         assert remaining["shapes"] == saved["shapes"] and remaining["tags"] == saved["tags"]
 
-        print(f"PASS: delete-track cancel/save/delete, inline track creation, 0/custom keys, global Settings, border-only selection, left/right edge keys and cues, canvas overlays, Tab, "
-              f"pause/F continuation and confirmation, full-track highlight, M toggle, Shift+M hold, save/reload, export ({job_url})")
+        print(
+            f"PASS: delete-track cancel/save/delete, inline track creation, 0/custom keys, global Settings, border-only selection, left/right edge keys and cues, canvas overlays, Tab, "
+            f"pause/F continuation and confirmation, full-track highlight, M toggle, Shift+M hold, save/reload, export ({job_url})"
+        )
         browser.close()
 
 

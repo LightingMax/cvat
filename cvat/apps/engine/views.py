@@ -2599,7 +2599,11 @@ class JobViewSet(
                     actions[operation] = serializer.validated_data
                 try:
                     data = dm.task.merge_job_annotation_revision(
-                        pk, revision, submission, actions, user_id=request.user.pk,
+                        pk,
+                        revision,
+                        submission,
+                        actions,
+                        user_id=request.user.pk,
                     )
                 except (AttributeError, IntegrityError) as e:
                     return Response(data=str(e), status=status.HTTP_400_BAD_REQUEST)
@@ -2869,6 +2873,19 @@ class JobViewSet(
                 "name": item.path,
                 "related_files": (
                     item.related_files.count() if hasattr(item, "related_files") else 0
+                ),
+                **(
+                    {
+                        "related_files_metadata": [
+                            related_file
+                            for related_file in sorted(
+                                item.related_files.all(),
+                                key=lambda related_file: related_file.path,
+                            )
+                        ],
+                    }
+                    if hasattr(item, "related_files")
+                    else {}
                 ),
                 **serialize_media_item(item),
             }

@@ -13,7 +13,9 @@ import Slider from 'antd/lib/slider';
 import CVATTooltip from 'components/common/cvat-tooltip';
 import { Label } from 'cvat-core-wrapper';
 import { ACTION_KEYS } from './phase-shortcuts';
-import { draftEnd, DraftRange, PhaseClip, Range } from './phase-clips';
+import {
+    draftEnd, DraftRange, PhaseClip, Range,
+} from './phase-clips';
 
 export type Edge = 'start' | 'end';
 export type Hover = { id: number; edge: Edge };
@@ -69,7 +71,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
     const [edgeHover, setEdgeHover] = useState<Hover | null>(null);
     const end = stopFrame + 1;
     const total = end - startFrame;
-    const percent = (position: number): number => (position - startFrame) / total * 100;
+    const percent = (position: number): number => ((position - startFrame) / total) * 100;
 
     useEffect(() => {
         if (activeTrack === null) return;
@@ -77,7 +79,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
     }, [activeTrack]);
 
     function aimAt(hover: Hover | null): void {
-        setEdgeHover((previous) => previous?.id === hover?.id && previous?.edge === hover?.edge ? previous : hover);
+        setEdgeHover((previous) => (previous?.id === hover?.id && previous?.edge === hover?.edge ? previous : hover));
         onHover(hover);
     }
 
@@ -88,7 +90,8 @@ export default function PhaseTimeline(props: Props): JSX.Element {
 
     function positionAt(element: Element, x: number): number {
         const rect = element.getBoundingClientRect();
-        return Math.min(stopFrame, Math.max(startFrame, startFrame + Math.floor((x - rect.left) / rect.width * total)));
+        const fraction = (x - rect.left) / rect.width;
+        return Math.min(stopFrame, Math.max(startFrame, startFrame + Math.floor(fraction * total)));
     }
 
     function style(range: Range): React.CSSProperties {
@@ -101,8 +104,13 @@ export default function PhaseTimeline(props: Props): JSX.Element {
         const width = track?.getBoundingClientRect().width ?? 0;
         if (!width) return;
         drag.current = {
-            phase, mode, pointer: event.pointerId, origin: event.clientX,
-            width, range: { start: phase.start, stop: phase.stop }, moved: false,
+            phase,
+            mode,
+            pointer: event.pointerId,
+            origin: event.clientX,
+            width,
+            range: { start: phase.start, stop: phase.stop },
+            moved: false,
         };
         suppressClick.current = false;
         event.currentTarget.setPointerCapture(event.pointerId);
@@ -114,7 +122,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
         const pixels = event.clientX - active.origin;
         if (!active.moved && Math.abs(pixels) < 3) return;
         active.moved = true;
-        const delta = Math.round(pixels / active.width * total);
+        const delta = Math.round((pixels / active.width) * total);
         const { start, stop } = active.phase;
         if (active.mode === 'start') {
             active.range = { start: Math.min(stop - 1, Math.max(startFrame, start + delta)), stop };
@@ -263,17 +271,21 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                         </div>
                         <div
                             className='cvat-action-phase-timeline'
+                            role='group'
                             aria-label={`${name} track`}
-                            onClick={(event) => {
-                                if (event.target !== event.currentTarget) return;
-                                onActivate(id);
-                                onSeek(positionAt(event.currentTarget, event.clientX));
-                            }}
-                            onDoubleClick={(event) => {
-                                if (event.target !== event.currentTarget) return;
-                                onRecord(label, positionAt(event.currentTarget, event.clientX));
-                            }}
                         >
+                            <button
+                                type='button'
+                                className='cvat-action-phase-track-background'
+                                aria-label={`Select a frame on ${name}`}
+                                onClick={(event) => {
+                                    onActivate(id);
+                                    if (event.detail) onSeek(positionAt(event.currentTarget, event.clientX));
+                                }}
+                                onDoubleClick={(event) => {
+                                    onRecord(label, positionAt(event.currentTarget, event.clientX));
+                                }}
+                            />
                             {trackPhases.map((phase) => {
                                 const chosen = phase.id === selectedID;
                                 const hoveredEdge = edgeHover?.id === phase.id ? edgeHover.edge : null;
@@ -305,16 +317,18 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                         </Button>
                                         {(chosen || hoveredEdge || preview?.id === phase.id) && !phase.locked &&
                                             (['start', 'end'] as const).map((edge) => (
-                                            <button
-                                                key={edge}
-                                                type='button'
-                                                className={`cvat-action-phase-handle cvat-action-phase-handle-${edge}`}
-                                                aria-label={`Drag ${edge} of ${name}`}
-                                                data-edge-target={hoveredEdge === edge}
-                                                tabIndex={-1}
-                                                {...pointerHandlers(phase, edge)}
-                                            />
-                                        ))}
+                                                <button
+                                                    key={edge}
+                                                    type='button'
+                                                    className={
+                                                        `cvat-action-phase-handle cvat-action-phase-handle-${edge}`
+                                                    }
+                                                    aria-label={`Drag ${edge} of ${name}`}
+                                                    data-edge-target={hoveredEdge === edge}
+                                                    tabIndex={-1}
+                                                    {...pointerHandlers(phase, edge)}
+                                                />
+                                            ))}
                                     </div>
                                 );
                             })}
@@ -322,7 +336,9 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                 <div
                                     className='cvat-action-phase-draft'
                                     data-end-frame={draftStop - 1}
-                                    data-pending-end={draft.temporaryEnd !== undefined || draft.previewEnd !== undefined}
+                                    data-pending-end={
+                                        draft.temporaryEnd !== undefined || draft.previewEnd !== undefined
+                                    }
                                     style={{
                                         ...style({ start: draft.start, stop: draftStop }),
                                         backgroundColor: label.color ? `${label.color}48` : undefined,
@@ -344,11 +360,17 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                         type='button'
                                         className='cvat-action-phase-handle cvat-action-phase-handle-end'
                                         aria-label={`Drag recording end of ${name}`}
-                                        onPointerDown={(event) => event.currentTarget.setPointerCapture(event.pointerId)}
+                                        onPointerDown={(event) => {
+                                            event.currentTarget.setPointerCapture(event.pointerId);
+                                        }}
                                         onPointerMove={(event) => {
-                                            if (!event.currentTarget.hasPointerCapture(event.pointerId) || !event.buttons) return;
+                                            const handle = event.currentTarget;
+                                            if (!handle.hasPointerCapture(event.pointerId) || !event.buttons) return;
                                             const track = event.currentTarget.closest('.cvat-action-phase-timeline');
-                                            if (track) onDraftEnd(id, Math.max(draft.start, positionAt(track, event.clientX)));
+                                            if (track) {
+                                                const position = positionAt(track, event.clientX);
+                                                onDraftEnd(id, Math.max(draft.start, position));
+                                            }
                                         }}
                                         onDoubleClick={() => onRecord(label, draftStop - 1)}
                                     />

@@ -544,9 +544,18 @@ Cypress.Commands.add('saveJob', (method = 'PATCH', status = 200, as = 'saveJob')
     cy.wait(`@${as}`).its('response.statusCode').should('equal', status);
 });
 
-Cypress.Commands.add('clearAnnotationsAndSave', (method = 'PUT', status = 200, as = 'saveRemoveAnnotations') => {
+Cypress.Commands.add('clearAnnotationsAndSave', () => {
     cy.removeAnnotations();
-    cy.saveJob(method, status, as);
+    cy.clickSaveAnnotationView();
+    cy.get('.cvat-annotation-header-save-button').should('not.have.class', 'cvat-annotation-disabled-header-button');
+    cy.location('pathname').then((path) => {
+        const jobId = path.split('/').pop();
+        cy.request(`/api/jobs/${jobId}/annotations`).its('body').then((annotations) => {
+            for (const kind of ['shapes', 'tracks', 'tags', 'intervals']) {
+                expect(annotations[kind], kind).to.be.empty;
+            }
+        });
+    });
 });
 
 Cypress.Commands.add('getJobIdFromIdx', (jobIdx) => {
@@ -586,8 +595,7 @@ Cypress.Commands.add('openJob', (jobIdx = 0, removeAnnotations = true, expectedF
         cy.document().then((doc) => {
             const objects = Array.from(doc.querySelectorAll('.cvat_canvas_shape'));
             if (typeof objects !== 'undefined' && objects.length > 0) {
-                cy.removeAnnotations();
-                cy.saveJob('PUT');
+                cy.clearAnnotationsAndSave();
             }
         });
     }

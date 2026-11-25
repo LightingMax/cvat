@@ -26,13 +26,20 @@ jobs:
           persist-credentials: false
       - name: Build server and UI
         run: |
-          ./minus config --quiet
+          ./minus config --format json | python -c '
+          import json, sys
+          services = json.load(sys.stdin)["services"]
+          assert all(service["image"] == services["cvat_server"]["image"]
+                     for name, service in services.items() if name.startswith("cvat_worker_"))
+          '
           ./minus build cvat_server cvat_ui
       - name: Start a fresh installation
         run: |
           ./minus up -d --no-build --pull missing minus_gateway cvat_worker_import cvat_worker_chunks
           curl --retry 90 --retry-all-errors --retry-delay 3 --max-time 8 -fsS http://localhost:8091/api/server/about
           ./minus exec -T cvat_server python manage.py migrate --check
+      - name: Test both database upgrade paths on PostgreSQL
+        run: bash components/cvat-minus/check_migration_upgrade.sh
       - name: Test video intervals and local drafts in Chrome
         run: |
           python -m venv "$RUNNER_TEMP/minus-test"

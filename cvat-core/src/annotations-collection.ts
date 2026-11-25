@@ -158,6 +158,7 @@ export default class Collection {
         framesInfo: BasicInjection['framesInfo'];
         jobType: JobType;
         replicasCount?: number;
+        nextClientID?: BasicInjection['nextClientID'];
     }) {
         this.stopFrame = data.stopFrame;
 
@@ -192,7 +193,7 @@ export default class Collection {
             history: this.history,
             dimension: data.dimension,
             jobType: data.jobType,
-            nextClientID: () => ++config.globalObjectsCounter,
+            nextClientID: data.nextClientID ?? (() => ++config.globalObjectsCounter),
             getMasksOnFrame: (frame: number) => (this.shapes[frame] as MaskShape[])
                 .filter((object) => object instanceof MaskShape),
             replicasCount: data.replicasCount,

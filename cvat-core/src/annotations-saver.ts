@@ -386,7 +386,9 @@ export default class AnnotationsSaver {
     // A merged result can contain remote edits and must be loaded as a new collection.
     adoptSavedAnnotations(saved: SerializedCollection): boolean {
         const current: SerializedCollection = this.collection.export();
-        const aligned: SerializedCollection = { tags: [], shapes: [], tracks: [], intervals: [] };
+        const aligned: SerializedCollection = {
+            tags: [], shapes: [], tracks: [], intervals: [],
+        };
         const comparable = (item: CollectionObject): object => JSON.parse(JSON.stringify(item, (key, value) => (
             key === 'clientID' || key === 'id' ? undefined : value
         )));
