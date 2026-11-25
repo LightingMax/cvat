@@ -8,7 +8,7 @@ from urllib.request import Request, urlopen
 
 
 UPSTREAM = "cvat-ai/cvat"
-BASE = "v2.83.0"
+BASE = "v2.84.0"
 
 
 def get(path):

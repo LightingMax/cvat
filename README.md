@@ -4,7 +4,7 @@
 
 CVAT 提供了标注工具、数据模型、权限系统和部署环境。我的工作是在这个基础上补上自己日常需要的功能。等待上游讨论、评审和发布的时间，有时比我的项目能等的时间长，所以我先在这里维护能用的版本，再把适合通用场景的改动单独提交给上游。名字里的 **Minus** 表示我承担的维护范围很小。每次升级都会写明对应的 CVAT 版本，方便大家决定是否跟进。
 
-CVAT Minus is an independent fork of CVAT Community maintained by LightingMax. It adds a video action timeline and recoverable annotation saves. The current base is **CVAT v2.83.0**, commit `678221a53665`. CVAT and its original contributors retain credit for the upstream software. [Upstream release](https://github.com/cvat-ai/cvat/releases/tag/v2.83.0) · [License](LICENSE)
+CVAT Minus is an independent fork of CVAT Community maintained by LightingMax. It adds a video action timeline and recoverable annotation saves. The current base is **CVAT v2.84.0**, commit `a2faa79245d1`. CVAT and its original contributors retain credit for the upstream software. [Upstream release](https://github.com/cvat-ai/cvat/releases/tag/v2.84.0) · [License](LICENSE)
 
 ## 和上游相比，多了什么？
 
