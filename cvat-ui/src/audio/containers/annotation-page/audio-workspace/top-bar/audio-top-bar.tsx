@@ -72,8 +72,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
                 duration: audioDuration,
             },
         },
-        settings: {
-        },
         shortcuts: { keyMap, normalizedKeyMap },
     } = state;
 

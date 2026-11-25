@@ -5,8 +5,8 @@
 
 import hashlib
 import io
-import json
 import itertools
+import json
 from collections import OrderedDict, defaultdict
 from collections.abc import Callable, Generator, Sequence
 from contextlib import nullcontext
@@ -1322,7 +1322,9 @@ def merge_job_annotation_revision(job_id, revision, submission, actions, *, user
     annotation.lock_for_write()
     digest = _annotation_digest([revision, actions])
     receipt = models.AnnotationMergeSubmission.objects.filter(
-        job_id=job_id, user_id=user_id, submission=submission,
+        job_id=job_id,
+        user_id=user_id,
+        submission=submission,
     ).first()
     if receipt is not None:
         if receipt.digest != digest:
@@ -1353,7 +1355,10 @@ def merge_job_annotation_revision(job_id, revision, submission, actions, *, user
 
     final = _annotation_snapshot(job_id)
     models.AnnotationMergeSubmission.objects.create(
-        job_id=job_id, user_id=user_id, submission=submission, digest=digest,
+        job_id=job_id,
+        user_id=user_id,
+        submission=submission,
+        digest=digest,
     )
     return final
 

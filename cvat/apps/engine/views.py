@@ -2599,7 +2599,11 @@ class JobViewSet(
                     actions[operation] = serializer.validated_data
                 try:
                     data = dm.task.merge_job_annotation_revision(
-                        pk, revision, submission, actions, user_id=request.user.pk,
+                        pk,
+                        revision,
+                        submission,
+                        actions,
+                        user_id=request.user.pk,
                     )
                 except (AttributeError, IntegrityError) as e:
                     return Response(data=str(e), status=status.HTTP_400_BAD_REQUEST)

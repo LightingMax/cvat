@@ -144,8 +144,6 @@ function mapStateToProps(state: CombinedState): StateToProps {
         },
         settings: {
             player: { frameSpeed, frameStep, showDeletedFrames },
-            workspace: {
-            },
         },
         shortcuts: { keyMap, normalizedKeyMap },
     } = state;
