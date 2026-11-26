@@ -20,9 +20,10 @@ def _box(frame: int, instrument: int) -> list[int]:
     return [100 - frame, 14, 134 - frame, 26]
 
 
+@pytest.mark.parametrize("annotated_jobs", [2, 3])
 @pytest.mark.timeout(90)
 def test_mot_export_preserves_track_ids_across_jobs(
-    tmp_path: Path, fxt_login: tuple[Client, str]
+    tmp_path: Path, fxt_login: tuple[Client, str], annotated_jobs: int
 ) -> None:
     video = tmp_path / "instruments.mkv"
     with av.open(str(video), "w") as container:
@@ -51,7 +52,7 @@ def test_mot_export_preserves_track_ids_across_jobs(
         label_id = task.get_labels()[0].id
         jobs = sorted(task.get_jobs(), key=lambda job: job.start_frame)
         assert [(job.start_frame, job.stop_frame) for job in jobs] == [(0, 49), (40, 89), (80, 99)]
-        for index, job in enumerate(jobs):
+        for index, job in enumerate(jobs[:annotated_jobs]):
             tracks = []
             for instrument in ((1, 0) if index == 1 else (0, 1)):
                 shapes = []
@@ -87,7 +88,7 @@ def test_mot_export_preserves_track_ids_across_jobs(
         assert len(tracks_by_id) == 2
         tracks = sorted(tracks_by_id.values(), key=lambda track: track[0][2])
         for instrument, track in enumerate(tracks):
-            assert set(track) == set(range(100))
+            assert set(track) == set(range(jobs[annotated_jobs - 1].stop_frame + 1))
             for frame, (left, top, width) in track.items():
                 x1, y1, x2, _ = _box(frame, instrument)
                 assert left == pytest.approx(x1, abs=1.01)
