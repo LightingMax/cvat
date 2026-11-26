@@ -22,7 +22,7 @@
 .cvat-organizations-settings {
     width: calc(100% - 24px);
     height: max-content;
-    background: white;
+    background: var(--cvat-background-color-1, white);
     padding-top: 24px;
     padding-left: 24px;
 }
@@ -127,13 +127,13 @@
 }
 
 .cvat-shortcuts-settings-collapse .ant-collapse-header {
-    background-color: white;
+    background-color: var(--cvat-background-color-1, white);
     border-bottom: 1px solid #ccc;
     margin-top: $grid-unit-size;
     padding: 0 0 $grid-unit-size !important;
 }
 
 .cvat-shortcuts-settings-collapse .ant-collapse-content-box {
-    background-color: white;
+    background-color: var(--cvat-background-color-1, white);
     padding: 0 !important;
 }

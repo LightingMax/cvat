@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { isEqual } from 'lodash';
@@ -27,15 +28,15 @@ interface ProfileFormValues {
 }
 
 const roleOptions = [
-    { value: 'ml_engineer', label: 'Machine learning engineer' },
-    { value: 'data_scientist', label: 'Data scientist' },
-    { value: 'annotation_specialist', label: 'Annotation specialist' },
-    { value: 'project_manager', label: 'Project manager' },
-    { value: 'founder_executive', label: 'Founder or executive' },
-    { value: 'researcher', label: 'Researcher' },
-    { value: 'student', label: 'Student' },
-    { value: 'educator', label: 'Educator' },
-    { value: 'other', label: 'Other' },
+    { value: 'ml_engineer', label: t('Machine learning engineer') },
+    { value: 'data_scientist', label: t('Data scientist') },
+    { value: 'annotation_specialist', label: t('Annotation specialist') },
+    { value: 'project_manager', label: t('Project manager') },
+    { value: 'founder_executive', label: t('Founder or executive') },
+    { value: 'researcher', label: t('Researcher') },
+    { value: 'student', label: t('Student') },
+    { value: 'educator', label: t('Educator') },
+    { value: 'other', label: t('Other') },
 ];
 const predefinedRoles = new Set(roleOptions.map(({ value }) => value).filter((value) => value !== 'other'));
 
@@ -96,7 +97,7 @@ function UserInfoCard(): JSX.Element {
     };
 
     return (
-        <Card title='Personal Information' className='cvat-profile-info-card'>
+        <Card title={t('Personal Information')} className='cvat-profile-info-card'>
             <Form
                 form={form}
                 layout='vertical'
@@ -106,7 +107,7 @@ function UserInfoCard(): JSX.Element {
                 <Row gutter={16}>
                     <Col span={12}>
                         <Form.Item
-                            label='First Name'
+                            label={t('First Name')}
                             name='firstName'
                             rules={validationRules.firstName}
                         >
@@ -115,7 +116,7 @@ function UserInfoCard(): JSX.Element {
                     </Col>
                     <Col span={12}>
                         <Form.Item
-                            label='Last Name'
+                            label={t('Last Name')}
                             name='lastName'
                             rules={validationRules.lastName}
                         >
@@ -124,32 +125,32 @@ function UserInfoCard(): JSX.Element {
                     </Col>
                 </Row>
                 <Form.Item
-                    label='Primary role'
+                    label={t('Primary role')}
                     name='primaryRole'
                 >
                     <Select options={roleOptions} onChange={setPrimaryRole} />
                 </Form.Item>
                 {primaryRole === 'other' && (
                     <Form.Item
-                        label='Please specify your role'
+                        label={t('Please specify your role')}
                         name='customRole'
                         rules={[
-                            { required: true, whitespace: true, message: 'Enter your role' },
-                            { max: 255, message: 'The role must not exceed 255 characters' },
+                            { required: true, whitespace: true, message: t('Enter your role') },
+                            { max: 255, message: t('The role must not exceed 255 characters') },
                         ]}
                     >
                         <Input />
                     </Form.Item>
                 )}
                 <Form.Item
-                    label='Email'
+                    label={t('Email')}
                     name='email'
                     rules={validationRules.email}
                 >
                     <Input disabled />
                 </Form.Item>
                 <Form.Item
-                    label='Username'
+                    label={t('Username')}
                     name='username'
                     rules={validationRules.userName}
                 >
@@ -162,7 +163,7 @@ function UserInfoCard(): JSX.Element {
                             type='primary'
                             htmlType='submit'
                         >
-                            Save changes
+                            {t('Save changes')}
                         </Button>
                     </Row>
                 </Form.Item>

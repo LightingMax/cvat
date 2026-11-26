@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import Title from 'antd/lib/typography/Title';
@@ -54,7 +55,7 @@ function ResetPasswordPagePageComponent(props: ResetPasswordConfirmPageComponent
             <Content>
                 <Row justify='center' align='middle' style={{ height: '100%' }}>
                     <Col {...sizes}>
-                        <Title level={2}> Change password </Title>
+                        <Title level={2}> {t('Change password')} </Title>
                         <ResetPasswordConfirmForm
                             fetching={fetching}
                             onSubmit={(resetPasswordConfirmData: ResetPasswordConfirmData): void => {
