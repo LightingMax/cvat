@@ -576,7 +576,10 @@ export default function (state = defaultState, action: AnyAction): Notifications
                             message:
                                 `${t('Could not export dataset for the')} ${
                                     t('[{{instanceType}} {{id}}](/{{instanceType3}}s/{{id4}})', {
-                                        instanceType: resourceName(instanceType), id: instance.id, instanceType3: instanceType, id4: instance.id,
+                                        instanceType: resourceName(instanceType),
+                                        id: instance.id,
+                                        instanceType3: instanceType,
+                                        id4: instance.id,
                                     })}`,
                             reason: action.payload.error,
                             shouldLog: shouldLog(action.payload.error),

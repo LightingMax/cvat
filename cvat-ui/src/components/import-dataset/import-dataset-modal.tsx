@@ -500,7 +500,9 @@ function ImportDatasetModal(props: StateToProps): JSX.Element {
                     uploadParams.convMaskToPoly,
                     uploadParams.importMode,
                 ));
-            const resToPrint = resourceName(uploadParams.resource.charAt(0).toUpperCase() + uploadParams.resource.slice(1));
+            const resToPrint = resourceName(
+                uploadParams.resource.charAt(0).toUpperCase() + uploadParams.resource.slice(1),
+            );
             const description = `${t('{{resToPrint}} import was started for {{instanceType}}.', { resToPrint, instanceType: instanceTitle })
             } ${t('You can check progress [here](/requests).')}`;
             Notification.info({
