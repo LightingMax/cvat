@@ -126,11 +126,11 @@ class Downloader:
                 ),
             ):
                 while True:
-                    chunk = response.read(amt=CHUNK_SIZE, decode_content=False)
+                    chunk = response.read(amt=CHUNK_SIZE, decode_content=True)
+                    pbar.report_status(response.tell())
                     if not chunk:
                         break
 
-                    pbar.advance(len(chunk))
                     fd.write(chunk)
 
                 return output_path
