@@ -160,7 +160,7 @@
     }
 
     .cvat-audio-minimap-section {
-        background-color: #f3f4f6;
+        background-color: var(--cvat-background-color-1, #f3f4f6);
         border-top: 1px solid #e5e7eb;
         padding: 0;
 
@@ -224,7 +224,7 @@
 
 .cvat-audio-placeholder-text {
     font-size: 1.1rem;
-    color: #6b7280;
+    color: var(--cvat-text-color-secondary, #6b7280);
     margin: 0 0 10px;
 }
 

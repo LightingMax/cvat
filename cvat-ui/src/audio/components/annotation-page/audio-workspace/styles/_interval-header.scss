@@ -19,8 +19,8 @@
         height: $grid-unit-size * 2.5;
         padding: $grid-unit-size * 0.75;
         border-radius: $grid-unit-size * 0.5;
-        background: rgba(255,255,255,72%);
-        color: #303030;
+        background: var(--cvat-background-color-1, rgba(255,255,255,72%));
+        color: var(--cvat-text-color, #303030);
         font-size: $grid-unit-size * 1.5;
         font-weight: 600;
     }
@@ -44,15 +44,15 @@
             max-width: 100%;
 
             .ant-select-selector {
-                border-color: rgba(0, 0, 0, 12%);
+                border-color: var(--cvat-border-color-1, rgba(0, 0, 0, 12%));
                 border-radius: $border-radius-base;
-                background: rgba(255, 255, 255, 82%);
+                background: var(--cvat-background-color-1, rgba(255, 255, 255, 82%));
             }
         }
     }
 
     .cvat-audio-interval-header-source {
-        color: rgba(0, 0, 0, 60%);
+        color: var(--cvat-text-color-secondary, rgba(0, 0, 0, 60%));
         font-size: 11px;
         text-transform: lowercase;
     }
@@ -76,7 +76,7 @@
             height: $grid-unit-size * 3;
             border: 1px solid transparent;
             border-radius: $border-radius-base;
-            color: rgba(0, 0, 0, 62%);
+            color: var(--cvat-text-color-secondary, rgba(0, 0, 0, 62%));
             font-size: $grid-unit-size * 2;
             line-height: $grid-unit-size * 3;
             cursor: pointer;
@@ -105,7 +105,7 @@
 
     .cvat-audio-interval-header-time {
         margin-top: $grid-unit-size;
-        color: rgba(0, 0, 0, 60%);
+        color: var(--cvat-text-color-secondary, rgba(0, 0, 0, 60%));
         font-size: $grid-unit-size * 1.5;
         line-height: $grid-unit-size * 2.25;
     }

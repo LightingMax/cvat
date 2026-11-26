@@ -36,7 +36,7 @@
 
     .anticon {
         font-size: $grid-unit-size * 2;
-        color: #595959;
+        color: var(--cvat-text-color-secondary, #595959);
         cursor: pointer;
 
         &:hover {

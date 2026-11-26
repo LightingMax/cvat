@@ -126,7 +126,7 @@
         width: 80%;
         max-height: 80%;
         position: relative;
-        background: white;
+        background: var(--cvat-background-color-1, white);
         padding: $grid-unit-size;
         display: block;
         justify-content: space-between;

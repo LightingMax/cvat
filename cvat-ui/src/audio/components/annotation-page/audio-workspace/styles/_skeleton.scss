@@ -130,7 +130,7 @@ $skeleton-radius: 4px;
     align-items: flex-start;
     gap: 8px;
     padding: 8px;
-    background-color: #f9fafb;
+    background-color: var(--cvat-background-color-1, #f9fafb);
     border: 1px solid $skeleton-border;
     border-radius: 4px;
 }
