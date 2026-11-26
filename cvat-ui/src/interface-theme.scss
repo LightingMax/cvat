@@ -1,0 +1,26 @@
+// Copyright (C) CVAT Minus contributors
+//
+// SPDX-License-Identifier: MIT
+
+:root[data-cvat-theme='dark'] {
+    color-scheme: dark;
+
+    --cvat-header-color: #30343a;
+    --cvat-text-color: #e8e8e8;
+    --cvat-text-color-secondary: #b4b8bf;
+    --cvat-hover-menu-color: #243349;
+    --cvat-border-color-1: #42464e;
+    --cvat-background-color-1: #1d2025;
+    --cvat-background-color-2: #15171b;
+    --cvat-notification-background-color-1: #162d44;
+    --cvat-player-buttons-color: #e1e4e9;
+    --cvat-objects-bar-tabs-color: #484c54;
+    --cvat-objects-bar-icons-color: #dee1e6;
+    --cvat-active-label-background-color: #243952;
+    --cvat-object-item-border-color: #8a8f99;
+}
+
+.cvat-signing-header .cvat-appearance-menu {
+    float: right;
+    color: white;
+}

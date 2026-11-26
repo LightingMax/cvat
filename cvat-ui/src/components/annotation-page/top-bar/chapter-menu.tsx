@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Icon from '@ant-design/icons';
 import Popover from 'antd/lib/popover';
@@ -49,7 +50,7 @@ function ChapterMenu(props: Readonly<Props>): JSX.Element {
                                     {chapter.metadata.title}
                                 </strong>
                                 <div>
-                                    Frames
+                                    {t('Frames')}
                                     {' '}
                                     {chapter.start}
                                     -
@@ -68,12 +69,12 @@ function ChapterMenu(props: Readonly<Props>): JSX.Element {
         <Popover
             trigger='click'
             content={content}
-            title='Chapters'
+            title={t('Chapters')}
             placement='bottom'
             className='cvat-player-chapter-menu'
         >
 
-            <CvatTooltip title='Select chapter'>
+            <CvatTooltip title={t('Select chapter')}>
                 <Icon
                     className='cvat-player-chapters-menu-button'
                     component={ChapterMenuIcon}

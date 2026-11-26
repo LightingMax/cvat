@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useState,
 } from 'react';
@@ -234,7 +235,7 @@ function AudioRegionDetails(props: AudioRegionDetailsProps): JSX.Element {
                 )}
                 {attributes.length === 0 && activeLabel && (
                     <div className='cvat-audio-region-no-attributes'>
-                        No attributes defined for this label
+                        {t('No attributes defined for this label')}
                     </div>
                 )}
             </div>

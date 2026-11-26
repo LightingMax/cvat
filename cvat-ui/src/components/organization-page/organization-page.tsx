@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -76,7 +77,7 @@ function OrganizationPage(): JSX.Element | null {
     return (
         <div className='cvat-organization-page'>
             {!organization ? (
-                <Empty description='You are not in an organization' />
+                <Empty description={t('You are not in an organization')} />
             ) : (
                 <>
                     <TopBarComponent

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -101,10 +102,10 @@ function SearchFramesModal(): JSX.Element {
             <AutoComplete
                 ref={autoCompleteRef}
                 defaultValue={searchTerm}
-                placeholder='Type to search'
+                placeholder={t('Type to search')}
                 showSearch
                 onSearch={onSearch}
-                notFoundContent={searchTerm ? <Text>No frames found</Text> : null}
+                notFoundContent={searchTerm ? <Text>{t('No frames found')}</Text> : null}
                 options={searchResults.map((item) => ({
                     value: item.number,
                     label: (

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Icon from '@ant-design/icons';
 
@@ -20,7 +21,7 @@ function MoveControl(props: Props): JSX.Element {
     const { canvasInstance, activeControl } = props;
 
     return (
-        <CVATTooltip title='Move the image' placement='right'>
+        <CVATTooltip title={t('Move the image')} placement='right'>
             <Icon
                 component={MoveIcon}
                 className={

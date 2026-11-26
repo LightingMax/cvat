@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React from 'react';
 import { StorageData, StorageLocation } from 'cvat-core-wrapper';
@@ -38,7 +39,7 @@ export default function TargetStorageField(props: Readonly<Props>): JSX.Element 
         <StorageWithSwitchField
             instanceId={instanceId}
             locationValue={locationValue}
-            storageLabel='Target storage'
+            storageLabel={t('Target storage')}
             storageName='targetStorage'
             switchName='useProjectTargetStorage'
             useDefaultStorage={useDefaultStorage}

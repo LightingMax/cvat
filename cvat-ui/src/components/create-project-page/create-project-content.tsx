@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     RefObject, useRef, useState, useEffect,
 } from 'react';
@@ -59,11 +60,11 @@ function NameConfigurationForm(
             <Form.Item
                 name='name'
                 hasFeedback
-                label='Name'
+                label={t('Name')}
                 rules={[
                     {
                         required: true,
-                        message: 'Please, specify a name',
+                        message: t('Please, specify a name'),
                     },
                 ]}
             >
@@ -85,8 +86,8 @@ function AdvancedConfigurationForm(props: AdvancedConfigurationProps): JSX.Eleme
         <Form layout='vertical' ref={formRef} initialValues={initialValues}>
             <Form.Item
                 name='bug_tracker'
-                label='Issue tracker'
-                extra='Attach issue tracker where the project is described'
+                label={t('Issue tracker')}
+                extra={t('Attach issue tracker where the project is described')}
                 hasFeedback
                 rules={[
                     {
@@ -106,7 +107,7 @@ function AdvancedConfigurationForm(props: AdvancedConfigurationProps): JSX.Eleme
                 <Col span={11}>
                     <SourceStorageField
                         instanceId={null}
-                        storageDescription='Specify source storage for import resources like annotation, backups'
+                        storageDescription={t('Specify source storage for import resources like annotation, backups')}
                         locationValue={sourceStorageLocation}
                         onChangeLocationValue={onChangeSourceStorageLocation}
                     />
@@ -114,7 +115,7 @@ function AdvancedConfigurationForm(props: AdvancedConfigurationProps): JSX.Eleme
                 <Col span={11} offset={1}>
                     <TargetStorageField
                         instanceId={null}
-                        storageDescription='Specify target storage for export resources like annotation, backups'
+                        storageDescription={t('Specify target storage for export resources like annotation, backups')}
                         locationValue={targetStorageLocation}
                         onChangeLocationValue={onChangeTargetStorageLocation}
                     />
@@ -187,7 +188,7 @@ export default function CreateProjectContent(): JSX.Element {
         if (res) {
             resetForm();
             notification.info({
-                message: 'The project has been created',
+                message: t('The project has been created'),
                 className: 'cvat-notification-create-project-success',
             });
             focusForm();
@@ -204,7 +205,7 @@ export default function CreateProjectContent(): JSX.Element {
                 <NameConfigurationForm formRef={nameFormRef} inputRef={nameInputRef} />
             </Col>
             <Col span={24}>
-                <Text className='cvat-text-color'>Labels:</Text>
+                <Text className='cvat-text-color'>{t('Labels:')}</Text>
                 <LabelsEditor
                     labels={projectLabels}
                     onSubmit={(newLabels): void => {
@@ -217,7 +218,7 @@ export default function CreateProjectContent(): JSX.Element {
                     className='cvat-advanced-configuration-wrapper'
                     items={[{
                         key: '1',
-                        label: <Text className='cvat-title'>Advanced configuration</Text>,
+                        label: <Text className='cvat-title'>{t('Advanced configuration')}</Text>,
                         children: (
                             <AdvancedConfigurationForm
                                 formRef={advancedFormRef}
@@ -238,12 +239,12 @@ export default function CreateProjectContent(): JSX.Element {
                 <Row justify='end' gutter={8}>
                     <Col>
                         <Button className='cvat-submit-open-project-button' type='primary' onClick={onSubmitAndOpen}>
-                            Submit & Open
+                            {t('Submit & Open')}
                         </Button>
                     </Col>
                     <Col>
                         <Button className='cvat-submit-continue-project-button' type='primary' onClick={onSubmitAndContinue}>
-                            Submit & Continue
+                            {t('Submit & Continue')}
                         </Button>
                     </Col>
                 </Row>

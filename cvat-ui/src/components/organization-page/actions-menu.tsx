@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Dropdown from 'antd/lib/dropdown';
 import Modal from 'antd/lib/modal';
@@ -123,7 +124,7 @@ function MemberActionsMenu(props: Readonly<MemberActionsMenuProps>): JSX.Element
         {
             key: MenuKeys.EDIT_ROLE,
             label: (
-                <CVATMenuEditLabel>{withCount('Role', MenuKeys.EDIT_ROLE)}</CVATMenuEditLabel>
+                <CVATMenuEditLabel>{withCount(t('Role'), MenuKeys.EDIT_ROLE)}</CVATMenuEditLabel>
             ),
             disabled: role === 'owner' && actionsApplicable[MenuKeys.EDIT_ROLE].length < 1,
         },
@@ -145,16 +146,16 @@ function MemberActionsMenu(props: Readonly<MemberActionsMenuProps>): JSX.Element
     } else {
         menuItems.push(
             ...(actionsApplicable[MenuKeys.RESEND_INVITATION].length > 0 ?
-                [{ key: MenuKeys.RESEND_INVITATION, label: withCount('Resend invitation', MenuKeys.RESEND_INVITATION) }] :
+                [{ key: MenuKeys.RESEND_INVITATION, label: withCount(t('Resend invitation'), MenuKeys.RESEND_INVITATION) }] :
                 []),
             ...(actionsApplicable[MenuKeys.DELETE_INVITATION].length > 0 ?
                 [{ key: 'divider', type: 'divider' } as ItemType] :
                 []),
             ...(actionsApplicable[MenuKeys.DELETE_INVITATION].length > 0 ?
-                [{ key: MenuKeys.DELETE_INVITATION, label: withCount('Remove invitation', MenuKeys.DELETE_INVITATION) }] :
+                [{ key: MenuKeys.DELETE_INVITATION, label: withCount(t('Remove invitation'), MenuKeys.DELETE_INVITATION) }] :
                 []),
             ...(actionsApplicable[MenuKeys.REMOVE_MEMBER].length > 0 ?
-                [{ key: MenuKeys.REMOVE_MEMBER, label: withCount('Delete', MenuKeys.REMOVE_MEMBER) }] :
+                [{ key: MenuKeys.REMOVE_MEMBER, label: withCount(t('Delete'), MenuKeys.REMOVE_MEMBER) }] :
                 []),
         );
     }
@@ -176,9 +177,9 @@ function MemberActionsMenu(props: Readonly<MemberActionsMenuProps>): JSX.Element
                     } else if (action.key === 'remove_member') {
                         Modal.confirm({
                             className: 'cvat-modal-organization-member-remove',
-                            title: `You are removing "${username}" from this organization`,
-                            content: 'The person will not have access to the organization data anymore. Continue?',
-                            okText: 'Yes, remove',
+                            title: t('You are removing "{{username}}" from this organization', { username }),
+                            content: t('The person will not have access to the organization data anymore. Continue?'),
+                            okText: t('Yes, remove'),
                             okButtonProps: {
                                 danger: true,
                             },

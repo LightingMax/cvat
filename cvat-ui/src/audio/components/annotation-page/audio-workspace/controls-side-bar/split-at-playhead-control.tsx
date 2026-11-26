@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useState } from 'react';
 import Icon, { LockFilled } from '@ant-design/icons';
 import Button from 'antd/lib/button';
@@ -39,8 +40,8 @@ interface SplitChooserState {
 
 const componentShortcuts = {
     SPLIT_AUDIO_INTERVAL_AT_PLAYBACK_POSITION: {
-        name: 'Split audio interval at playback position',
-        description: 'Split the interval at the current playback position',
+        name: t('Split audio interval at playback position'),
+        description: t('Split the interval at the current playback position'),
         sequences: ['alt+m'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
@@ -111,7 +112,7 @@ function SplitAtPlayheadControl({ shortcut }: Props): JSX.Element {
         <div>
             <Row className='cvat-audio-split-popover-title'>
                 <Col>
-                    <Text strong>Choose interval to split</Text>
+                    <Text strong>{t('Choose interval to split')}</Text>
                 </Col>
             </Row>
             <Row className='cvat-audio-split-popover-options'>
@@ -169,7 +170,7 @@ function SplitAtPlayheadControl({ shortcut }: Props): JSX.Element {
                                             </Col>
                                             {interval.lock && (
                                                 <Col className='cvat-audio-split-option-status'>
-                                                    <LockFilled aria-label='Locked interval' />
+                                                    <LockFilled aria-label={t('Locked interval')} />
                                                 </Col>
                                             )}
                                         </Row>
@@ -186,7 +187,7 @@ function SplitAtPlayheadControl({ shortcut }: Props): JSX.Element {
     return (
         <>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
-            <CVATTooltip title={`Split interval at playback position ${shortcut}`} placement='right'>
+            <CVATTooltip title={t('Split interval at playback position {{shortcut}}', { shortcut })} placement='right'>
                 <Popover
                     content={chooserContent}
                     trigger='click'

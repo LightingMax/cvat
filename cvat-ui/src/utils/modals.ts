@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import Modal from 'antd/lib/modal';
 
 import { Organization, Project, Task } from 'cvat-core-wrapper';
@@ -28,14 +29,14 @@ export function confirmTransferModal(
     }
 
     Modal.confirm({
-        title: 'Data transfer between workspaces',
-        content: `${details} Would you like to proceed?`,
+        title: t('Data transfer between workspaces'),
+        content: t('{{details}} Would you like to proceed?', { details }),
         className: 'cvat-modal-confirm-project-transfer-between-workspaces',
         onOk,
         okButtonProps: {
             type: 'primary',
             danger: true,
         },
-        okText: 'Continue',
+        okText: t('Continue'),
     });
 }

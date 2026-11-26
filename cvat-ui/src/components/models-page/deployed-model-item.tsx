@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import Tag from 'antd/lib/tag';
@@ -131,14 +132,14 @@ function DeployedModelItem(props: Readonly<Props>): JSX.Element {
                                 {model.owner && (
                                     <Text
                                         type='secondary'
-                                        ellipsis={{ tooltip: `Created by ${model.owner}` }}
+                                        ellipsis={{ tooltip: t('Created by {{owner}}', { owner: model.owner }) }}
                                         className='cvat-model-info-owner'
                                     >
-                                        {`Created by ${model.owner}`}
+                                        {t('Created by {{owner}}', { owner: model.owner })}
                                     </Text>
                                 )}
                                 {model.owner && <span />}
-                                <Text type='secondary'>{`Added ${created}`}</Text>
+                                <Text type='secondary'>{t('Added {{created}}', { created })}</Text>
                             </div>
                         )
                     }
@@ -147,7 +148,7 @@ function DeployedModelItem(props: Readonly<Props>): JSX.Element {
                             <>
                                 <Divider />
                                 <div className='cvat-model-info-labels-heading'>
-                                    <Text strong>Labels</Text>
+                                    <Text strong>{t('Labels')}</Text>
                                     <Text type='secondary'>{model.labels.length}</Text>
                                 </div>
                                 <div className='cvat-model-info-modal-labels-list'>

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useMemo, useRef,
 } from 'react';
@@ -236,7 +237,7 @@ export default function AudioRegionsList(props: Props): JSX.Element {
     );
 
     if (!intervals.length) {
-        const description = filtersActive ? 'No intervals match filters' : 'No intervals created';
+        const description = filtersActive ? t('No intervals match filters') : t('No intervals created');
         return (
             <div className='cvat-audio-regions-list-wrapper'>
                 {header}

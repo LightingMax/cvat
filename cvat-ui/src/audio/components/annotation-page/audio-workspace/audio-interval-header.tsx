@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { Col, Row } from 'antd/lib/grid';
 import classNames from 'classnames';
@@ -80,7 +81,7 @@ function AudioIntervalHeader({
             labels={labelsForSelector}
             value={labelID}
             disabled={locked}
-            tooltip='Change current label'
+            tooltip={t('Change current label')}
             onChange={(label: Label) => {
                 if (label.id != null) {
                     onChangeLabel(label.id);
@@ -89,7 +90,7 @@ function AudioIntervalHeader({
         />
     );
     const sourceLabel = sourceLabelValue ? (
-        <span className='cvat-audio-interval-header-source' title={`Source: ${sourceLabelValue}`}>
+        <span className='cvat-audio-interval-header-source' title={t('Source: {{sourceLabelValue}}', { sourceLabelValue })}>
             ({sourceLabelValue})
         </span>
     ) : null;

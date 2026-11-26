@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Icon from '@ant-design/icons';
 
@@ -30,11 +31,11 @@ function GroupControl(props: Props): JSX.Element {
 
     const title = [];
     if (canvasInstance instanceof Canvas) {
-        title.push(`Group shapes ${normalizedKeyMap.SWITCH_GROUP_MODE_STANDARD_CONTROLS}`);
-        title.push(`Select and press ${normalizedKeyMap.RESET_GROUP_STANDARD_CONTROLS} to reset a group.`);
+        title.push(t('Group shapes {{SWITCH_GROUP_MODE_STANDARD_CONTROLS}}', { SWITCH_GROUP_MODE_STANDARD_CONTROLS: normalizedKeyMap.SWITCH_GROUP_MODE_STANDARD_CONTROLS }));
+        title.push(t('Select and press {{RESET_GROUP_STANDARD_CONTROLS}} to reset a group.', { RESET_GROUP_STANDARD_CONTROLS: normalizedKeyMap.RESET_GROUP_STANDARD_CONTROLS }));
     } else if (canvasInstance instanceof Canvas3d) {
-        title.push(`Group shapes/tracks ${normalizedKeyMap.SWITCH_GROUP_MODE_STANDARD_3D_CONTROLS}`);
-        title.push(`Select and press ${normalizedKeyMap.RESET_GROUP_STANDARD_3D_CONTROLS} to reset a group.`);
+        title.push(t('Group shapes/tracks {{SWITCH_GROUP_MODE_STANDARD_3D_CONTROLS}}', { SWITCH_GROUP_MODE_STANDARD_3D_CONTROLS: normalizedKeyMap.SWITCH_GROUP_MODE_STANDARD_3D_CONTROLS }));
+        title.push(t('Select and press {{RESET_GROUP_STANDARD_3D_CONTROLS}} to reset a group.', { RESET_GROUP_STANDARD_3D_CONTROLS: normalizedKeyMap.RESET_GROUP_STANDARD_3D_CONTROLS }));
     }
 
     return disabled ? (

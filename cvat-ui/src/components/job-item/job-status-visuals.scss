@@ -86,19 +86,19 @@
 
 .cvat-job-stage-tag.cvat-job-stage-tag-annotation {
     color: $text-color;
-    background: color.mix($annotation-progress-color, $background-color-1, 18%);
+    background: rgba($color: $annotation-progress-color, $alpha: 18%);
     border-color: rgba($color: $annotation-progress-color, $alpha: 45%);
 }
 
 .cvat-job-stage-tag.cvat-job-stage-tag-validation {
     color: $validation-progress-color;
-    background: color.mix($validation-progress-color, $background-color-1, 12%);
+    background: rgba($color: $validation-progress-color, $alpha: 12%);
     border-color: rgba($color: $validation-progress-color, $alpha: 35%);
 }
 
 .cvat-job-stage-tag.cvat-job-stage-tag-acceptance {
     color: color.adjust($completed-progress-color, $lightness: -8%);
-    background: color.mix($completed-progress-color, $background-color-1, 12%);
+    background: rgba($color: $completed-progress-color, $alpha: 12%);
     border-color: rgba($color: $completed-progress-color, $alpha: 35%);
 }
 
@@ -110,18 +110,18 @@
 
 .cvat-job-state-tag.cvat-job-state-tag-in-progress {
     color: $validation-progress-color;
-    background: color.mix($validation-progress-color, $background-color-1, 12%);
+    background: rgba($color: $validation-progress-color, $alpha: 12%);
     border-color: rgba($color: $validation-progress-color, $alpha: 35%);
 }
 
 .cvat-job-state-tag.cvat-job-state-tag-completed {
     color: color.adjust($completed-progress-color, $lightness: -8%);
-    background: color.mix($completed-progress-color, $background-color-1, 12%);
+    background: rgba($color: $completed-progress-color, $alpha: 12%);
     border-color: rgba($color: $completed-progress-color, $alpha: 35%);
 }
 
 .cvat-job-state-tag.cvat-job-state-tag-rejected {
     color: $danger-icon-color;
-    background: color.mix($danger-icon-color, $background-color-1, 10%);
+    background: rgba($color: $danger-icon-color, $alpha: 10%);
     border-color: rgba($color: $danger-icon-color, $alpha: 35%);
 }

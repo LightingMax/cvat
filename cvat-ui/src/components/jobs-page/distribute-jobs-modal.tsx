@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -142,7 +143,7 @@ function DistributeJobsModal(props: Readonly<Props>): JSX.Element {
             const rows = text.replace(/^\uFEFF/, '').split(/\r?\n/).map((row) => row.trim()).filter(Boolean);
             if (rows.some((row) => /[,;\t]/.test(row))) {
                 notification.error({
-                    message: 'The CSV file must have only one column with usernames',
+                    message: t('The CSV file must have only one column with usernames'),
                     className: 'cvat-notification-notice-distribute-jobs-invalid-csv',
                 });
             } else {
@@ -164,14 +165,14 @@ function DistributeJobsModal(props: Readonly<Props>): JSX.Element {
         <Modal
             destroyOnClose
             open={visible}
-            title={`Distribute ${orderedJobs.length} jobs`}
+            title={t('Distribute {{length}} jobs', { length: orderedJobs.length })}
             className='cvat-modal-distribute-jobs'
-            okText='Distribute'
+            okText={t('Distribute')}
             okButtonProps={{ disabled: !users.length || fetchingUsers }}
             onCancel={onCancel}
             onOk={onDistribute}
         >
-            <Text strong>Usernames</Text>
+            <Text strong>{t('Usernames')}</Text>
             <div onPasteCapture={onPaste}>
                 <Select
                     className='cvat-distribute-jobs-users'
@@ -200,16 +201,16 @@ function DistributeJobsModal(props: Readonly<Props>): JSX.Element {
                 beforeUpload={onUploadCSV}
             >
                 <Space>
-                    Click or drag a CSV file with usernames
+                    {t('Click or drag a CSV file with usernames')}
                     <UploadOutlined />
                 </Space>
             </Upload.Dragger>
-            <Text strong>Preview</Text>
+            <Text strong>{t('Preview')}</Text>
             <div className='cvat-distribute-jobs-preview'>
                 {assignments.map(({ job, assignee }) => (
                     <React.Fragment key={job.id}>
                         <Link to={`/tasks/${job.taskId}/jobs/${job.id}`} target='_blank'>
-                            {`Job #${job.id}`}
+                            {t('Job #{{id}}', { id: job.id })}
                         </Link>
                         <ArrowRightOutlined />
                         <span>{assignee.username}</span>
@@ -217,9 +218,9 @@ function DistributeJobsModal(props: Readonly<Props>): JSX.Element {
                 ))}
             </div>
             <Text className='cvat-distribute-jobs-summary'>
-                {`${users.length} users `}
+                {t('{{length}} users ', { length: users.length })}
                 <ArrowRightOutlined />
-                {` ${orderedJobs.length} jobs`}
+                {t(' {{length}} jobs', { length: orderedJobs.length })}
             </Text>
         </Modal>
     );

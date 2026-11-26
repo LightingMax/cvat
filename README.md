@@ -14,6 +14,9 @@ The current base is **CVAT v2.84.0**, commit `a2faa79245d1`.
 CVAT and its original contributors retain credit for the upstream software.
 [Upstream release](https://github.com/cvat-ai/cvat/releases/tag/v2.84.0) · [License](LICENSE)
 
+LightingMax maintains the Simplified Chinese interface. To request another language or volunteer to translate a module,
+[open an issue](https://github.com/LightingMax/cvat/issues).
+
 ## 和上游相比，多了什么？
 
 | 场景 | CVAT Minus 的做法 |
@@ -24,6 +27,24 @@ CVAT and its original contributors retain credit for the upstream software.
 | 两个人改了同一个 Job | 保存前比较草稿、原始版本和当前服务器版本。能合并的改动一起提交，有冲突的交给标注者审阅。服务器识别重复提交，避免因响应丢失而重复创建标注。 |
 
 在时间轴上看到的是包含首尾帧的范围。比如第 2 至 7 帧导出为 `start_frame=2, end_frame=7`，对应 CVAT API 的 `start=2, stop=8`。浏览器里的草稿要等服务器确认后才算提交成功。
+
+## 界面语言与外观
+
+登录页和主导航右侧的地球图标可以切换 **English / 简体中文**，也可以选择浅色、深色或跟随系统。首次访问时，界面参考浏览器语言和系统外观。用户的选择保存在当前浏览器。
+切换语言会重新载入页面，标注过程中请先保存。项目名、标签名和标注内容由项目成员定义，导出时使用原值。
+
+简体中文由 CVAT Minus 维护者 **LightingMax** 维护。欢迎为其他语言提 Issue，请注明语言、地区以及愿意参与翻译或校对的模块。也欢迎提交具体界面的术语改进。[语言需求与译文反馈](https://github.com/LightingMax/cvat/issues)
+
+界面文案使用 i18next。修改组件中的英文原文后，可在仓库根目录提取和检查译文。
+
+```sh
+yarn workspace cvat-ui i18n:extract
+# 编辑 cvat-ui/src/i18n/locales/zh-CN.json
+yarn workspace cvat-ui i18n:check
+```
+
+提取命令保留已有译文，为新文案留下空值，并清理已移除的文案。检查命令会报告漏译、过期条目和不匹配的插值变量。请保留 `{{username}}` 等变量名，并按目标语言的语序组织整句话。
+在视频理解工作台中，时间轴上的动作使用“轨道”，“轨迹”用于随帧变化的对象，“帧标记”对应单帧 Tag。
 
 ## 启动 CVAT Minus
 

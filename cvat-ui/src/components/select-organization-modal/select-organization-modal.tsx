@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Modal from 'antd/lib/modal';
 
@@ -25,7 +26,7 @@ function SelectOrganizationModal(): JSX.Element {
 
     return (
         <Modal
-            title='Select an organization'
+            title={t('Select an organization')}
             open={visible}
             footer={null}
             onCancel={() => dispatch(organizationActions.closeSelectOrganizationModal())}

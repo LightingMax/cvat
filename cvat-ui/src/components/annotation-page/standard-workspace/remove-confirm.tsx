@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -35,18 +36,15 @@ export default function RemoveConfirmComponent(): JSX.Element | null {
     useEffect(() => {
         const newVisible = (!!objectState && !force && objectState.lock) ||
             (objectState?.objectType === ObjectType.TRACK && !force);
-        setTitle(objectState?.lock ? 'Object is locked' : 'Remove object');
-        let descriptionMessage: string | JSX.Element = 'Are you sure you want to remove it?';
+        setTitle(objectState?.lock ? t('Object is locked') : t('Remove object'));
+        let descriptionMessage: string | JSX.Element = t('Are you sure you want to remove it?');
 
         if (objectState?.objectType === ObjectType.TRACK && !force) {
             descriptionMessage = (
                 <>
                     <Text>
                         {
-                            `The object you are trying to remove is a track.
-                            If you continue, it removes many drawn objects on different frames.
-                            If you want to hide it only on this frame, use the outside feature instead.
-                            ${descriptionMessage}`
+                            t('The object you are trying to remove is a track.\n                            If you continue, it removes many drawn objects on different frames.\n                            If you want to hide it only on this frame, use the outside feature instead.\n                            {{descriptionMessage}}', { descriptionMessage })
                         }
                     </Text>
                     <div className='cvat-remove-object-confirm-wrapper'>
@@ -67,8 +65,8 @@ export default function RemoveConfirmComponent(): JSX.Element | null {
     return (
         <Modal
             okType='primary'
-            okText='Yes'
-            cancelText='Cancel'
+            okText={t('Yes')}
+            cancelText={t('Cancel')}
             title={title}
             open={visible}
             cancelButtonProps={{

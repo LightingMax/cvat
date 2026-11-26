@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import config from 'config';
 import Location from './location';
@@ -26,7 +27,7 @@ export default function GCSLocation(props: Props): JSX.Element {
             internalCommonProps={internalCommonProps}
             values={config.DEFAULT_GOOGLE_CLOUD_STORAGE_LOCATIONS}
             name='location'
-            label='Location'
+            label={t('Location')}
             href='https://cloud.google.com/storage/docs/locations#available-locations'
         />
     );

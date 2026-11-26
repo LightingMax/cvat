@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import {
     useEffect, useRef, useState,
 } from 'react';
@@ -207,7 +208,7 @@ function useWaveSurferRuntime({
     useEffect(() => {
         const container = containerRef.current;
         if (!container) {
-            throw new Error('Cannot initialize the audio waveform without its container element');
+            throw new Error(t('Cannot initialize the audio waveform without its container element'));
         }
 
         const wsInstance = WaveSurfer.create({

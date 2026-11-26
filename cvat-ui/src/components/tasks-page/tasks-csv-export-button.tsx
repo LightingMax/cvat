@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { TasksQuery } from 'reducers';
 import { CSVColumn } from 'utils/csv-writer';
 import { getCore, Task } from 'cvat-core-wrapper';
@@ -11,32 +12,32 @@ const cvat = getCore();
 
 const columns: CSVColumn<Task>[] = [
     { header: 'ID', accessor: (task) => task.id },
-    { header: 'Name', accessor: (task) => task.name },
-    { header: 'Task URL', accessor: (task) => `${window.location.origin}/tasks/${task.id}` },
-    { header: 'Project ID', accessor: (task) => task.projectId },
-    { header: 'Project Name', accessor: (task) => task.projectName ?? '' },
-    { header: 'Project URL', accessor: (task) => (task.projectId ? `${window.location.origin}/projects/${task.projectId}` : '') },
-    { header: 'Owner', accessor: (task) => task.owner?.username ?? '' },
-    { header: 'Assignee', accessor: (task) => task.assignee?.username ?? '' },
-    { header: 'Status', accessor: (task) => task.status },
-    { header: 'Mode', accessor: (task) => task.mode },
-    { header: 'Size', accessor: (task) => task.size },
-    { header: 'Subset', accessor: (task) => task.subset ?? '' },
+    { header: t('Name'), accessor: (task) => task.name },
+    { header: t('Task URL'), accessor: (task) => `${window.location.origin}/tasks/${task.id}` },
+    { header: t('Project ID'), accessor: (task) => task.projectId },
+    { header: t('Project Name'), accessor: (task) => task.projectName ?? '' },
+    { header: t('Project URL'), accessor: (task) => (task.projectId ? `${window.location.origin}/projects/${task.projectId}` : '') },
+    { header: t('Owner'), accessor: (task) => task.owner?.username ?? '' },
+    { header: t('Assignee'), accessor: (task) => task.assignee?.username ?? '' },
+    { header: t('Status'), accessor: (task) => task.status },
+    { header: t('Mode'), accessor: (task) => task.mode },
+    { header: t('Size'), accessor: (task) => task.size },
+    { header: t('Subset'), accessor: (task) => task.subset ?? '' },
     {
-        header: 'Created Date',
+        header: t('Created Date'),
         accessor: (task) => task.createdDate,
     },
     {
-        header: 'Updated Date',
+        header: t('Updated Date'),
         accessor: (task) => task.updatedDate,
     },
-    { header: 'Bug Tracker', accessor: (task) => task.bugTracker ?? '' },
+    { header: t('Bug Tracker'), accessor: (task) => task.bugTracker ?? '' },
 ];
 
 const TasksCSVExportButton = createCSVExportButton<Task, TasksQuery>({
     resourceName: 'tasks',
     className: 'cvat-tasks-export-csv-button',
-    tooltipTitle: 'Export tasks to CSV',
+    tooltipTitle: t('Export tasks to CSV'),
     columns,
     uniqueKey: 'id',
     fetchPage: async (query) => {

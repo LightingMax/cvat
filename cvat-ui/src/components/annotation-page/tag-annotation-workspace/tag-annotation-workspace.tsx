@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import Layout from 'antd/lib/layout';
@@ -73,7 +74,7 @@ export default function TagAnnotationWorkspace({ phases }: { phases?: boolean })
                         <div
                             className='cvat-action-phase-divider'
                             role='separator'
-                            aria-label='Resize action tracks'
+                            aria-label={t('Resize action tracks')}
                             aria-orientation='horizontal'
                             aria-controls='cvat-action-phase-pane'
                             aria-valuemin={minHeight}
@@ -82,7 +83,7 @@ export default function TagAnnotationWorkspace({ phases }: { phases?: boolean })
                             aria-valuetext={`${tracksHeight} pixels`}
                             // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
                             tabIndex={0}
-                            title='Drag to resize action tracks'
+                            title={t('Drag to resize action tracks')}
                             onPointerDown={(event) => {
                                 if (!event.isPrimary || event.button !== 0) return;
                                 event.preventDefault();

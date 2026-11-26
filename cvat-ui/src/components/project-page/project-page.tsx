@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, {
     useCallback, useEffect, useRef, useState,
@@ -104,7 +105,7 @@ export default function ProjectPageComponent(): JSX.Element {
                 }).catch((error: Error) => {
                     if (mounted.current) {
                         notification.error({
-                            message: 'Could not receive the requested project from the server',
+                            message: t('Could not receive the requested project from the server'),
                             description: error.toString(),
                         });
                     }
@@ -115,8 +116,8 @@ export default function ProjectPageComponent(): JSX.Element {
                 });
         } else {
             notification.error({
-                message: 'Could not receive the requested project from the server',
-                description: `Requested project id "${id}" is not valid`,
+                message: t('Could not receive the requested project from the server'),
+                description: t('Requested project id "{{id}}" is not valid', { id }),
             });
             setFetchingProject(false);
         }
@@ -141,7 +142,7 @@ export default function ProjectPageComponent(): JSX.Element {
 
     const onSelectAll = useCallback(() => {
         dispatch(selectionActions.selectResources(
-            tasks.map((t) => t.id).filter((taskId) => !deletedTasks[taskId]),
+            tasks.map((task) => task.id).filter((taskId) => !deletedTasks[taskId]),
             SelectedResourceType.TASKS,
         ));
     }, [tasks, deletedTasks]);
@@ -242,7 +243,7 @@ export default function ProjectPageComponent(): JSX.Element {
             )}
         </BulkWrapper>
     ) : (
-        <Empty description='No tasks found' />
+        <Empty description={t('No tasks found')} />
     );
 
     return (
@@ -279,7 +280,7 @@ export default function ProjectPageComponent(): JSX.Element {
                                     }}
                                     defaultValue={tasksQuery.search ?? ''}
                                     className='cvat-project-page-tasks-search-bar'
-                                    placeholder='Search ...'
+                                    placeholder={t('Search ...')}
                                 />
                                 <ResourceSelectionInfo
                                     selectedCount={selectedCount}
@@ -347,7 +348,7 @@ export default function ProjectPageComponent(): JSX.Element {
                                                 className='cvat-create-task-button'
                                                 onClick={() => history.push(`/tasks/create?projectId=${id}`)}
                                             >
-                                                Create a new task
+                                                {t('Create a new task')}
                                             </Button>
                                             <Button
                                                 type='primary'
@@ -355,7 +356,7 @@ export default function ProjectPageComponent(): JSX.Element {
                                                 className='cvat-create-multi-tasks-button'
                                                 onClick={() => history.push(`/tasks/create?projectId=${id}&many=true`)}
                                             >
-                                                Create multi tasks
+                                                {t('Create multi tasks')}
                                             </Button>
                                         </>
                                     ) : null}
@@ -366,7 +367,7 @@ export default function ProjectPageComponent(): JSX.Element {
                                             className='cvat-create-audio-task-button'
                                             onClick={() => history.push(`/tasks/create?projectId=${id}&type=audio`)}
                                         >
-                                            Create a new audio task
+                                            {t('Create a new audio task')}
                                         </Button>
                                     ) : null}
                                 </CvatDropdownMenuPaper>

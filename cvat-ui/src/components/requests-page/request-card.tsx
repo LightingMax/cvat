@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -95,7 +96,7 @@ function constructTimestamps(request: Request): JSX.Element {
                             {renderEllipsisText(`Started by ${request.owner.username} on ${started}`, 'secondary')}
                         </Row>
                         <Row>
-                            <Text type='secondary'>{`Expires on ${expired}`}</Text>
+                            <Text type='secondary'>{t('Expires on {{expired}}', { expired })}</Text>
                         </Row>
                     </>
                 );
@@ -106,7 +107,7 @@ function constructTimestamps(request: Request): JSX.Element {
                         {renderEllipsisText(`Started by ${request.owner.username} on ${started}`, 'secondary')}
                     </Row>
                     <Row>
-                        <Text type='secondary'>{`Finished on ${finished}`}</Text>
+                        <Text type='secondary'>{t('Finished on {{finished}}', { finished })}</Text>
                     </Row>
                 </>
             );
@@ -129,7 +130,7 @@ function constructTimestamps(request: Request): JSX.Element {
                         {renderEllipsisText(`Enqueued by ${request.owner.username} on ${created}`, 'secondary')}
                     </Row>
                     <Row>
-                        <Text type='secondary'>{`Started on ${started}`}</Text>
+                        <Text type='secondary'>{t('Started on {{started}}', { started })}</Text>
                     </Row>
                 </>
             );
@@ -238,7 +239,7 @@ function RequestCard(props: Readonly<Props>): JSX.Element {
                             {operation?.lightweight && (
                                 <Row>
                                     <Col className='cvat-lightweight-label'>
-                                        <Text type='secondary'>Lightweight backup</Text>
+                                        <Text type='secondary'>{t('Lightweight backup')}</Text>
                                     </Col>
                                 </Row>
                             )}

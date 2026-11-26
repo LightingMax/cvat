@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Icon from '@ant-design/icons';
 import { SelectIcon } from 'icons';
@@ -37,7 +38,7 @@ function SelectControl(props: Props): JSX.Element {
     return disabled ? (
         <Icon component={SelectIcon} className='cvat-select-control cvat-disabled-canvas-control' />
     ) : (
-        <CVATTooltip title='Select objects' placement='right'>
+        <CVATTooltip title={t('Select objects')} placement='right'>
             <Icon
                 component={SelectIcon}
                 className={selecting ?

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Title from 'antd/lib/typography/Title';
 import Button from 'antd/lib/button';
@@ -33,7 +34,7 @@ function AnaylyticsPageHeader(props: Props): JSX.Element {
         <Row justify='space-between' align='middle'>
             <Col className='cvat-analytics-header'>
                 <Title level={4} className='cvat-text-color'>
-                    {'Analytics for '}
+                    {`${t('Analytics for')} `}
                     <ResourceLink resource={resource} />
                 </Title>
             </Col>
@@ -60,7 +61,7 @@ function AnaylyticsPageHeader(props: Props): JSX.Element {
                     icon={<DownloadOutlined />}
                     onClick={onExportEvents}
                 >
-                    Export events
+                    {t('Export events')}
                 </Button>
             </Col>
         </Row>

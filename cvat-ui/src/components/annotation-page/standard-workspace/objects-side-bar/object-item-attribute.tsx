@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState, useEffect, useRef } from 'react';
 import { Col } from 'antd/lib/grid';
 import Select from 'antd/lib/select';
@@ -138,7 +139,7 @@ function ItemAttributeComponent(props: Props): JSX.Element {
                             setAttributeValue(value);
                         }}
                         value={mixed ? undefined : localAttrValue}
-                        placeholder={mixed ? 'Multiple values' : undefined}
+                        placeholder={mixed ? t('Multiple values') : undefined}
                         className='cvat-object-item-select-attribute'
                     >
                         {attrValues.map(
@@ -171,7 +172,7 @@ function ItemAttributeComponent(props: Props): JSX.Element {
                             }
                         }}
                         value={mixed ? null : +localAttrValue}
-                        placeholder={mixed ? 'Multiple values' : undefined}
+                        placeholder={mixed ? t('Multiple values') : undefined}
                         className='cvat-object-item-number-attribute'
                         min={min}
                         max={max}
@@ -203,7 +204,7 @@ function ItemAttributeComponent(props: Props): JSX.Element {
                         setAttributeValue(event.target.value);
                     }}
                     value={mixed ? '' : localAttrValue}
-                    placeholder={mixed ? 'Multiple values' : undefined}
+                    placeholder={mixed ? t('Multiple values') : undefined}
                     className='cvat-object-item-text-attribute'
                 />
             </Col>

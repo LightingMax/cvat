@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import Icon from '@ant-design/icons';
 import Form, { RuleRender, RuleObject } from 'antd/lib/form';
@@ -67,7 +68,7 @@ export const validateConfirmation: ((firstFieldName: string) => RuleRender) = (
 ): RuleRender => ({ getFieldValue }): RuleObject => ({
     validator(_: RuleObject, value: string): Promise<void> {
         if (value && value !== getFieldValue(firstFieldName)) {
-            return Promise.reject(new Error('Two passwords that you enter is inconsistent!'));
+            return Promise.reject(new Error(t('Two passwords that you enter is inconsistent!')));
         }
 
         return Promise.resolve();
@@ -82,7 +83,7 @@ const validateAgreement: ((userAgreements: UserAgreement[]) => RuleRender) = (
         const [agreement] = userAgreements
             .filter((userAgreement: UserAgreement): boolean => userAgreement.name === name);
         if (agreement.required && !value) {
-            return Promise.reject(new Error(`You must accept ${agreement.urlDisplayText} to continue!`));
+            return Promise.reject(new Error(t('You must accept {{urlDisplayText}} to continue!', { urlDisplayText: agreement.urlDisplayText })));
         }
 
         return Promise.resolve();
@@ -146,7 +147,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                         >
                             <CVATSigningInput
                                 id='firstName'
-                                placeholder='First name'
+                                placeholder={t('First name')}
                                 autoComplete='given-name'
                                 onReset={() => form.setFieldsValue({ firstName: '' })}
                             />
@@ -160,7 +161,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                         >
                             <CVATSigningInput
                                 id='lastName'
-                                placeholder='Last name'
+                                placeholder={t('Last name')}
                                 autoComplete='family-name'
                                 onReset={() => form.setFieldsValue({ lastName: '' })}
                             />
@@ -175,7 +176,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                     <CVATSigningInput
                         id='email'
                         autoComplete='email'
-                        placeholder='Email'
+                        placeholder={t('Email')}
                         disabled={!!predefinedEmail}
                         value={predefinedEmail}
                         onReset={() => form.setFieldsValue({ email: '', username: '' })}
@@ -195,7 +196,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                 >
                     <CVATSigningInput
                         id='username'
-                        placeholder='Username'
+                        placeholder={t('Username')}
                         autoComplete='username'
                         onReset={() => form.setFieldsValue({ username: '' })}
                         onChange={() => setUsernameEdited(true)}
@@ -207,14 +208,14 @@ function RegisterFormComponent(props: Props): JSX.Element {
                     rules={[
                         {
                             required: true,
-                            message: 'Please input your password!',
+                            message: t('Please input your password!'),
                         }, validatePassword,
                     ]}
                 >
                     <CVATSigningInput
                         type={CVATInputType.PASSWORD}
                         id='password1'
-                        placeholder='Password'
+                        placeholder={t('Password')}
                         autoComplete='new-password'
                     />
                 </Form.Item>
@@ -228,7 +229,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                         rules={[
                             {
                                 required: true,
-                                message: 'You must accept to continue!',
+                                message: t('You must accept to continue!'),
                             }, validateAgreement(userAgreements),
                         ]}
                     >
@@ -252,7 +253,7 @@ function RegisterFormComponent(props: Props): JSX.Element {
                             loading={fetching}
                             disabled={fetching}
                         >
-                            Create account
+                            {t('Create account')}
                         </Button>
                     )}
                 </Form.Item>

@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
@@ -69,7 +70,7 @@ function ModelRunnerDialog(props: StateToProps & DispatchToProps): JSX.Element {
                     setTaskInstance(_task);
                 }
             }).catch((error: any) => {
-                notification.error({ message: 'Could not get task details', description: error.toString() });
+                notification.error({ message: t('Could not get task details'), description: error.toString() });
             });
         }
     }, [visible, task]);
@@ -81,7 +82,7 @@ function ModelRunnerDialog(props: StateToProps & DispatchToProps): JSX.Element {
             footer={[]}
             onCancel={(): void => closeDialog()}
             maskClosable
-            title='Automatic annotation'
+            title={t('Automatic annotation')}
         >
             { taskInstance ? (
                 <DetectorRunner

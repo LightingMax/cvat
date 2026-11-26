@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -46,7 +47,7 @@ function SettingsModal(props: SettingsModalProps): JSX.Element {
             dispatch(restoreSettingsAsync());
         } catch {
             notification.error({
-                message: 'Failed to load settings from local storage',
+                message: t('Failed to load settings from local storage'),
                 className: 'cvat-notification-notice-load-settings-fail',
             });
         } finally {
@@ -57,19 +58,19 @@ function SettingsModal(props: SettingsModalProps): JSX.Element {
     const tabItems = [
         {
             key: 'player',
-            label: <Text>Player</Text>,
+            label: <Text>{t('Player')}</Text>,
             icon: <PlayCircleOutlined />,
             children: <PlayerSettingsContainer />,
         },
         {
             key: 'workspace',
-            label: <Text>Workspace</Text>,
+            label: <Text>{t('Workspace')}</Text>,
             icon: <LaptopOutlined />,
             children: <WorkspaceSettingsContainer />,
         },
         {
             key: 'shortcuts',
-            label: <Text>Shortcuts</Text>,
+            label: <Text>{t('Shortcuts')}</Text>,
             icon: <BuildOutlined />,
             children: <ShortcutsSettingsContainer />,
         },
@@ -77,14 +78,14 @@ function SettingsModal(props: SettingsModalProps): JSX.Element {
 
     return (
         <Modal
-            title='Settings'
+            title={t('Settings')}
             open={visible}
             onCancel={onClose}
             width={800}
             className='cvat-settings-modal'
             footer={(
                 <Button className='cvat-close-settings-button' type='default' onClick={onClose}>
-                    Close
+                    {t('Close')}
                 </Button>
             )}
         >

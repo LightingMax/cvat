@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from 'antd/lib/button';
@@ -123,8 +124,8 @@ export default function SelectionContextMenu(): JSX.Element | null {
         ),
     );
     const labelSelectorDisabledReason = !applicableLabels.length ?
-        'No label can be applied to every selected object' :
-        'Labels cannot be changed for locked, ground truth, or skeleton objects';
+        t('No label can be applied to every selected object') :
+        t('Labels cannot be changed for locked, ground truth, or skeleton objects');
     const lockSelection = getSelectionToggleState(selectedStates, 'lock');
     const pinSelection = getSelectionToggleState(selectedStates, 'pinned');
     const occludedSelection = getSelectionToggleState(selectedStates, 'occluded');
@@ -133,7 +134,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
     const groupSelectionDisabled = !selectionGroupState.canGroup;
     const groupSelectionDisabledReason = selectionGroupState.disabledReason || (
         selectionGroupState.alreadyInSameGroup ?
-            'Selected objects are already in the same group' : 'Select at least two objects to group'
+            t('Selected objects are already in the same group') : t('Select at least two objects to group')
     );
     const ungroupSelectionDisabled = !selectionGroupState.canUngroup;
     const ungroupSelectionDisabledReason = selectionGroupState.disabledReason ||
@@ -201,7 +202,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         }
                     }}
                 >
-                    Make a copy
+                    {t('Make a copy')}
                 </Button>
             ),
         },
@@ -215,7 +216,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         openAnnotationsActionModal({ defaultObjectStates: selectedStates });
                     }}
                 >
-                    Run annotation action
+                    {t('Run annotation action')}
                 </Button>
             ),
         },
@@ -228,7 +229,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     icon={<Icon component={BackgroundIcon} />}
                     onClick={(): Promise<void> => updateZOrder((): number => minZLayer - 1)}
                 >
-                    To background
+                    {t('To background')}
                 </Button>
             ),
         },
@@ -241,7 +242,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     icon={<Icon component={ForegroundIcon} />}
                     onClick={(): Promise<void> => updateZOrder((): number => maxZLayer + 1)}
                 >
-                    To foreground
+                    {t('To foreground')}
                 </Button>
             ),
         },
@@ -256,7 +257,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         (state: ObjectState): number => state.zOrder - 1,
                     )}
                 >
-                    To one layer backward
+                    {t('To one layer backward')}
                 </Button>
             ),
         },
@@ -271,7 +272,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         (state: ObjectState): number => state.zOrder + 1,
                     )}
                 >
-                    To one layer forward
+                    {t('To one layer forward')}
                 </Button>
             ),
         },
@@ -284,7 +285,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     icon={<VerticalAlignBottomOutlined />}
                     onClick={(): void => setLayerPickerVisible(true)}
                 >
-                    Move to layer ...
+                    {t('Move to layer ...')}
                 </Button>
             ),
         },
@@ -300,7 +301,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         dispatch(groupSelectedAnnotationsAsync());
                     }}
                 >
-                    Group selection
+                    {t('Group selection')}
                 </Button>
             ),
         },
@@ -316,7 +317,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         dispatch(groupSelectedAnnotationsAsync(true));
                     }}
                 >
-                    Ungroup selection
+                    {t('Ungroup selection')}
                 </Button>
             ),
         },
@@ -328,7 +329,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
             role='button'
             tabIndex={0}
             className='cvat-canvas-selected-objects-more-button'
-            aria-label='More selection actions'
+            aria-label={t('More selection actions')}
         >
             <MoreOutlined />
         </Col>
@@ -344,7 +345,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
             <Row align='middle' className='cvat-canvas-selected-objects-menu-header'>
                 <Col span={10} className='cvat-canvas-selected-objects-type'>
                     <Text className='cvat-canvas-selected-objects-count'>
-                        {`${selectedStates.length} OBJECT${selectedStates.length === 1 ? '' : 'S'}`}
+                        {selectedStates.length === 1 ? t('1 OBJECT') : t('{{count}} OBJECTS', { count: selectedStates.length })}
                     </Text>
                     <br />
                     <CVATTooltip title={selectionTypeBreakdown}>
@@ -363,19 +364,19 @@ export default function SelectionContextMenu(): JSX.Element | null {
                             size='small'
                             labels={applicableLabels}
                             value={selectedLabelID}
-                            placeholder={selectedLabelID === null ? 'Multiple labels' : 'Select label'}
+                            placeholder={selectedLabelID === null ? t('Multiple labels') : t('Select label')}
                             onChange={(label: Label): void => {
                                 for (const selectedState of selectedStates) selectedState.label = label;
                                 updateSelection(selectedStates);
                             }}
                             tooltip={labelSelectorDisabled ?
-                                labelSelectorDisabledReason : 'Change current label'}
+                                labelSelectorDisabledReason : t('Change current label')}
                             className='cvat-objects-sidebar-state-item-label-selector'
                             popupClassName='cvat-objects-sidebar-state-item-label-dropdown'
                             popupMatchSelectWidth={false}
                         />
                     ) : (
-                        <Select disabled size='small' placeholder='No common labels' />
+                        <Select disabled size='small' placeholder={t('No common labels')} />
                     )}
                 </Col>
                 {layerPickerVisible ? (
@@ -406,7 +407,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
             </Row>
             <div className='cvat-canvas-selected-objects-quick-actions'>
                 <CVATTooltip title={lockSelection.disabledReason || (
-                    lockSelection.active ? 'Unlock selection' : 'Lock selection'
+                    lockSelection.active ? t('Unlock selection') : t('Lock selection')
                 )}
                 >
                     <span>
@@ -416,7 +417,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                             className={lockSelection.active ?
                                 'cvat-object-item-button-lock-enabled' : 'cvat-object-item-button-lock'}
                             disabled={!!lockSelection.disabledReason}
-                            aria-label={lockSelection.active ? 'Unlock selection' : 'Lock selection'}
+                            aria-label={lockSelection.active ? t('Unlock selection') : t('Lock selection')}
                             icon={lockSelection.active ? <LockFilled /> : <UnlockOutlined />}
                             onClick={(): void => {
                                 updateSelection(prepareSelectionToggle(selectedStates, 'lock'));
@@ -425,7 +426,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     </span>
                 </CVATTooltip>
                 <CVATTooltip title={occludedSelection.disabledReason || `${
-                    occludedSelection.active ? 'Unocclude selection' : 'Occlude selection'
+                    occludedSelection.active ? t('Unocclude selection') : t('Occlude selection')
                 } ${normalizedKeyMap.SWITCH_OCCLUDED}`}
                 >
                     <span>
@@ -435,7 +436,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                             className={occludedSelection.active ?
                                 'cvat-object-item-button-occluded-enabled' : 'cvat-object-item-button-occluded'}
                             disabled={!!occludedSelection.disabledReason}
-                            aria-label={occludedSelection.active ? 'Unocclude selection' : 'Occlude selection'}
+                            aria-label={occludedSelection.active ? t('Unocclude selection') : t('Occlude selection')}
                             icon={occludedSelection.active ? <TeamOutlined /> : <UserOutlined />}
                             onClick={(): void => {
                                 updateSelection(prepareSelectionToggle(selectedStates, 'occluded'));
@@ -444,7 +445,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     </span>
                 </CVATTooltip>
                 <CVATTooltip title={hiddenSelection.disabledReason || `${
-                    hiddenSelection.active ? 'Show selection' : 'Hide selection'
+                    hiddenSelection.active ? t('Show selection') : t('Hide selection')
                 } ${normalizedKeyMap.SWITCH_HIDDEN}`}
                 >
                     <span>
@@ -454,7 +455,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                             className={hiddenSelection.active ?
                                 'cvat-object-item-button-hidden-enabled' : 'cvat-object-item-button-hidden'}
                             disabled={!!hiddenSelection.disabledReason}
-                            aria-label={hiddenSelection.active ? 'Show selection' : 'Hide selection'}
+                            aria-label={hiddenSelection.active ? t('Show selection') : t('Hide selection')}
                             icon={hiddenSelection.active ? <EyeInvisibleFilled /> : <EyeOutlined />}
                             onClick={(): void => {
                                 updateSelection(prepareSelectionToggle(selectedStates, 'hidden'));
@@ -463,7 +464,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                     </span>
                 </CVATTooltip>
                 <CVATTooltip title={pinSelection.disabledReason || (
-                    pinSelection.active ? 'Unpin selection' : 'Pin selection'
+                    pinSelection.active ? t('Unpin selection') : t('Pin selection')
                 )}
                 >
                     <span>
@@ -473,7 +474,7 @@ export default function SelectionContextMenu(): JSX.Element | null {
                             className={pinSelection.active ?
                                 'cvat-object-item-button-pinned-enabled' : 'cvat-object-item-button-pinned'}
                             disabled={!!pinSelection.disabledReason}
-                            aria-label={pinSelection.active ? 'Unpin selection' : 'Pin selection'}
+                            aria-label={pinSelection.active ? t('Unpin selection') : t('Pin selection')}
                             icon={pinSelection.active ? <PushpinFilled /> : <PushpinOutlined />}
                             onClick={(): void => {
                                 updateSelection(prepareSelectionToggle(selectedStates, 'pinned'));
@@ -481,12 +482,12 @@ export default function SelectionContextMenu(): JSX.Element | null {
                         />
                     </span>
                 </CVATTooltip>
-                <CVATTooltip title='Delete selection'>
+                <CVATTooltip title={t('Delete selection')}>
                     <Button
                         type='text'
                         size='small'
                         danger
-                        aria-label='Delete selection'
+                        aria-label={t('Delete selection')}
                         icon={<DeleteOutlined />}
                         onClick={async (): Promise<void> => {
                             if (canvasInstance instanceof Canvas) {

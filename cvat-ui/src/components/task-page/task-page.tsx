@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
@@ -75,7 +76,7 @@ function TaskPageComponent(): JSX.Element {
             }
         } catch (error: any) {
             notification.error({
-                message: 'Could not receive the requested task from the server',
+                message: t('Could not receive the requested task from the server'),
                 description: error.toString(),
             });
         }

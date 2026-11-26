@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import Text from 'antd/lib/typography/Text';
 import Collapse from 'antd/lib/collapse';
@@ -246,7 +247,7 @@ function ObjectItemComponent(props: Props): JSX.Element {
                         onChange={(keys): void => onPartsExpandedChange?.(clientID, keys.includes('elements'))}
                         items={[{
                             key: 'elements',
-                            label: <Text style={{ fontSize: 10 }} type='secondary'>PARTS</Text>,
+                            label: <Text style={{ fontSize: 10 }} type='secondary'>{t('PARTS')}</Text>,
                             children: elements.map((element: number) => (
                                 <ObjectItemElementComponent
                                     key={element}

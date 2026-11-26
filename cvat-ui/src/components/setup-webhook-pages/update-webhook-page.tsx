@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
@@ -35,8 +36,8 @@ function UpdateWebhookPage(): JSX.Element {
                 }
             }).catch((error: unknown) => {
                 notification.error({
-                    message: 'Failed to fetch the webhook',
-                    description: error instanceof Error ? error.message : 'Unknown error',
+                    message: t('Failed to fetch the webhook'),
+                    description: error instanceof Error ? error.message : t('Unknown error'),
                 });
             });
         } else {
@@ -50,7 +51,7 @@ function UpdateWebhookPage(): JSX.Element {
                 <Col md={20} lg={16} xl={14} xxl={9}>
                     <Button className='cvat-webhooks-go-back' onClick={() => history.goBack()} type='link' size='large'>
                         <LeftOutlined />
-                        Back to webhooks
+                        {t('Back to webhooks')}
                     </Button>
                 </Col>
             </Row>

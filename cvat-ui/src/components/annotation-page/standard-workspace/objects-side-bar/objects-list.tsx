@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useMemo, useState,
 } from 'react';
@@ -476,7 +477,7 @@ function ObjectListComponent(props: Props): JSX.Element {
 
         return (
             <div className='cvat-objects-sidebar-z-layer-mark cvat-objects-sidebar-z-layer-mark-dragging'>
-                <Text strong>Layer {zOrder}</Text>
+                <Text strong>{t('Layer')} {zOrder}</Text>
                 <span className='cvat-objects-sidebar-z-layer-visibility-indicator'>
                     {visible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
                 </span>
@@ -617,8 +618,8 @@ function ObjectListComponent(props: Props): JSX.Element {
                 {layerOrdering ? (
                     <div className='cvat-objects-sidebar-z-layers-panel'>
                         <div className='cvat-objects-sidebar-z-layers-title'>
-                            <Text strong>Layer stack</Text>
-                            <CVATTooltip title='Compact layers'>
+                            <Text strong>{t('Layer stack')}</Text>
+                            <CVATTooltip title={t('Compact layers')}>
                                 <Button
                                     className='cvat-objects-sidebar-z-layers-compact-button'
                                     type='text'
@@ -627,7 +628,7 @@ function ObjectListComponent(props: Props): JSX.Element {
                                     onClick={compactLayerStack}
                                 />
                             </CVATTooltip>
-                            <CVATTooltip title={allLayersCollapsed ? 'Expand all layers' : 'Collapse all layers'}>
+                            <CVATTooltip title={allLayersCollapsed ? t('Expand all layers') : t('Collapse all layers')}>
                                 <Button
                                     className='cvat-objects-sidebar-z-layers-collapse-all-button'
                                     type='text'

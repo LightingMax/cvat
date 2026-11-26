@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 
 import React, {
@@ -133,7 +134,7 @@ function ConsensusManagementPage(): JSX.Element {
                 dispatch(reducerActions.setConsensusSettingsFetching(false));
             }
         } catch (error: unknown) {
-            dispatch(reducerActions.setError(error instanceof Error ? error : new Error('Unknown error')));
+            dispatch(reducerActions.setError(error instanceof Error ? error : new Error(t('Unknown error'))));
         } finally {
             dispatch(reducerActions.setFetching(false));
         }
@@ -149,10 +150,10 @@ function ConsensusManagementPage(): JSX.Element {
                     dispatch(reducerActions.setConsensusSettingsFetching(true));
                     const responseSettings = await settings.save();
                     dispatch(reducerActions.setConsensusSettings(responseSettings));
-                    notification.info({ message: 'Settings have been updated' });
+                    notification.info({ message: t('Settings have been updated') });
                 } catch (error: unknown) {
                     notification.error({
-                        message: 'Could not save consensus settings',
+                        message: t('Could not save consensus settings'),
                         description: typeof Error === 'object' ? (error as object).toString() : '',
                     });
                     throw error;
@@ -209,7 +210,7 @@ function ConsensusManagementPage(): JSX.Element {
                 <div className='cvat-consensus-management-page-error'>
                     <Result
                         status='error'
-                        title='Could not open the page'
+                        title={t('Could not open the page')}
                         subTitle={error.message}
                         extra={backNavigation}
                     />
@@ -232,7 +233,7 @@ function ConsensusManagementPage(): JSX.Element {
         title = (
             <Col className='cvat-consensus-management-header'>
                 <Title level={4} className='cvat-text-color'>
-                    {'Consensus management for '}
+                    {`${t('Consensus management for')} `}
                     <ResourceLink resource={instance} />
                 </Title>
             </Col>
@@ -243,7 +244,7 @@ function ConsensusManagementPage(): JSX.Element {
         if (consensusSettings) {
             tabsItems.push({
                 key: TabName.settings,
-                label: 'Settings',
+                label: t('Settings'),
                 children: (
                     <ConsensusSettingsTab
                         fetching={fetching}

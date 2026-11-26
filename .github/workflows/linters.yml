@@ -190,6 +190,7 @@ jobs:
         run: |
           echo "ESLint version: "$(yarn run eslint --version)
           yarn run eslint .
+          yarn workspace cvat-ui i18n:check
 
   typescript:
     if: vars.SKIP_DEPENDABOT_CI != 'true' || github.event.pull_request.user.login != 'dependabot[bot]'

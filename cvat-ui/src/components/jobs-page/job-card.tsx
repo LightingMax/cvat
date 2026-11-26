@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -95,9 +96,9 @@ function JobCardComponent(props: Readonly<Props>): JSX.Element {
                 </div>
             )}
             descriptions={[
-                { label: 'Frames', value: job.stopFrame - job.startFrame + 1 },
+                { label: t('Frames'), value: job.stopFrame - job.startFrame + 1 },
                 {
-                    label: 'Assignee',
+                    label: t('Assignee'),
                     value: (
                         <Text
                             ellipsis={{ tooltip: assigneeName }}

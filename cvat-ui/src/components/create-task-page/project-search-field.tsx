@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import Autocomplete from 'antd/lib/auto-complete';
 import { SelectValue } from 'antd/lib/select';
@@ -88,7 +89,7 @@ export default function ProjectSearchField(props: Props): JSX.Element {
     return (
         <Autocomplete
             value={searchPhrase}
-            placeholder='Select project'
+            placeholder={t('Select project')}
             onSearch={handleSearch}
             onSelect={handleSelect}
             className='cvat-project-search-field'

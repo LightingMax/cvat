@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import { PlusOutlined } from '@ant-design/icons';
@@ -59,7 +60,7 @@ export default function TopBarComponent(props: Readonly<VisibleTopBarProps>): JS
                                 }}
                                 defaultValue={query.search ?? ''}
                                 className='cvat-webhooks-page-search-bar'
-                                placeholder='Search ...'
+                                placeholder={t('Search ...')}
                             />
                             <ResourceSelectionInfo selectedCount={selectedCount} onSelectAll={onSelectAll} />
                         </div>

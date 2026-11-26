@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Popover from 'antd/lib/popover';
 import Icon from '@ant-design/icons';
@@ -47,7 +48,7 @@ function DrawPolygonControl(props: Props): JSX.Element {
             placement='right'
             content={<DrawShapePopoverContainer shapeType={ShapeType.POLYGON} />}
         >
-            <CVATTooltip title='Draw a polygon' placement='right'>
+            <CVATTooltip title={t('Draw a polygon')} placement='right'>
                 <Icon {...dynamicIconProps} component={PolygonIcon} />
             </CVATTooltip>
         </CustomPopover>

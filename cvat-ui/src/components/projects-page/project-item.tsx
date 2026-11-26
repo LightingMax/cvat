@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux';
@@ -79,7 +80,7 @@ export default function ProjectItemComponent(props: Props): JSX.Element {
             )}
             descriptions={[
                 {
-                    label: 'Owner',
+                    label: t('Owner'),
                     value: (
                         <Text
                             ellipsis={{ tooltip: ownerName }}
@@ -89,7 +90,7 @@ export default function ProjectItemComponent(props: Props): JSX.Element {
                         </Text>
                     ),
                 },
-                { label: 'Updated', value: updated },
+                { label: t('Updated'), value: updated },
             ]}
             contentClassName='cvat-projects-project-item-description'
             menu={(

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import { QuestionCircleOutlined } from '@ant-design/icons/lib/icons';
 import Text from 'antd/lib/typography/Text';
@@ -103,11 +104,11 @@ export default function QualitySettingsForm(props: Readonly<Props>): JSX.Element
     );
 
     const generalTooltip = makeTooltip(
-        makeTooltipFragment('Job selection filter', settings.descriptions.jobFilter),
+        makeTooltipFragment(t('Job selection filter'), settings.descriptions.jobFilter),
     );
 
     const jobValidationTooltip = makeTooltip(
-        makeTooltipFragment('Max validations per job', settings.descriptions.maxValidationsPerJob),
+        makeTooltipFragment(t('Max validations per job'), settings.descriptions.maxValidationsPerJob),
     );
 
     if (requirementFormMode.type !== 'list') {
@@ -148,7 +149,7 @@ export default function QualitySettingsForm(props: Readonly<Props>): JSX.Element
         >
             <Row className='cvat-quality-settings-title'>
                 <Text strong>
-                    General
+                    {t('General')}
                 </Text>
                 <CVATTooltip title={generalTooltip} className='cvat-settings-tooltip'>
                     <QuestionCircleOutlined
@@ -160,7 +161,7 @@ export default function QualitySettingsForm(props: Readonly<Props>): JSX.Element
                 <Col span={12}>
                     <Form.Item
                         name='jobFilter'
-                        label='Job selection filter'
+                        label={t('Job selection filter')}
                         trigger='onApplyFilter'
                     >
                         {/* value and onApplyFilter will be automatically provided by Form.Item */}
@@ -184,7 +185,7 @@ export default function QualitySettingsForm(props: Readonly<Props>): JSX.Element
             <Divider />
             <Row className='cvat-quality-settings-title'>
                 <Text strong>
-                    Job validation
+                    {t('Job validation')}
                 </Text>
                 <CVATTooltip title={jobValidationTooltip} className='cvat-settings-tooltip'>
                     <QuestionCircleOutlined
@@ -196,8 +197,8 @@ export default function QualitySettingsForm(props: Readonly<Props>): JSX.Element
                 <Col span={12}>
                     <Form.Item
                         name='maxValidationsPerJob'
-                        label='Max validations per job'
-                        rules={[{ required: true, message: 'This field is required' }]}
+                        label={t('Max validations per job')}
+                        rules={[{ required: true, message: t('This field is required') }]}
                     >
                         <InputNumber
                             min={0}

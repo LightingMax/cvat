@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -82,14 +83,14 @@ function OrganizationSelector(props: Props): JSX.Element {
     return (
         <AutoComplete
             defaultValue={searchPhrase}
-            placeholder='Select an organization'
+            placeholder={t('Select an organization')}
             showSearch
             onSearch={_.debounce(setSearchPhrase, 500)}
             options={[
                 ...(
                     (currentOrg) ? [{
                         value: '',
-                        label: 'Personal workspace',
+                        label: t('Personal workspace'),
                     }] : []
                 ),
                 ...searchResults

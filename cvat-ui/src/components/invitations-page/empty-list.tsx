@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Text from 'antd/lib/typography/Text';
 import { Row, Col } from 'antd/lib/grid';
@@ -13,7 +14,7 @@ function EmptyListComponent(): JSX.Element {
             <Empty description={(
                 <Row justify='center' align='middle'>
                     <Col>
-                        <Text strong>You do not have active invitations</Text>
+                        <Text strong>{t('You do not have active invitations')}</Text>
                     </Col>
                 </Row>
             )}

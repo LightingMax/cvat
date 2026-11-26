@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Popover from 'antd/lib/popover';
 import Icon from '@ant-design/icons';
@@ -47,7 +48,7 @@ function DrawPolylineControl(props: Props): JSX.Element {
             placement='right'
             content={<DrawShapePopoverContainer shapeType={ShapeType.POLYLINE} />}
         >
-            <CVATTooltip title='Draw a polyline' placement='right'>
+            <CVATTooltip title={t('Draw a polyline')} placement='right'>
                 <Icon {...dynamicIconProps} component={PolylineIcon} />
             </CVATTooltip>
         </CustomPopover>

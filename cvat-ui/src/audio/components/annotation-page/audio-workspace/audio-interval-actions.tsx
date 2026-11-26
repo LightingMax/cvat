@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import Icon, {
@@ -111,7 +112,7 @@ function AudioIntervalPlayButton({
 
     return (
         <AudioIntervalActionButton
-            title={`Play interval as range ${shortcut}`}
+            title={t('Play interval as range {{shortcut}}', { shortcut })}
             className={playActionClassName}
             onAction={handlePlayInterval}
         >
@@ -168,7 +169,7 @@ export default function AudioIntervalActions({
                     <Row gutter={4}>
                         <Col>
                             <AudioIntervalActionButton
-                                title={`Set playback to interval start ${shortcuts.setPlaybackToStart}`}
+                                title={t('Set playback to interval start {{setPlaybackToStart}}', { setPlaybackToStart: shortcuts.setPlaybackToStart })}
                                 className={actionClassName}
                                 onAction={handleSetPlaybackToStart}
                             >
@@ -184,7 +185,7 @@ export default function AudioIntervalActions({
                         </Col>
                         <Col>
                             <AudioIntervalActionButton
-                                title={`Set playback to interval end ${shortcuts.setPlaybackToEnd}`}
+                                title={t('Set playback to interval end {{setPlaybackToEnd}}', { setPlaybackToEnd: shortcuts.setPlaybackToEnd })}
                                 className={actionClassName}
                                 onAction={handleSetPlaybackToEnd}
                             >
@@ -197,7 +198,7 @@ export default function AudioIntervalActions({
                     <Row gutter={4}>
                         <Col>
                             <AudioIntervalActionButton
-                                title={`${locked ? 'Unlock interval' : 'Lock interval'} ${shortcuts.switchLock}`}
+                                title={`${locked ? t('Unlock interval') : t('Lock interval')} ${shortcuts.switchLock}`}
                                 className={actionClassName}
                                 onAction={handleToggleLock}
                             >
@@ -206,7 +207,7 @@ export default function AudioIntervalActions({
                         </Col>
                         <Col>
                             <AudioIntervalActionButton
-                                title={`${pinned ? 'Unpin interval' : 'Pin interval'} ${shortcuts.switchPinned}`}
+                                title={`${pinned ? t('Unpin interval') : t('Pin interval')} ${shortcuts.switchPinned}`}
                                 className={lockableActionClassName}
                                 onAction={handleTogglePinned}
                             >
@@ -215,7 +216,7 @@ export default function AudioIntervalActions({
                         </Col>
                         <Col>
                             <AudioIntervalActionButton
-                                title={`${hidden ? 'Show interval' : 'Hide interval'} ${shortcuts.switchHidden}`}
+                                title={`${hidden ? t('Show interval') : t('Hide interval')} ${shortcuts.switchHidden}`}
                                 className={lockableActionClassName}
                                 onAction={handleToggleHidden}
                             >

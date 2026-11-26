@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import AppearanceMenu from 'components/appearance/appearance-menu';
 import './styles.scss';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -77,6 +78,7 @@ function SignInLayout(props: SignInLayoutComponentProps): JSX.Element {
                 <Row className='cvat-signing-header-logo-wrapper' justify='center' align='middle'>
                     <Col {...logoSizes}>
                         <CVATLogo />
+                        <AppearanceMenu />
                     </Col>
                 </Row>
             </Header>

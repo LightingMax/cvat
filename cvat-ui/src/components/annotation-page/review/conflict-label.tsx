@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { ReactPortal } from 'react';
 import ReactDOM from 'react-dom';
 import Tag from 'antd/lib/tag';
@@ -42,7 +43,7 @@ export default function ConflictLabel(props: Props): ReactPortal {
                     <div>{text}</div>
                     {showRequirements && !!conflict.requirements.length && (
                         <div className='cvat-conflict-tooltip-requirements'>
-                            <div>Requirements:</div>
+                            <div>{t('Requirements:')}</div>
                             {conflict.requirements.slice(0, MAX_TOOLTIP_REQUIREMENTS).map((requirement) => (
                                 <div
                                     key={requirement.id}
@@ -53,7 +54,7 @@ export default function ConflictLabel(props: Props): ReactPortal {
                                 </div>
                             ))}
                             {conflict.requirements.length > MAX_TOOLTIP_REQUIREMENTS && (
-                                <div>{`${conflict.requirements.length - MAX_TOOLTIP_REQUIREMENTS} more in Issues`}</div>
+                                <div>{t('{{value1}} more in Issues', { value1: conflict.requirements.length - MAX_TOOLTIP_REQUIREMENTS })}</div>
                             )}
                         </div>
                     )}

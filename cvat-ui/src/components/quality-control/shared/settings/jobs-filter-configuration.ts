@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import _ from 'lodash';
 import { Config } from '@react-awesome-query-builder/antd';
 import { config as jobPageFilterConfig } from 'components/jobs-page/jobs-filter-configuration';
@@ -12,14 +13,14 @@ export const config: Partial<Config> = {
             jobPageFilterConfig.fields, ['state', 'stage', 'assignee', 'updatedDate', 'id', 'task_name', 'task_id'],
         ),
         type: {
-            label: 'Job Type',
+            label: t('Job Type'),
             type: 'select',
             operators: ['select_equals'],
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'annotation', title: 'Annotation' },
-                    { value: 'replica', title: 'Replica' },
+                    { value: 'annotation', title: t('Annotation') },
+                    { value: 'replica', title: t('Replica') },
                 ],
             },
         },

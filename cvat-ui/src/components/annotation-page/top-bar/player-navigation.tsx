@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useState, useEffect, useCallback, CSSProperties,
 } from 'react';
@@ -59,21 +60,21 @@ interface Props {
 
 const componentShortcuts = {
     DELETE_FRAME: {
-        name: 'Delete frame',
-        description: 'Delete frame',
+        name: t('Delete frame'),
+        description: t('Delete frame'),
         sequences: ['alt+del'],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
     FOCUS_INPUT_FRAME: {
-        name: 'Focus input frame',
-        description: 'Focus on the element to change the current frame',
+        name: t('Focus input frame'),
+        description: t('Focus on the element to change the current frame'),
         sequences: ['`'],
         displayedSequences: ['~'],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
     SEARCH_FRAME_BY_NAME: {
-        name: 'Search frame by name',
-        description: 'Open search frame by name dialog',
+        name: t('Search frame by name'),
+        description: t('Open search frame by name dialog'),
         sequences: [],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
@@ -127,10 +128,10 @@ function PlayerNavigation(props: Props): JSX.Element {
         if (!playing) {
             switchNavigationBlocked(true);
             Modal.confirm({
-                title: `Do you want to delete frame #${frameNumber}?`,
-                content: 'The frame will not be visible in navigation and exported datasets, but it still can be restored with all the annotations.',
+                title: t('Do you want to delete frame #{{frameNumber}}?', { frameNumber }),
+                content: t('The frame will not be visible in navigation and exported datasets, but it still can be restored with all the annotations.'),
                 className: 'cvat-modal-delete-frame',
-                okText: 'Delete',
+                okText: t('Delete'),
                 okType: 'danger',
                 onOk: () => {
                     switchNavigationBlocked(false);
@@ -150,7 +151,7 @@ function PlayerNavigation(props: Props): JSX.Element {
                 onDeleteFrame();
             } else {
                 message.warning({
-                    content: 'Frames cannot be deleted in replica jobs, use the parent annotation job',
+                    content: t('Frames cannot be deleted in replica jobs, use the parent annotation job'),
                     className: 'cvat-replica-frame-deletion-warning',
                 });
             }
@@ -191,7 +192,7 @@ function PlayerNavigation(props: Props): JSX.Element {
     }, {});
 
     const deleteFrameIcon = !frameDeleted ? (
-        <CVATTooltip title={`Delete the frame ${deleteFrameShortcut}`}>
+        <CVATTooltip title={t('Delete the frame {{deleteFrameShortcut}}', { deleteFrameShortcut })}>
             <DeleteOutlined
                 style={deleteFrameIconStyle}
                 className='cvat-player-delete-frame'
@@ -199,7 +200,7 @@ function PlayerNavigation(props: Props): JSX.Element {
             />
         </CVATTooltip>
     ) : (
-        <CVATTooltip title='Restore the frame'>
+        <CVATTooltip title={t('Restore the frame')}>
             <Icon
                 style={deleteFrameIconStyle}
                 className='cvat-player-restore-frame'
@@ -254,10 +255,10 @@ function PlayerNavigation(props: Props): JSX.Element {
                         </CVATTooltip>
                     </Col>
                     <Col className='cvat-player-frame-actions' offset={1}>
-                        <CVATTooltip title='Copy frame filename'>
+                        <CVATTooltip title={t('Copy frame filename')}>
                             <CopyOutlined className='cvat-player-copy-frame-name-icon' onClick={onCopyFilenameIconClick} />
                         </CVATTooltip>
-                        <CVATTooltip title='Create frame URL'>
+                        <CVATTooltip title={t('Create frame URL')}>
                             <LinkOutlined className='cvat-player-frame-url-icon' onClick={onURLIconClick} />
                         </CVATTooltip>
                         { frameDeletionAvailable && deleteFrameIcon }
@@ -265,7 +266,7 @@ function PlayerNavigation(props: Props): JSX.Element {
                 </Row>
             </Col>
             <Col>
-                <CVATTooltip title={`Press ${focusFrameInputShortcut} to focus here`}>
+                <CVATTooltip title={t('Press {{focusFrameInputShortcut}} to focus here', { focusFrameInputShortcut })}>
                     <InputNumber
                         ref={inputFrameRef}
                         className='cvat-player-frame-selector'
@@ -293,7 +294,7 @@ function PlayerNavigation(props: Props): JSX.Element {
             <Col className='cvat-player-actions'>
                 {
                     showSearchFrameByName && (
-                        <CVATTooltip title={`Search frame by name ${searchFrameByNameShortcut}`}>
+                        <CVATTooltip title={t('Search frame by name {{searchFrameByNameShortcut}}', { searchFrameByNameShortcut })}>
                             <SearchOutlined
                                 className='cvat-player-search-frame-name-icon'
                                 onClick={onSearchIconClick}

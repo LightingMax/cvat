@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from '@ant-design/icons';
@@ -27,8 +28,8 @@ export interface Props {
 
 const componentShortcuts = {
     CANCEL: {
-        name: 'Cancel',
-        description: 'Cancel any active canvas mode',
+        name: t('Cancel'),
+        description: t('Cancel any active canvas mode'),
         sequences: ['esc'],
         scope: ShortcutScope.STANDARD_WORKSPACE_CONTROLS,
     },
@@ -74,7 +75,7 @@ function CursorControl(props: Props): JSX.Element {
                 keyMap={subKeyMap(componentShortcuts, keyMap)}
                 handlers={handlers}
             />
-            <CVATTooltip title={`Cursor ${cursorShortkey}`} placement='right'>
+            <CVATTooltip title={t('Cursor {{cursorShortkey}}', { cursorShortkey })} placement='right'>
                 <Icon
                     component={CursorIcon}
                     className={

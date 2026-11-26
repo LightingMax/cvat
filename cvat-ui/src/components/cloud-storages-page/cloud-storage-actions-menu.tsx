@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { MoreOutlined } from '@ant-design/icons';
 import Button from 'antd/lib/button';
@@ -33,13 +34,13 @@ export default function CloudStorageActionsMenu(props: Props): JSX.Element {
     const items = [
         {
             key: 'update',
-            label: withCount('Update', 'update'),
+            label: withCount(t('Update'), 'update'),
             onClick: onUpdate,
             disabled: isDisabled('update'),
         },
         {
             key: 'delete',
-            label: withCount('Delete', 'delete'),
+            label: withCount(t('Delete'), 'delete'),
             onClick: onDelete,
             disabled: isDisabled('delete'),
         },

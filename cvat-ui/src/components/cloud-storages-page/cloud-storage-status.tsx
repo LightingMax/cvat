@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect } from 'react';
 import Badge from 'antd/lib/badge';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,10 +29,10 @@ export default function Status({ cloudStorage }: Props): JSX.Element {
     let message: string;
     let badgeStatus: 'processing' | 'success' | 'error';
     if (!status || (status && status.fetching)) {
-        message = 'Loading';
+        message = t('Loading');
         badgeStatus = 'processing';
     } else if (status.initialized && !status.status) {
-        message = 'Error';
+        message = t('Error');
         badgeStatus = 'error';
     } else {
         message = status.status;
@@ -39,8 +40,8 @@ export default function Status({ cloudStorage }: Props): JSX.Element {
     }
 
     return (
-        <CVATTooltip overlay={`Status: ${message}`}>
-            <span className='cvat-cloud-storage-status-indicator' aria-label={`Status: ${message}`}>
+        <CVATTooltip overlay={t('Status: {{message}}', { message })}>
+            <span className='cvat-cloud-storage-status-indicator' aria-label={t('Status: {{message}}', { message })}>
                 <Badge status={badgeStatus} />
             </span>
         </CVATTooltip>

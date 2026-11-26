@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
@@ -15,8 +16,8 @@ import { subKeyMap } from 'utils/component-subkeymap';
 
 const componentShortcuts = {
     TOGGLE_ANNOTATION_PAGE: {
-        name: 'Toggle layout grid',
-        description: 'The grid is used to UI development',
+        name: t('Toggle layout grid'),
+        description: t('The grid is used to UI development'),
         sequences: ['ctrl+alt+enter'],
         scope: ShortcutScope.GENERAL,
     },

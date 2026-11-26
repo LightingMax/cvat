@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useCallback } from 'react';
 import { Col } from 'antd/lib/grid';
 import Icon, { InfoCircleOutlined } from '@ant-design/icons';
@@ -20,6 +21,17 @@ import { Workspace } from 'reducers';
 
 import MDEditor from '@uiw/react-md-editor';
 import rehypeSanitize from 'rehype-sanitize';
+
+const workspaceNames: Record<Workspace, string> = {
+    [Workspace.STANDARD]: t('Standard'),
+    [Workspace.STANDARD3D]: t('Standard 3D'),
+    [Workspace.ATTRIBUTES]: t('Attribute annotation'),
+    [Workspace.SINGLE_SHAPE]: t('Single shape'),
+    [Workspace.TAGS]: t('Tag annotation'),
+    [Workspace.ACTION_PHASES]: t('Video understanding'),
+    [Workspace.REVIEW]: t('Review'),
+    [Workspace.AUDIO]: t('Audio annotation'),
+};
 
 interface Props {
     showStatistics(): void;
@@ -67,8 +79,8 @@ function RightGroup(props: Props): JSX.Element {
             }
         }).catch((error: unknown) => {
             notification.error({
-                message: 'Could not receive annotation guide',
-                description: error instanceof Error ? error.message : 'Unknown error',
+                message: t('Could not receive annotation guide'),
+                description: error instanceof Error ? error.message : t('Unknown error'),
             });
         });
     }, [jobInstance]);
@@ -85,7 +97,7 @@ function RightGroup(props: Props): JSX.Element {
                 try {
                     seenGuides = JSON.parse(localStorage.getItem('seenGuides') || '[]');
                     if (!Array.isArray(seenGuides) || seenGuides.some((el) => !Number.isInteger(el))) {
-                        throw new Error('Wrong structure stored in local storage');
+                        throw new Error(t('Wrong structure stored in local storage'));
                     }
                 } catch (_error: unknown) {
                     seenGuides = [];
@@ -121,7 +133,7 @@ function RightGroup(props: Props): JSX.Element {
                 }}
             >
                 <Icon component={FullscreenIcon} />
-                Fullscreen
+                {t('Fullscreen')}
             </Button>
             { jobInstance.guideId !== null && (
                 <Button
@@ -130,7 +142,7 @@ function RightGroup(props: Props): JSX.Element {
                     onClick={openGuide}
                 >
                     <Icon component={GuideIcon} />
-                    Guide
+                    {t('Guide')}
                 </Button>
             )}
             <Button
@@ -139,7 +151,7 @@ function RightGroup(props: Props): JSX.Element {
                 onClick={showStatistics}
             >
                 <InfoCircleOutlined />
-                Info
+                {t('Info')}
             </Button>
             <Button
                 type='link'
@@ -149,7 +161,7 @@ function RightGroup(props: Props): JSX.Element {
                 onClick={showFilters}
             >
                 <Icon component={FilterIcon} />
-                Filters
+                {t('Filters')}
             </Button>
             <div>
                 <Select
@@ -170,14 +182,14 @@ function RightGroup(props: Props): JSX.Element {
                             }
                             return (
                                 <Select.Option disabled={ws !== Workspace.STANDARD3D} key={ws} value={ws}>
-                                    {ws}
+                                    {workspaceNames[ws]}
                                 </Select.Option>
                             );
                         }
                         if (ws !== Workspace.STANDARD3D) {
                             return (
                                 <Select.Option key={ws} value={ws}>
-                                    {ws}
+                                    {workspaceNames[ws]}
                                 </Select.Option>
                             );
                         }

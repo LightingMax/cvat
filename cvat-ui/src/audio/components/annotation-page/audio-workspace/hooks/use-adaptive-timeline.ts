@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { useLayoutEffect, useRef } from 'react';
 import TimelinePlugin, { type TimelinePluginOptions } from 'wavesurfer.js/dist/plugins/timeline';
 
@@ -133,7 +134,7 @@ let prevMPPS = Number.MAX_SAFE_INTEGER;
 for (const band of DENSITY_BANDS) {
     const currMpps = band.minPixelsPerSecond;
     if (currMpps > prevMPPS) {
-        throw new Error(`DENSITY_BANDS must be sorted by MPPS descending. Conflicting band: ${JSON.stringify(band)}`);
+        throw new Error(t('DENSITY_BANDS must be sorted by MPPS descending. Conflicting band: {{value1}}', { value1: JSON.stringify(band) }));
     }
     prevMPPS = currMpps;
 }

@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Text from 'antd/lib/typography/Text';
@@ -36,7 +37,7 @@ function ApproximationAccuracy(props: Props): React.ReactPortal | null {
                         onChange={onChange}
                     />
                 </Col>
-                <Text type='secondary'>approximation accuracy</Text>
+                <Text type='secondary'>{t('approximation accuracy')}</Text>
             </Row>,
             target,
         ) :

@@ -8,7 +8,7 @@
     flex-direction: column;
     min-width: 0;
     overflow: hidden auto;
-    background-color: #fff;
+    background-color: var(--cvat-background-color-1, #fff);
     padding: $grid-unit-size;
 }
 
@@ -54,7 +54,7 @@
     $draw-mode-guide-color: red;
 
     position: relative;
-    background-color: white;
+    background-color: var(--cvat-background-color-1, white);
     border-radius: $grid-unit-size;
     margin-bottom: 0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 10%);
@@ -160,7 +160,7 @@
     }
 
     .cvat-audio-minimap-section {
-        background-color: #f3f4f6;
+        background-color: var(--cvat-background-color-1, #f3f4f6);
         border-top: 1px solid #e5e7eb;
         padding: 0;
 
@@ -217,14 +217,14 @@
 .cvat-audio-placeholder {
     text-align: center;
     padding: 60px 20px;
-    background-color: white;
+    background-color: var(--cvat-background-color-1, white);
     border-radius: $grid-unit-size;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 10%);
 }
 
 .cvat-audio-placeholder-text {
     font-size: 1.1rem;
-    color: #6b7280;
+    color: var(--cvat-text-color-secondary, #6b7280);
     margin: 0 0 10px;
 }
 

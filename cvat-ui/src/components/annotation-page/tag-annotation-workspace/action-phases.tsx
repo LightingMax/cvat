@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
@@ -243,7 +244,7 @@ export default function ActionPhases(props: Props): JSX.Element {
     function valid(range: Range): boolean {
         if (Number.isInteger(range.start) && Number.isInteger(range.stop) &&
             range.start >= startFrame && range.stop <= stopFrame + 1 && range.start < range.stop) return true;
-        setError(`Enter a start and end within frames ${startFrame}–${stopFrame}.`);
+        setError(t('Enter a start and end within frames {{startFrame}}–{{stopFrame}}.', { startFrame, stopFrame }));
         return false;
     }
 
@@ -279,7 +280,7 @@ export default function ActionPhases(props: Props): JSX.Element {
         const current = await job.annotations.intervals([]);
         const replacedIDs = new Set(replaced.map(({ clientID }) => clientID));
         const previous = current.filter(({ clientID }) => replacedIDs.has(clientID));
-        if (replaced.length && !previous.length) throw new Error('Select the updated clip before editing it again.');
+        if (replaced.length && !previous.length) throw new Error(t('Select the updated clip before editing it again.'));
 
         const related = mergeClips(current.filter((item) => (
             item.label.id === target.id && !replacedIDs.has(item.clientID)
@@ -291,7 +292,7 @@ export default function ActionPhases(props: Props): JSX.Element {
         }
 
         const absorbed = [...previous, ...related.flatMap((clip) => clip.members)];
-        if (absorbed.some((item) => item.lock)) throw new Error('The new range overlaps a locked clip.');
+        if (absorbed.some((item) => item.lock)) throw new Error(t('The new range overlaps a locked clip.'));
         const start = Math.min(range.start, ...related.map((clip) => clip.start));
         const stop = Math.max(range.stop, ...related.map((clip) => clip.stop));
         if (absorbed.length === 1) {
@@ -319,7 +320,7 @@ export default function ActionPhases(props: Props): JSX.Element {
         const merged = (await job.annotations.intervals([])).find((item) => (
             item.label.id === target.id && item.start === start && item.stop === stop
         ));
-        if (!merged) throw new Error('Could not select the merged clip.');
+        if (!merged) throw new Error(t('Could not select the merged clip.'));
         return merged.clientID as number;
     }
 
@@ -358,7 +359,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                 [shortcutID]: { ...currentKeyMap[shortcutID], sequences: override },
             }, currentKeyMap);
             if (conflicts) {
-                throw new Error(`Shortcut already used by ${Object.values(conflicts).map((item) => item.name).join(', ')}.`);
+                throw new Error(t('Shortcut already used by {{value1}}.', { value1: Object.values(conflicts).map((item) => item.name).join(', ') }));
             }
         }
 
@@ -367,13 +368,13 @@ export default function ActionPhases(props: Props): JSX.Element {
             while (baseName.endsWith(INTERVAL_SUFFIX)) {
                 baseName = baseName.slice(0, -INTERVAL_SUFFIX.length).trimEnd();
             }
-            if (!baseName || baseName === '[interval]') throw new Error('Enter an action name before the suffix.');
+            if (!baseName || baseName === '[interval]') throw new Error(t('Enter an action name before the suffix.'));
             const storedName = baseName + INTERVAL_SUFFIX;
             if (Array.from(storedName).length > 64) {
-                throw new Error(`Action names can contain up to ${64 - INTERVAL_SUFFIX.length} characters.`);
+                throw new Error(t('Action names can contain up to {{value1}} characters.', { value1: 64 - INTERVAL_SUFFIX.length }));
             }
             if (labels.some((item) => actionName(item) === baseName)) {
-                throw new Error(`An action track named "${baseName}" already exists.`);
+                throw new Error(t('An action track named "{{baseName}}" already exists.', { baseName }));
             }
             const created = await job.addLabel(new Label({
                 name: storedName, color, type: LabelType.INTERVAL, attributes: [],
@@ -389,28 +390,28 @@ export default function ActionPhases(props: Props): JSX.Element {
         const state = getCVATStore().getState().annotation;
         if (state.job.instance !== job || state.workspace !== Workspace.ACTION_PHASES) return;
         if (draftMap.current.size) {
-            notification.info({ message: 'Finish or discard active recordings before deleting a track.' });
+            notification.info({ message: t('Finish or discard active recordings before deleting a track.') });
             return;
         }
 
-        const scope = job.projectId === null ? 'task' : 'project';
+        const scope = job.projectId === null ? t('task') : t('project');
         const willSave = job.annotations.hasUnsavedChanges() ||
             !!Object.keys(state.job.meta?.getUpdated() ?? {}).length;
         Modal.confirm({
-            title: `Delete action track "${actionName(target)}"?`,
+            title: t('Delete action track "{{value1}}"?', { value1: actionName(target) }),
             content: (
                 <>
-                    <p>{`This permanently removes the label and all of its intervals across this ${scope}.`}</p>
-                    {willSave && <p>Your current annotation edits will be saved first.</p>}
+                    <p>{t('This permanently removes the label and all of its intervals across this {{scope}}.', { scope })}</p>
+                    {willSave && <p>{t('Your current annotation edits will be saved first.')}</p>}
                 </>
             ),
-            okText: willSave ? 'Save and delete' : 'Delete track',
+            okText: willSave ? t('Save and delete') : t('Delete track'),
             okButtonProps: { danger: true },
             onOk: async () => {
                 const current = getCVATStore().getState().annotation;
                 if (current.job.instance !== job || current.annotations.saving.uploading) {
-                    notification.error({ message: 'Wait for the current save to finish and try again.' });
-                    throw new Error('The job is busy.');
+                    notification.error({ message: t('Wait for the current save to finish and try again.') });
+                    throw new Error(t('The job is busy.'));
                 }
 
                 dispatch(switchPlay(false));
@@ -419,7 +420,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                     await job.deleteLabel(target);
                 } catch (reason) {
                     notification.error({
-                        message: 'Could not delete the action track',
+                        message: t('Could not delete the action track'),
                         description: reason instanceof Error ? reason.message : String(reason),
                     });
                     throw reason;
@@ -613,14 +614,14 @@ export default function ActionPhases(props: Props): JSX.Element {
 
     const recordingSettings = (
         <div className='cvat-action-phase-settings'>
-            <Text>Recording</Text>
+            <Text>{t('Recording')}</Text>
             <Select
                 size='small'
-                aria-label='Recording mode'
+                aria-label={t('Recording mode')}
                 value={mode}
                 disabled={!!drafts.size}
                 onChange={setMode}
-                options={[{ value: 'toggle', label: 'Press to start/stop' }, { value: 'hold', label: 'Hold to record' }]}
+                options={[{ value: 'toggle', label: t('Press to start/stop') }, { value: 'hold', label: t('Hold to record') }]}
             />
         </div>
     );
@@ -633,28 +634,28 @@ export default function ActionPhases(props: Props): JSX.Element {
         <section
             ref={panel}
             className='cvat-action-phases'
-            aria-label='Video understanding'
+            aria-label={t('Video understanding')}
         >
             <div className='cvat-action-phase-toolbar'>
-                <Text strong>Action tracks</Text>
-                <CVATTooltip title='Add an action track'>
+                <Text strong>{t('Action tracks')}</Text>
+                <CVATTooltip title={t('Add an action track')}>
                     <Button
                         type='text'
                         size='small'
                         icon={<PlusOutlined />}
-                        aria-label='Add action track'
+                        aria-label={t('Add action track')}
                         onClick={() => setTrackDialog({
                             slot: labels.length < ACTION_KEYS.length ? labels.length : null,
                         })}
                     />
                 </CVATTooltip>
-                <CVATTooltip title={live ? `Confirm action ${toggleKey}` :
-                    `Start action ${toggleKey} · Hold to play and record ${holdKey}`}
+                <CVATTooltip title={live ? t('Confirm action {{toggleKey}}', { toggleKey }) :
+                    t('Start action {{toggleKey}} · Hold to play and record {{holdKey}}', { toggleKey, holdKey })}
                 >
                     <Button
                         type='text'
                         size='small'
-                        aria-label={live ? 'Finish action' : 'Record action'}
+                        aria-label={live ? t('Finish action') : t('Record action')}
                         icon={live ? <VerticalAlignBottomOutlined /> : <CaretRightOutlined />}
                         disabled={!label || deleted}
                         danger={!!live}
@@ -662,21 +663,21 @@ export default function ActionPhases(props: Props): JSX.Element {
                     />
                 </CVATTooltip>
                 {live && (
-                    <CVATTooltip title='Discard recording'>
+                    <CVATTooltip title={t('Discard recording')}>
                         <Button
                             type='text'
                             size='small'
                             icon={<CloseOutlined />}
-                            aria-label='Discard recording'
+                            aria-label={t('Discard recording')}
                             onClick={() => updateDraft(label.id as number)}
                         />
                     </CVATTooltip>
                 )}
                 <div className='cvat-action-phase-coverage'>
-                    <Text type='secondary'>{`${total - unmarked} / ${total} frames`}</Text>
+                    <Text type='secondary'>{t('{{value1}} / {{total}} frames', { value1: total - unmarked, total })}</Text>
                 </div>
-                <CVATTooltip title='Next gap'>
-                    <Button type='text' size='small' icon={<FastForwardOutlined />} aria-label='Next gap'
+                <CVATTooltip title={t('Next gap')}>
+                    <Button type='text' size='small' icon={<FastForwardOutlined />} aria-label={t('Next gap')}
                         disabled={!gaps.length}
                         onClick={() => {
                             const gap = gaps.find((item) => item.start > frame) ?? gaps[0];
@@ -687,12 +688,12 @@ export default function ActionPhases(props: Props): JSX.Element {
                         }}
                     />
                 </CVATTooltip>
-                <CVATTooltip title={showHidden ? 'Collapse hidden tracks' : 'Show hidden tracks'}>
+                <CVATTooltip title={showHidden ? t('Collapse hidden tracks') : t('Show hidden tracks')}>
                     <Button
                         type='text'
                         size='small'
                         icon={showHidden ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                        aria-label={showHidden ? 'Collapse hidden tracks' : 'Show hidden tracks'}
+                        aria-label={showHidden ? t('Collapse hidden tracks') : t('Show hidden tracks')}
                         aria-pressed={showHidden}
                         disabled={!hiddenCount}
                         onClick={() => {
@@ -701,12 +702,12 @@ export default function ActionPhases(props: Props): JSX.Element {
                         }}
                     />
                 </CVATTooltip>
-                <CVATTooltip title='Export JSON'>
+                <CVATTooltip title={t('Export JSON')}>
                     <Button
                         type='text'
                         size='small'
                         icon={<DownloadOutlined />}
-                        aria-label='Export JSON'
+                        aria-label={t('Export JSON')}
                         disabled={!phases.length}
                         onClick={() => downloadPhases(job, phases)}
                     />
@@ -715,17 +716,17 @@ export default function ActionPhases(props: Props): JSX.Element {
                     content={(
                         <div className='cvat-action-phase-overlay-options'>
                             <Checkbox checked={showObjects} onChange={(event) => onShowObjects(event.target.checked)}>
-                                Objects
+                                {t('Objects')}
                             </Checkbox>
                             <Checkbox checked={showTags} onChange={(event) => onShowTags(event.target.checked)}>
-                                Frame tags
+                                {t('Frame tags')}
                             </Checkbox>
                         </div>
                     )}
                     trigger='click'
                     placement='topRight'
                 >
-                    <Button type='text' size='small' icon={<AppstoreOutlined />} aria-label='Canvas annotations' />
+                    <Button type='text' size='small' icon={<AppstoreOutlined />} aria-label={t('Canvas annotations')} />
                 </Popover>
                 <Popover content={recordingSettings} trigger='click' placement='topRight'>
                     <Button
@@ -733,7 +734,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                         size='small'
                         className='cvat-action-phase-recording-settings'
                         icon={<SettingOutlined />}
-                        aria-label='Recording settings'
+                        aria-label={t('Recording settings')}
                     />
                 </Popover>
             </div>
@@ -772,7 +773,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                 onSeek={seek}
             />
             <div className='cvat-action-phase-details'>
-                <Text type='secondary'>{`Frame ${frame}`}</Text>
+                <Text type='secondary'>{t('Frame {{frame}}', { frame })}</Text>
                 {active.size > 0 && <Text>{Array.from(active).join(', ')}</Text>}
                 {error && <Text type='danger' role='alert'>{error}</Text>}
                 {selected && editing && (
@@ -782,33 +783,33 @@ export default function ActionPhases(props: Props): JSX.Element {
                         updateClip(selected, { start: Number(data.get('start')), stop: Number(data.get('end')) + 1 });
                     }}
                     >
-                        <InputNumber size='small' name='start' aria-label='Start frame' required defaultValue={selected.start} />
-                        <InputNumber size='small' name='end' aria-label='End frame' required defaultValue={selected.stop - 1} />
-                        <Button htmlType='submit' size='small' type='primary'>Apply</Button>
-                        <Button size='small' onClick={() => setEditing(false)}>Cancel</Button>
+                        <InputNumber size='small' name='start' aria-label={t('Start frame')} required defaultValue={selected.start} />
+                        <InputNumber size='small' name='end' aria-label={t('End frame')} required defaultValue={selected.stop - 1} />
+                        <Button htmlType='submit' size='small' type='primary'>{t('Apply')}</Button>
+                        <Button size='small' onClick={() => setEditing(false)}>{t('Cancel')}</Button>
                     </form>
                 )}
                 {selected && !editing && (
                     <div>
                         <Text>{`${actionName(selected.label)} · ${selected.start}–${selected.stop - 1}`}</Text>
-                        <CVATTooltip title='Go to start'>
-                            <Button type='text' size='small' icon={<FastBackwardOutlined />} aria-label='Go to start'
+                        <CVATTooltip title={t('Go to start')}>
+                            <Button type='text' size='small' icon={<FastBackwardOutlined />} aria-label={t('Go to start')}
                                 onClick={() => seek(selected.start)}
                             />
                         </CVATTooltip>
-                        <CVATTooltip title='Go to end'>
-                            <Button type='text' size='small' icon={<FastForwardOutlined />} aria-label='Go to end'
+                        <CVATTooltip title={t('Go to end')}>
+                            <Button type='text' size='small' icon={<FastForwardOutlined />} aria-label={t('Go to end')}
                                 onClick={() => seek(selected.stop - 1)}
                             />
                         </CVATTooltip>
-                        <CVATTooltip title='Edit range'>
-                            <Button type='text' size='small' icon={<EditOutlined />} aria-label='Edit range'
+                        <CVATTooltip title={t('Edit range')}>
+                            <Button type='text' size='small' icon={<EditOutlined />} aria-label={t('Edit range')}
                                 disabled={selected.locked}
                                 onClick={() => setEditing(true)}
                             />
                         </CVATTooltip>
-                        <CVATTooltip title='Remove clip'>
-                            <Button type='text' size='small' icon={<DeleteOutlined />} aria-label='Remove clip'
+                        <CVATTooltip title={t('Remove clip')}>
+                            <Button type='text' size='small' icon={<DeleteOutlined />} aria-label={t('Remove clip')}
                                 disabled={selected.locked}
                                 onClick={() => {
                                     change(async () => {
@@ -822,7 +823,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                             />
                         </CVATTooltip>
                         {(['start', 'end'] as const).map((side) => (
-                            <CVATTooltip key={side} title={`Adjust ${side} edge with +/−`}>
+                            <CVATTooltip key={side} title={t('Adjust {{side}} edge with +/−', { side })}>
                                 <Button
                                     type={edge === side ? 'primary' : 'default'}
                                     size='small'
@@ -832,7 +833,7 @@ export default function ActionPhases(props: Props): JSX.Element {
                                         setEdge(side);
                                     }}
                                 >
-                                    {side === 'start' ? 'Start' : 'End'}
+                                    {side === 'start' ? t('Start') : t('End')}
                                 </Button>
                             </CVATTooltip>
                         ))}

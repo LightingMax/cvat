@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React from 'react';
 import { useSelector } from 'react-redux';
@@ -29,7 +30,7 @@ function UploadFileStatusModal(): JSX.Element {
 
     return (
         <Modal
-            title='Uploading the file'
+            title={t('Uploading the file')}
             open={!!importingId && importingProgress < 100}
             closable={false}
             footer={null}

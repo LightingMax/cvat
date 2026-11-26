@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import Modal from 'antd/lib/modal';
 import notification from 'antd/lib/notification';
 import { isEqual } from 'lodash';
@@ -120,12 +121,12 @@ function downloadDrafts(job: Job, data: unknown): void {
 async function offerDraft(job: Job, drafts: Draft[], canRestore: boolean): Promise<boolean> {
     return new Promise((resolve) => {
         Modal.confirm({
-            title: 'Local annotation drafts are available',
+            title: t('Local annotation drafts are available'),
             content: canRestore ?
-                'Open a previously stored draft and use Save to review changes before merging.' :
-                'The labels or local drafts differ. Download the drafts to compare the saved versions.',
-            okText: canRestore ? 'Open local draft' : 'Download drafts',
-            cancelText: 'Keep server view',
+                t('Open a previously stored draft and use Save to review changes before merging.') :
+                t('The labels or local drafts differ. Download the drafts to compare the saved versions.'),
+            okText: canRestore ? t('Open local draft') : t('Download drafts'),
+            cancelText: t('Keep server view'),
             closable: true,
             onOk: () => {
                 if (!canRestore) downloadDrafts(job, drafts);
@@ -179,7 +180,7 @@ export async function startAnnotationDraft(job: Job, user: { id: number; usernam
         const candidates = (await readDrafts(scope).catch(() => null))?.filter((item) => (
             item.pendingSubmission || !isEqual(item.annotations, base)
         ));
-        if (!candidates) notification.warning({ message: 'Local annotation backup is unavailable' });
+        if (!candidates) notification.warning({ message: t('Local annotation backup is unavailable') });
         const matching = candidates?.length > 0 && candidates.every((item) => (
             isEqual(item.labels, labels) && isEqual(item.base, candidates[0].base) &&
             isEqual(item.annotations, candidates[0].annotations)
@@ -192,8 +193,8 @@ export async function startAnnotationDraft(job: Job, user: { id: number; usernam
         if (prior) {
             await restore(job, current, prior);
             notification.info({
-                message: 'Local annotation draft restored',
-                description: 'Use Save to sync it to CVAT.',
+                message: t('Local annotation draft restored'),
+                description: t('Use Save to sync it to CVAT.'),
             });
         }
 
@@ -213,7 +214,7 @@ export async function startAnnotationDraft(job: Job, user: { id: number; usernam
         };
         sessions.set(job, session);
     } catch {
-        notification.warning({ message: 'Local annotation backup is unavailable' });
+        notification.warning({ message: t('Local annotation backup is unavailable') });
     }
 }
 
@@ -236,7 +237,7 @@ async function installSavedAnnotations(
     const changedSinceSave = !isEqual(current, local);
     let { base } = session.draft;
     if (changedSinceSave) {
-        notification.info({ message: 'Newer edits are still open. Use Save to submit them.' });
+        notification.info({ message: t('Newer edits are still open. Use Save to submit them.') });
     } else {
         await installJobAnnotationRevision(job, saved.annotations);
         base = clean(await job.annotations.export());
@@ -247,7 +248,7 @@ async function installSavedAnnotations(
     try {
         await persistDraft(session);
     } catch {
-        notification.warning({ message: 'Saved to CVAT, but could not clear the local draft' });
+        notification.warning({ message: t('Saved to CVAT, but could not clear the local draft') });
     }
 }
 
@@ -325,7 +326,7 @@ export async function saveAnnotationDraft(
         };
         if (!isEqual(clean(await job.annotations.export()), local)) {
             notification.warning({
-                message: 'The local draft changed during review. Save again to include the latest edits.',
+                message: t('The local draft changed during review. Save again to include the latest edits.'),
             });
             return false;
         }

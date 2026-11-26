@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -97,8 +98,8 @@ function JobActionsComponent(
 
     const onMergeConsensusJob = useCallback(() => {
         Modal.confirm({
-            title: 'The replica jobs will be merged',
-            content: 'Existing annotations in the parent job will be updated. Continue?',
+            title: t('The replica jobs will be merged'),
+            content: t('Existing annotations in the parent job will be updated. Continue?'),
             className: 'cvat-modal-confirm-consensus-merge-job',
             onOk: () => {
                 dispatch(mergeConsensusJobsAsync(jobInstance));
@@ -107,18 +108,18 @@ function JobActionsComponent(
                 type: 'primary',
                 danger: true,
             },
-            okText: 'Merge',
+            okText: t('Merge'),
         });
     }, [jobInstance]);
 
     const onDeleteJob = useCallback(() => {
         Modal.confirm({
             title: isBulkMode ?
-                `Delete ${jobsToAct.length} selected jobs` :
-                `The job ${jobInstance.id} will be deleted`,
+                t('Delete {{length}} selected jobs', { length: jobsToAct.length }) :
+                t('The job {{id}} will be deleted', { id: jobInstance.id }),
             content: isBulkMode ?
-                'All related data (annotations) for all selected jobs will be lost. Continue?' :
-                'All related data (annotations) will be lost. Continue?',
+                t('All related data (annotations) for all selected jobs will be lost. Continue?') :
+                t('All related data (annotations) will be lost. Continue?'),
             className: 'cvat-modal-confirm-delete-job',
             onOk: () => {
                 setTimeout(() => {
@@ -129,7 +130,7 @@ function JobActionsComponent(
                                 await dispatch(deleteJobAsync(job));
                             }
                         },
-                        (job, idx, total) => `Deleting job #${job.id} (${idx + 1}/${total})`,
+                        (job, idx, total) => t('Deleting job #{{id}} ({{value2}}/{{total}})', { id: job.id, value2: idx + 1, total }),
                     ));
                 }, 0);
             },
@@ -137,7 +138,7 @@ function JobActionsComponent(
                 type: 'primary',
                 danger: true,
             },
-            okText: isBulkMode ? 'Delete selected' : 'Delete',
+            okText: isBulkMode ? t('Delete selected') : t('Delete'),
         });
     }, [jobInstance, isBulkMode, jobsToAct, dispatch]);
 
@@ -191,7 +192,7 @@ function JobActionsComponent(
             async (job) => {
                 await dispatch(updateJobAsync(job, fields));
             },
-            (job, idx, total) => `Updating job #${job.id} (${idx + 1}/${total})`,
+            (job, idx, total) => t('Updating job #{{id}} ({{value2}}/{{total}})', { id: job.id, value2: idx + 1, total }),
         ));
     }, [jobsToAct, dispatch, stopEditField]);
 

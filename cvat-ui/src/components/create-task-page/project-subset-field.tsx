@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import Autocomplete from 'antd/lib/auto-complete';
 
@@ -62,7 +63,7 @@ export default function ProjectSubsetField(props: Props): JSX.Element {
     return (
         <Autocomplete
             value={internalValue}
-            placeholder='Input subset'
+            placeholder={t('Input subset')}
             className='cvat-project-search-field cvat-project-subset-field'
             onSearch={setInternalValue}
             onSelect={(_value) => {

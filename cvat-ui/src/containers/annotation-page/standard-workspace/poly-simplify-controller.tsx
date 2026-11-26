@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useRef, useState,
 } from 'react';
@@ -247,7 +248,7 @@ function usePolySimplifySession(props: SessionProps): SessionControls {
                 }
             } catch (error: unknown) {
                 notification.error({
-                    message: 'Could not initialize simplification',
+                    message: t('Could not initialize simplification'),
                     description: <CVATMarkdown>{error instanceof Error ? error.message : String(error)}</CVATMarkdown>,
                     duration: null,
                 });

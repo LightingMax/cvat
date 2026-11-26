@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -19,8 +20,8 @@ import { SaveIcon } from 'icons';
 
 const componentShortcuts = {
     SAVE_JOB: {
-        name: 'Save the job',
-        description: 'Submit unsaved changes of annotations to the server',
+        name: t('Save the job'),
+        description: t('Submit unsaved changes of annotations to the server'),
         sequences: ['ctrl+s', 'command+s'],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
@@ -48,7 +49,7 @@ function SaveAnnotationsButton() {
     return (
         <>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
-            <CVATTooltip overlay={`Save current changes ${normKeyMap.SAVE_JOB}`}>
+            <CVATTooltip overlay={t('Save current changes {{SAVE_JOB}}', { SAVE_JOB: normKeyMap.SAVE_JOB })}>
                 <Button
                     type='link'
                     onClick={isSaving ? undefined : () => dispatch(saveAnnotationsAsync())}
@@ -56,7 +57,7 @@ function SaveAnnotationsButton() {
                         'cvat-annotation-header-save-button cvat-annotation-header-button'}
                 >
                     <Icon component={SaveIcon} />
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? t('Saving...') : t('Save')}
                 </Button>
             </CVATTooltip>
         </>

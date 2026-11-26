@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import dayjs from 'dayjs';
 import { Row, Col } from 'antd/lib/grid';
@@ -61,9 +62,9 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
             <Row justify='space-between' className='cvat-project-description'>
                 <Col>
                     <Text type='secondary'>
-                        {`Project #${project.id} created`}
-                        {project.owner ? ` by ${project.owner.username}` : null}
-                        {` on ${dayjs(project.createdDate).format('MMMM Do YYYY')}`}
+                        {t('Project #{{id}} created', { id: project.id })}
+                        {project.owner ? t(' by {{username}}', { username: project.owner.username }) : null}
+                        {t(' on {{value1}}', { value1: dayjs(project.createdDate).format('MMMM Do YYYY') })}
                     </Text>
                     <MdGuideControl instanceType='project' id={project.id} />
                     <BugTrackerEditor
@@ -75,7 +76,7 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
                     />
                 </Col>
                 <Col>
-                    <Text type='secondary'>Assigned to</Text>
+                    <Text type='secondary'>{t('Assigned to')}</Text>
                     <UserSelector
                         value={project.assignee}
                         onSelect={(user) => {

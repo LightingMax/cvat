@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Button from 'antd/lib/button';
 import CVATMarkdown from 'components/common/cvat-markdown';
@@ -54,7 +55,7 @@ export default class CanvasTipsComponent extends React.PureComponent<{}, State> 
                             className='cvat-canvas-hints-hide-button'
                             type='link'
                         >
-                            Hide
+                            {t('Hide')}
                         </Button>
                     )}
                 </div>

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useRef, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import { debounce } from 'lodash';
@@ -58,7 +59,7 @@ function PolySimplifyControl(props: Props): React.ReactPortal | null {
 
     const ensureInitialized = useCallback(async (): Promise<void> => {
         if (!openCVWrapper.isInitialized) {
-            const hide = message.loading('Initializing contour utilities..', 0);
+            const hide = message.loading(t('Initializing contour utilities..'), 0);
             try {
                 await openCVWrapper.initialize(() => {
                     hide();
@@ -166,8 +167,8 @@ function PolySimplifyControl(props: Props): React.ReactPortal | null {
                     onClick={handleCancel}
                 />
             </Col>
-            <CVATTooltip title='Lower values create simpler shapes with fewer points. Higher values preserve more detail and points.'>
-                <Text type='secondary'>threshold</Text>
+            <CVATTooltip title={t('Lower values create simpler shapes with fewer points. Higher values preserve more detail and points.')}>
+                <Text type='secondary'>{t('threshold')}</Text>
             </CVATTooltip>
         </Row>,
         target,

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action } from 'redux';
@@ -61,8 +62,8 @@ function BulkWrapper(props: Readonly<BulkWrapperProps>): JSX.Element {
 
     const keyMap: KeyMap = {
         SELECT_ALL: {
-            name: 'Select all',
-            description: 'Select all resources',
+            name: t('Select all'),
+            description: t('Select all resources'),
             sequences: ['ctrl+a', 'command+a'],
             scope: ShortcutScope.GENERAL,
         },

@@ -2,25 +2,26 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { Config } from '@react-awesome-query-builder/antd';
 import asyncFetchUsers from 'components/resource-sorting-filtering/request-users';
 
 export const config: Partial<Config> = {
     fields: {
         description: {
-            label: 'Description',
+            label: t('Description'),
             type: 'text',
             valueSources: ['value'],
             operators: ['like'],
         },
         target_url: {
-            label: 'Target URL',
+            label: t('Target URL'),
             type: 'text',
             valueSources: ['value'],
             operators: ['like'],
         },
         owner: {
-            label: 'Owner',
+            label: t('Owner'),
             type: 'select',
             valueSources: ['value'],
             operators: ['select_equals'],
@@ -31,18 +32,18 @@ export const config: Partial<Config> = {
             },
         },
         updated_date: {
-            label: 'Last updated',
+            label: t('Last updated'),
             type: 'datetime',
             operators: ['between', 'greater', 'greater_or_equal', 'less', 'less_or_equal'],
         },
         type: {
-            label: 'Type',
+            label: t('Type'),
             type: 'select',
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'organization', title: 'Organization' },
-                    { value: 'project', title: 'Project' },
+                    { value: 'organization', title: t('Organization') },
+                    { value: 'project', title: t('Project') },
                 ],
             },
         },

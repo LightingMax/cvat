@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Button from 'antd/lib/button';
 import { MenuProps } from 'antd/lib/menu';
@@ -32,7 +33,7 @@ function CreateURLItem({ onCreateURL, serverID }: Pick<Props, 'onCreateURL' | 's
             icon={<LinkOutlined />}
             onClick={onCreateURL}
         >
-            Copy interval URL
+            {t('Copy interval URL')}
         </Button>
     );
 }
@@ -45,7 +46,7 @@ function MakeCopyItem({ onCopy }: Pick<Props, 'onCopy'>): JSX.Element {
             icon={<CopyOutlined />}
             onClick={onCopy}
         >
-            Duplicate interval
+            {t('Duplicate interval')}
         </Button>
     );
 }
@@ -59,7 +60,7 @@ function RemoveItem({ onRemove, locked }: Pick<Props, 'onRemove' | 'locked'>): J
             onClick={onRemove}
             className='cvat-audio-region-menu-remove'
         >
-            Delete interval
+            {t('Delete interval')}
         </Button>
     );
 }
@@ -74,7 +75,7 @@ function ChangeColorItem({
             onClick={onChangeColorClick}
             className='cvat-audio-region-menu-change-color'
         >
-            {`Change ${colorBy.toLowerCase()} color`}
+            {t('Change {{value1}} color', { value1: colorBy.toLowerCase() })}
         </Button>
     );
 }
@@ -95,7 +96,7 @@ export default function AudioRegionItemMenu(props: Props): MenuProps {
     items.push(
         {
             key: MenuKeys.FIT_INTERVAL,
-            label: <Button type='link' icon={<ArrowsAltOutlined />} onClick={props.onFitInterval}>Fit interval</Button>,
+            label: <Button type='link' icon={<ArrowsAltOutlined />} onClick={props.onFitInterval}>{t('Fit interval')}</Button>,
         },
         { type: 'divider' },
         {

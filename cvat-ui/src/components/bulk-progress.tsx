@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { useHistory } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
@@ -41,11 +42,11 @@ export default function BulkProgress(): JSX.Element | null {
             <>
                 {remainingItemsCount > 0 ? (
                     <>
-                        Some items failed to process. You can retry the operation for the remaining
-                        {` ${remainingItemsCount} items.`}
+                        {t('Some items failed to process. You can retry the operation for the remaining')}
+                        {t(' {{remainingItemsCount}} items.', { remainingItemsCount })}
                     </>
                 ) : (
-                    'An error occurred during the bulk operation.'
+                    t('An error occurred during the bulk operation.')
                 )}
                 {remainingItemsCount > 0 && (
                     <>
@@ -58,7 +59,7 @@ export default function BulkProgress(): JSX.Element | null {
                                 handleRetry();
                             }}
                         >
-                            Retry
+                            {t('Retry')}
                         </Button>
                     </>
                 )}
@@ -89,7 +90,7 @@ export default function BulkProgress(): JSX.Element | null {
                 onClick={() => dispatch(bulkActions.cancelBulkAction())}
                 type='primary'
             >
-                Cancel
+                {t('Cancel')}
             </Button>
         </div>
     );

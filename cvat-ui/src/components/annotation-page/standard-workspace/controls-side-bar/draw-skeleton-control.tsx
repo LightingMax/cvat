@@ -1,3 +1,4 @@
+import { t } from 'i18n';
 import React from 'react';
 import Popover from 'antd/lib/popover';
 import Icon from '@ant-design/icons';
@@ -45,7 +46,7 @@ function DrawSkeletonControl(props: Props): JSX.Element {
             placement='right'
             content={<DrawShapePopoverContainer shapeType={ShapeType.SKELETON} />}
         >
-            <CVATTooltip title='Draw a skeleton' placement='right'>
+            <CVATTooltip title={t('Draw a skeleton')} placement='right'>
                 <Icon {...dynamicIconProps} component={SkeletonIcon} />
             </CVATTooltip>
         </CustomPopover>

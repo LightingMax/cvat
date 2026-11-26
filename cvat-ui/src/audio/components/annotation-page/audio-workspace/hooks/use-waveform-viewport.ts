@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import {
     useCallback, useEffect, useRef, useLayoutEffect, useState,
 } from 'react';
@@ -388,7 +389,7 @@ export function useWaveformViewport(
 
         if (intervalDoesNotFit) {
             message.destroy();
-            message.warning('The interval is too long to fully fit. Showing its beginning instead.');
+            message.warning(t('The interval is too long to fully fit. Showing its beginning instead.'));
         }
         dispatch(audioActions.completeFitAudioInterval(fitIntervalRequest));
     }, [ready, fitIntervalRequest, fitInterval, duration, containerWidth]);

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React from 'react';
 import { StorageData, StorageLocation } from 'cvat-core-wrapper';
@@ -34,7 +35,7 @@ export default function SourceStorageField(props: Props): JSX.Element {
 
     return (
         <StorageWithSwitchField
-            storageLabel='Source storage'
+            storageLabel={t('Source storage')}
             storageName='sourceStorage'
             switchName='useProjectSourceStorage'
             instanceId={instanceId}

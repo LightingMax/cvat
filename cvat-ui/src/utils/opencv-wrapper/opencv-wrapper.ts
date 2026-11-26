@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { ObjectState, ShapeType, getCore } from 'cvat-core-wrapper';
 import config from 'config';
 import TrackerMILAction from './annotations-actions/tracker-mil';
@@ -251,7 +252,7 @@ export class OpenCVWrapper {
             trackerMIL: {
                 model: () => this.getCVInterface().tracking.trackerMIL.model(),
                 name: 'TrackerMIL',
-                description: 'Lightweight client-side algorithm, useful to track simple objects',
+                description: t('Lightweight client-side algorithm, useful to track simple objects'),
                 kind: 'opencv_tracker_mil',
             },
         };

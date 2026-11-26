@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
@@ -62,14 +63,14 @@ function SkeletonElementContextMenu(props: ContextMenuProps): JSX.Element {
 
     const targetPoint = container.querySelector(`[data-element-id="${elementID}"]`);
     if (!targetPoint) {
-        throw new Error('Target SVG point was not found');
+        throw new Error(t('Target SVG point was not found'));
     }
 
     const cx = targetPoint.getAttribute('cx');
     const cy = targetPoint.getAttribute('cy');
 
     if (!cx || !cy) {
-        throw new Error('Circle attributes "cx", "cy" are not defined');
+        throw new Error(t('Circle attributes "cx", "cy" are not defined'));
     }
 
     const [x, y] = fromSVGCoord(container, [+cx, +cy]);
@@ -96,7 +97,7 @@ function SkeletonElementContextMenu(props: ContextMenuProps): JSX.Element {
                         icon={<EditOutlined />}
                         key='configure_label'
                     >
-                        Configure
+                        {t('Configure')}
                     </Button>
                     <Button
                         type='link'
@@ -107,7 +108,7 @@ function SkeletonElementContextMenu(props: ContextMenuProps): JSX.Element {
                         icon={<DeleteOutlined />}
                         key='delete'
                     >
-                        Delete
+                        {t('Delete')}
                     </Button>
                 </div>
             )}

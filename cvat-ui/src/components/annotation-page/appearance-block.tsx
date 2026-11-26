@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { Dispatch } from 'react';
 import { AnyAction } from 'redux';
 import { connect } from 'react-redux';
@@ -35,14 +36,14 @@ import { subKeyMap } from 'utils/component-subkeymap';
 
 const componentShortcuts = {
     SWITCH_COLOR_BY_APPEARANCE: {
-        name: 'Switch objects appearance setting "Color by"',
-        description: 'Objects color mode may be by object, label, or group',
+        name: t('Switch objects appearance setting "Color by"'),
+        description: t('Objects color mode may be by object, label, or group'),
         sequences: [],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
     TOGGLE_SHOW_BITMAP_APPEARANCE: {
-        name: 'Switch objects appearance setting "Show bitmap"',
-        description: 'Show or hide the bitmap layer on the canvas',
+        name: t('Switch objects appearance setting "Show bitmap"'),
+        description: t('Show or hide the bitmap layer on the canvas'),
         sequences: [],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
@@ -191,14 +192,14 @@ function AppearanceBlock(props: Props): JSX.Element {
             items={[{
                 label: (
                     <Text strong className='cvat-objects-appearance-collapse-header'>
-                        Appearance
+                        {t('Appearance')}
                     </Text>
                 ),
                 key: 'appearance',
                 children: (
                     <div className='cvat-objects-appearance-content cvat-appearance-block'>
                         <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
-                        <Text type='secondary'>Color by</Text>
+                        <Text type='secondary'>{t('Color by')}</Text>
                         <Radio.Group
                             className='cvat-appearance-color-by-radio-group'
                             value={colorBy}
@@ -208,7 +209,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                                 <Radio.Button value={val} key={val}>{val}</Radio.Button>
                             ))}
                         </Radio.Group>
-                        <Text type='secondary'>Opacity</Text>
+                        <Text type='secondary'>{t('Opacity')}</Text>
                         <Slider
                             className='cvat-appearance-opacity-slider'
                             onChange={changeShapesOpacity}
@@ -216,7 +217,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                             min={0}
                             max={100}
                         />
-                        <Text type='secondary'>Selected opacity</Text>
+                        <Text type='secondary'>{t('Selected opacity')}</Text>
                         <Slider
                             className='cvat-appearance-selected-opacity-slider'
                             onChange={changeSelectedShapesOpacity}
@@ -231,7 +232,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                             }}
                             checked={outlined}
                         >
-                            Outlined borders
+                            {t('Outlined borders')}
                             <ColorPicker
                                 onChange={(color) => changeShapesOutlinedBorders(outlined, color)}
                                 value={outlineColor}
@@ -255,7 +256,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                                         });
                                     }}
                                 >
-                                    Cuboid orientation
+                                    {t('Cuboid orientation')}
                                 </Checkbox>
                             </div>
                         )}
@@ -267,7 +268,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                                 }}
                                 checked={showBitmap}
                             >
-                                Show bitmap
+                                {t('Show bitmap')}
                             </Checkbox>
                         )}
                         {is2D && (
@@ -276,7 +277,7 @@ function AppearanceBlock(props: Props): JSX.Element {
                                 onChange={changeShowProjections}
                                 checked={showProjections}
                             >
-                                Show projections
+                                {t('Show projections')}
                             </Checkbox>
                         )}
                     </div>

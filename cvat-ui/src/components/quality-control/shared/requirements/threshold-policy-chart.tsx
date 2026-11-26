@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useRef, useState } from 'react';
 import Button from 'antd/lib/button';
 import Space from 'antd/lib/space';
@@ -52,7 +53,7 @@ export default function ThresholdPolicyChart(props: Readonly<Props>): JSX.Elemen
                     x: {
                         type: 'linear',
                         min: 0,
-                        title: { display: true, text: 'GT shape area (px²)', color: color('text') },
+                        title: { display: true, text: t('GT shape area (px²)'), color: color('text') },
                         ticks: { color: color('text'), maxTicksLimit: 6, callback: (tick) => format(Number(tick)) },
                         grid: { color: color('grid') },
                         border: { color: color('grid') },
@@ -216,24 +217,24 @@ export default function ThresholdPolicyChart(props: Readonly<Props>): JSX.Elemen
     return (
         <>
             <div className='cvat-threshold-policy-toolbar'>
-                <span>Minimum IoU (%)</span>
+                <span>{t('Minimum IoU (%)')}</span>
                 <Space size={4}>
-                    <CVATTooltip title='Zoom in on GT area'>
-                        <Button disabled={disabled} size='small' aria-label='Zoom in on GT area'
+                    <CVATTooltip title={t('Zoom in on GT area')}>
+                        <Button disabled={disabled} size='small' aria-label={t('Zoom in on GT area')}
                             onClick={() => setXMax(Math.max(1, xMax / 1.5))}>+</Button>
                     </CVATTooltip>
-                    <CVATTooltip title='Zoom out on GT area'>
-                        <Button disabled={disabled} size='small' aria-label='Zoom out on GT area'
+                    <CVATTooltip title={t('Zoom out on GT area')}>
+                        <Button disabled={disabled} size='small' aria-label={t('Zoom out on GT area')}
                             onClick={() => setXMax(Math.min(1e12, xMax * 1.5))}>−</Button>
                     </CVATTooltip>
                     <Button disabled={disabled} size='small' onClick={() => setXMax(policy.points.at(-1).x * 1.15)}>
-                        Fit
+                        {t('Fit')}
                     </Button>
                 </Space>
             </div>
             <div className='cvat-threshold-policy-chart'>
                 <canvas ref={canvasRef}
-                    aria-label='IoU threshold by GT area. Edit points below the graph.'
+                    aria-label={t('IoU threshold by GT area. Edit points below the graph.')}
                     onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp}
                     onPointerLeave={() => { if (!drag.current) setHover(null); }}
                     onPointerCancel={() => {
@@ -250,13 +251,13 @@ export default function ThresholdPolicyChart(props: Readonly<Props>): JSX.Elemen
                 />
                 {hover && (
                     <div className='cvat-threshold-policy-tooltip' style={{ left: hover.left, top: hover.top }}>
-                        <div>GT area: {format(hover.area)} px²</div>
-                        <strong>IoU threshold: {format(hover.threshold * 100)}%</strong>
+                        <div>{t('GT area:')} {format(hover.area)} {t('px²')}</div>
+                        <strong>{t('IoU threshold:')} {format(hover.threshold * 100)}%</strong>
                     </div>
                 )}
             </div>
             <p className='cvat-threshold-policy-hint'>
-                Left-click to add. Hold left mouse button on a point to move. Right-click a point to delete.
+                {t('Left-click to add. Hold left mouse button on a point to move. Right-click a point to delete.')}
             </p>
         </>
     );

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RetweetOutlined } from '@ant-design/icons';
@@ -21,8 +22,8 @@ export interface Props {
 
 const componentShortcuts = {
     TOGGLE_AUDIO_LOOP: {
-        name: 'Toggle interval loop playback',
-        description: 'Toggle loop playback for the active audio interval',
+        name: t('Toggle interval loop playback'),
+        description: t('Toggle loop playback for the active audio interval'),
         sequences: ['r'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
@@ -51,7 +52,7 @@ function LoopControl(props: Props): JSX.Element {
                 keyMap={subKeyMap(componentShortcuts, keyMap)}
                 handlers={handlers}
             />
-            <CVATTooltip title={`Loop interval playback${loop ? ' (on)' : ''} ${loopShortcut}`} placement='right'>
+            <CVATTooltip title={t('Loop interval playback{{value1}} {{loopShortcut}}', { value1: loop ? ' (on)' : '', loopShortcut })} placement='right'>
                 <RetweetOutlined
                     className={
                         loop ?
