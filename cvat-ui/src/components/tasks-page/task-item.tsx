@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
@@ -54,7 +55,7 @@ function TaskItemComponent(props: TaskItemProps): JSX.Element {
     const [importingState, setImportingState] = useState<ImportingState | null>(
         taskInstance.size > 0 ? null : {
             state: null,
-            message: 'Request current progress',
+            message: t('Request current progress'),
             progress: 0,
         },
     );
@@ -143,21 +144,21 @@ function TaskItemComponent(props: TaskItemProps): JSX.Element {
                         <div>
                             {numOfCompleted > 0 && (
                                 <Text strong className='cvat-task-completed-progress'>
-                                    {`\u2022 ${numOfCompleted} done `}
+                                    {t('• {{numOfCompleted}} done ', { numOfCompleted })}
                                 </Text>
                             )}
                             {numOfValidation > 0 && (
                                 <Text strong className='cvat-task-validation-progress'>
-                                    {`\u2022 ${numOfValidation} on review `}
+                                    {t('• {{numOfValidation}} on review ', { numOfValidation })}
                                 </Text>
                             )}
                             {numOfAnnotation > 0 && (
                                 <Text strong className='cvat-task-annotation-progress'>
-                                    {`\u2022 ${numOfAnnotation} annotating `}
+                                    {t('• {{numOfAnnotation}} annotating ', { numOfAnnotation })}
                                 </Text>
                             )}
                             <Text strong type='secondary'>
-                                {`\u2022 ${numOfJobs} total`}
+                                {t('• {{numOfJobs}} total', { numOfJobs })}
                             </Text>
                         </div>
                         <Progress
@@ -205,11 +206,11 @@ function TaskItemComponent(props: TaskItemProps): JSX.Element {
                 <br />
                 {owner && (
                     <>
-                        <Text type='secondary'>{`Created ${owner ? `by ${owner}` : ''} on ${created}`}</Text>
+                        <Text type='secondary'>{t('Created {{value1}} on {{created}}', { value1: owner ? `by ${owner}` : '', created })}</Text>
                         <br />
                     </>
                 )}
-                <Text type='secondary'>{`Last updated ${updated}`}</Text>
+                <Text type='secondary'>{t('Last updated {{updated}}', { updated })}</Text>
             </Col>
             {renderProgress()}
             <Col span={3}>
@@ -223,7 +224,7 @@ function TaskItemComponent(props: TaskItemProps): JSX.Element {
                                 size='large'
                                 ghost
                             >
-                                Open
+                                {t('Open')}
                             </Button>
                         </Link>
                     </Col>
@@ -234,7 +235,7 @@ function TaskItemComponent(props: TaskItemProps): JSX.Element {
                             onClick={handleContextMenuClick}
                             className='cvat-task-item-actions-button cvat-actions-menu-button'
                         >
-                            <Text style={{ marginRight: 8 }} className='cvat-text-color'>Actions</Text>
+                            <Text style={{ marginRight: 8 }} className='cvat-text-color'>{t('Actions')}</Text>
                             <MoreOutlined className='cvat-menu-icon' />
                         </div>
                     </Col>

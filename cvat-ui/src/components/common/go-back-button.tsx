@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Button from 'antd/lib/button';
 import Text from 'antd/lib/typography/Text';
@@ -15,7 +16,7 @@ function GoBackButton(): JSX.Element {
             <Button style={{ marginRight: 8 }} onClick={goBack} className='cvat-back-btn'>
                 <LeftOutlined />
             </Button>
-            <Text style={{ userSelect: 'none' }} strong>Back</Text>
+            <Text style={{ userSelect: 'none' }} strong>{t('Back')}</Text>
         </>
     );
 }

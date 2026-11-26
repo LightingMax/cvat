@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './resource-card.scss';
 import React from 'react';
 import Card from 'antd/lib/card';
@@ -95,9 +96,9 @@ function ResourceCard(props: Readonly<Props>): JSX.Element {
                     {typeof id !== 'undefined' && (
                         <div
                             className={`cvat-resource-card-id ${idClassName}`.trim()}
-                            title={`ID: ${id}`}
+                            title={t('ID: {{id}}', { id })}
                         >
-                            {`ID: ${id}`}
+                            {t('ID: {{id}}', { id })}
                         </div>
                     )}
                     {!!tags.length && (

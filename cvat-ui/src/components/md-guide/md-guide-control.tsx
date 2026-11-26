@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 
 import React from 'react';
@@ -22,14 +23,14 @@ function MdGuideControl(props: Props): JSX.Element {
     return (
         <Row justify='start' className='cvat-md-guide-control-wrapper'>
             <Col span={24}>
-                <Text strong className='cvat-text-color'>{`${instanceType[0].toUpperCase()}${instanceType.slice(1)} description`}</Text>
+                <Text strong className='cvat-text-color'>{t('{{value1}}{{value2}} description', { value1: instanceType[0].toUpperCase(), value2: instanceType.slice(1) })}</Text>
                 <br />
                 <Button
                     onClick={() => {
                         history.push(`/${instanceType}s/${id}/guide`);
                     }}
                 >
-                    Edit
+                    {t('Edit')}
                 </Button>
             </Col>
         </Row>

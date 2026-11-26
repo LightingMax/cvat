@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Tag from 'antd/lib/tag';
 import Space from 'antd/lib/space';
@@ -16,6 +17,19 @@ import {
 import { JobStage, JobState } from 'cvat-core-wrapper';
 
 import './job-status-visuals.scss';
+
+const stageNames: Record<JobStage, string> = {
+    [JobStage.ANNOTATION]: t('annotation'),
+    [JobStage.VALIDATION]: t('validation'),
+    [JobStage.ACCEPTANCE]: t('acceptance'),
+};
+
+const stateNames: Record<JobState, string> = {
+    [JobState.NEW]: t('new'),
+    [JobState.IN_PROGRESS]: t('in progress'),
+    [JobState.REJECTED]: t('rejected'),
+    [JobState.COMPLETED]: t('completed'),
+};
 
 export function JobStageIcon({ stage }: Readonly<{ stage: JobStage }>): JSX.Element {
     switch (stage) {
@@ -77,7 +91,7 @@ export function JobStageLabel({ stage }: Readonly<JobStageLabelProps>): JSX.Elem
     return (
         <span className='cvat-job-stage-label'>
             <JobStageIcon stage={stage} />
-            <span>{stage}</span>
+            <span>{stageNames[stage]}</span>
         </span>
     );
 }
@@ -90,7 +104,7 @@ export function JobStateLabel({ state }: Readonly<JobStateLabelProps>): JSX.Elem
     return (
         <span className='cvat-job-state-label'>
             <JobStateIcon state={state} />
-            <span>{state}</span>
+            <span>{stateNames[state]}</span>
         </span>
     );
 }
@@ -104,10 +118,10 @@ function JobStageStateBadges({ stage, state }: Readonly<JobStageStateBadgesProps
     return (
         <Space size={4} wrap className='cvat-job-stage-state-badges'>
             <Tag className={`cvat-job-stage-tag ${stageClassName(stage)}`} icon={<JobStageIcon stage={stage} />}>
-                {stage}
+                {stageNames[stage]}
             </Tag>
             <Tag className={`cvat-job-state-tag ${stateClassName(state)}`} icon={<JobStateIcon state={state} />}>
-                {state}
+                {stateNames[state]}
             </Tag>
         </Space>
     );

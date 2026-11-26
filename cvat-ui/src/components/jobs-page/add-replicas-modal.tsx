@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -59,14 +60,14 @@ function AddReplicasModal(props: Readonly<Props>): JSX.Element {
         <Modal
             destroyOnClose
             open={visible}
-            title={isBulkMode ? `Add replicas to ${jobs.length} selected jobs` : `Add replicas to job #${jobs[0]?.id}`}
+            title={isBulkMode ? t('Add replicas to {{length}} selected jobs', { length: jobs.length }) : t('Add replicas to job #{{id}}', { id: jobs[0]?.id })}
             className='cvat-modal-add-replicas'
-            okText='Add'
+            okText={t('Add')}
             okButtonProps={{ disabled: count === null }}
             onCancel={onCancel}
             onOk={onAdd}
         >
-            <Text>{isBulkMode ? 'Replicas per job: ' : 'Number of replicas: '}</Text>
+            <Text>{isBulkMode ? `${t('Replicas per job:')} ` : `${t('Number of replicas:')} `}</Text>
             <InputNumber
                 className='cvat-add-replicas-count-input'
                 autoFocus

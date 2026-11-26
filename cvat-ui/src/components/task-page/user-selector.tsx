@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState, useEffect, useRef } from 'react';
 import { SelectValue, RefSelectProps } from 'antd/lib/select';
 import Autocomplete from 'antd/lib/auto-complete';
@@ -160,7 +161,7 @@ export default function UserSelector(props: Readonly<Props>): JSX.Element {
         <Autocomplete
             ref={autocompleteRef}
             value={searchPhrase}
-            placeholder='Select a user'
+            placeholder={t('Select a user')}
             onSearch={setSearchPhrase}
             onSelect={handleSelect}
             onBlur={onBlur}
@@ -170,7 +171,7 @@ export default function UserSelector(props: Readonly<Props>): JSX.Element {
             options={[
                 ...(!searchPhrase || 'reset assignee'.includes(searchPhrase.toLowerCase()) ? [{
                     value: 'RESET_ASSIGNEE',
-                    label: 'Reset assignee',
+                    label: t('Reset assignee'),
                 }] : []),
                 ...users.map((user) => ({
                     value: user.id.toString(),

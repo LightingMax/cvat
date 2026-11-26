@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { connect } from 'react-redux';
 import dayjs from 'dayjs';
@@ -171,13 +172,13 @@ class DetailsComponent extends React.PureComponent<Props, State> {
                         {owner && (
                             <div>
                                 <Text type='secondary'>
-                                    {`Task #${taskInstance.id} Created by ${owner} on ${created}`}
+                                    {t('Task #{{id}} Created by {{owner}} on {{created}}', { id: taskInstance.id, owner, created })}
                                 </Text>
                             </div>
                         )}
                     </Col>
                     <Col>
-                        <Text type='secondary'>Assigned to</Text>
+                        <Text type='secondary'>{t('Assigned to')}</Text>
                         {assigneeSelect}
                     </Col>
                 </Row>
@@ -219,7 +220,7 @@ class DetailsComponent extends React.PureComponent<Props, State> {
         return (
             <Row>
                 <Col span={24}>
-                    <Text className='cvat-text-color'>Subset:</Text>
+                    <Text className='cvat-text-color'>{t('Subset:')}</Text>
                 </Col>
                 <Col span={24}>
                     <ProjectSubsetField

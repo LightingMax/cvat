@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -117,7 +118,7 @@ export default function Preview(props: Readonly<Props>): JSX.Element {
                 className={previewClassName || ''}
                 src={imgSrc}
                 onClick={onClick}
-                alt='Preview image'
+                alt={t('Preview image')}
                 aria-hidden
                 draggable={false}
             />

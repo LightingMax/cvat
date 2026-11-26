@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import Divider from 'antd/lib/divider';
 import Select from 'antd/lib/select';
@@ -18,7 +19,7 @@ interface Props {
     onSelectRegion: any;
     internalCommonProps: any;
 
-    label: 'Location' | 'Region';
+    label: string;
     name: 'location' | 'region';
     values: string[][];
     href: string;
@@ -39,12 +40,12 @@ export default function Location(props: Props): JSX.Element {
     const handleAddingRegion = (): void => {
         if (!newRegionKey || !newRegionName) {
             notification.warning({
-                message: 'Incorrect region',
+                message: t('Incorrect region'),
                 className: 'cvat-incorrect-add-region-notification',
             });
         } else if (locations[newRegionKey]) {
             notification.warning({
-                message: 'This region already exists',
+                message: t('This region already exists'),
                 className: 'cvat-incorrect-add-region-notification',
             });
         } else {
@@ -62,7 +63,7 @@ export default function Location(props: Props): JSX.Element {
             label={(
                 <>
                     {label}
-                    <Tooltip title='More information'>
+                    <Tooltip title={t('More information')}>
                         <Button
                             className='cvat-cloud-storage-help-button'
                             type='link'
@@ -89,19 +90,19 @@ export default function Location(props: Props): JSX.Element {
                                 value={newRegionKey}
                                 onChange={(event: any) => setNewRegionKey(event.target.value)}
                                 maxLength={14}
-                                placeholder='key'
+                                placeholder={t('key')}
                             />
                             <Input
                                 value={newRegionName}
                                 onChange={(event: any) => setNewRegionName(event.target.value)}
-                                placeholder='name'
+                                placeholder={t('name')}
                             />
                             <Button
                                 className='cvat-cloud-storage-region-add-button'
                                 type='link'
                                 onClick={handleAddingRegion}
                             >
-                                Add region
+                                {t('Add region')}
                                 <PlusCircleOutlined />
                             </Button>
                         </div>

@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { useHistory } from 'react-router';
 import { Row, Col } from 'antd/lib/grid';
@@ -33,7 +34,7 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
                         size='large'
                     >
                         <LeftOutlined />
-                        Back to project
+                        {t('Back to project')}
                     </Button>
                 ) : (
                     <Button
@@ -43,7 +44,7 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
                         size='large'
                     >
                         <LeftOutlined />
-                        Back to tasks
+                        {t('Back to tasks')}
                     </Button>
                 )}
             </Col>
@@ -53,7 +54,7 @@ export default function DetailsComponent(props: DetailsComponentProps): JSX.Elem
                     onUpdateTask={onUpdateTask}
                     triggerElement={(
                         <Button size='middle' className='cvat-task-page-actions-button cvat-actions-menu-button'>
-                            <Text className='cvat-text-color'>Actions</Text>
+                            <Text className='cvat-text-color'>{t('Actions')}</Text>
                             <MoreOutlined className='cvat-menu-icon' />
                         </Button>
                     )}

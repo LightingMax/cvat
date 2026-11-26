@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { RefObject } from 'react';
 import Input from 'antd/lib/input';
 import Form, { FormInstance } from 'antd/lib/form';
@@ -90,7 +91,7 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
             ));
         }
 
-        return Promise.reject(new Error('Quality form ref is empty'));
+        return Promise.reject(new Error(t('Quality form ref is empty')));
     }
 
     public resetFields(): void {
@@ -121,16 +122,16 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                     <Col>
                         <Form.Item
                             name='frameSelectionMethod'
-                            label='Frame selection method'
-                            rules={[{ required: true, message: 'Please, specify frame selection method' }]}
+                            label={t('Frame selection method')}
+                            rules={[{ required: true, message: t('Please, specify frame selection method') }]}
                         >
                             <Select
                                 className='cvat-select-frame-selection-method'
                                 onChange={onChangeFrameSelectionMethod}
                             >
-                                <Select.Option value={FrameSelectionMethod.RANDOM}>Random</Select.Option>
+                                <Select.Option value={FrameSelectionMethod.RANDOM}>{t('Random')}</Select.Option>
                                 <Select.Option value={FrameSelectionMethod.RANDOM_PER_JOB}>
-                                    Random per job
+                                    {t('Random per job')}
                                 </Select.Option>
                             </Select>
                         </Form.Item>
@@ -141,13 +142,13 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                     supportsValidationQuantity && frameSelectionMethod === FrameSelectionMethod.RANDOM && (
                         <Col span={7}>
                             <Form.Item
-                                label='Quantity'
+                                label={t('Quantity')}
                                 name='validationFramesPercent'
                                 normalize={(value) => +value}
                                 rules={[
-                                    { required: true, message: 'The field is required' },
+                                    { required: true, message: t('The field is required') },
                                     {
-                                        type: 'number', min: 0, max: 100, message: 'Value is not valid',
+                                        type: 'number', min: 0, max: 100, message: t('Value is not valid'),
                                     },
                                 ]}
                             >
@@ -166,13 +167,13 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                     supportsValidationQuantity && frameSelectionMethod === FrameSelectionMethod.RANDOM_PER_JOB && (
                         <Col span={7}>
                             <Form.Item
-                                label='Quantity per job'
+                                label={t('Quantity per job')}
                                 name='validationFramesPerJobPercent'
                                 normalize={(value) => +value}
                                 rules={[
-                                    { required: true, message: 'The field is required' },
+                                    { required: true, message: t('The field is required') },
                                     {
-                                        type: 'number', min: 0, max: 100, message: 'Value is not valid',
+                                        type: 'number', min: 0, max: 100, message: t('Value is not valid'),
                                     },
                                 ]}
                             >
@@ -196,13 +197,13 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
             <Row>
                 <Col span={7}>
                     <Form.Item
-                        label='Total honeypots'
+                        label={t('Total honeypots')}
                         name='validationFramesPercent'
                         normalize={(value) => +value}
                         rules={[
-                            { required: true, message: 'The field is required' },
+                            { required: true, message: t('The field is required') },
                             {
-                                type: 'number', min: 0, max: 100, message: 'Value is not valid',
+                                type: 'number', min: 0, max: 100, message: t('Value is not valid'),
                             },
                         ]}
                     >
@@ -211,13 +212,13 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                 </Col>
                 <Col span={7} offset={1}>
                     <Form.Item
-                        label='Overhead per job'
+                        label={t('Overhead per job')}
                         name='validationFramesPerJobPercent'
                         normalize={(value) => +value}
                         rules={[
-                            { required: true, message: 'The field is required' },
+                            { required: true, message: t('The field is required') },
                             {
-                                type: 'number', min: 0, max: 100, message: 'Value is not valid',
+                                type: 'number', min: 0, max: 100, message: t('Value is not valid'),
                             },
                         ]}
                     >
@@ -248,7 +249,7 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                 ref={this.formRef}
             >
                 <Form.Item
-                    label='Validation mode'
+                    label={t('Validation mode')}
                     name='validationMode'
                     rules={[{ required: true }]}
                 >
@@ -259,14 +260,14 @@ export default class QualityConfigurationForm extends React.PureComponent<Props>
                         }}
                     >
                         <Radio.Button value={ValidationMode.NONE} key={ValidationMode.NONE}>
-                            None
+                            {t('None')}
                         </Radio.Button>
                         <Radio.Button value={ValidationMode.GT} key={ValidationMode.GT}>
-                            Ground Truth
+                            {t('Ground Truth')}
                         </Radio.Button>
                         {supportsHoneypots && (
                             <Radio.Button value={ValidationMode.HONEYPOTS} key={ValidationMode.HONEYPOTS}>
-                                Honeypots
+                                {t('Honeypots')}
                             </Radio.Button>
                         )}
                     </Radio.Group>

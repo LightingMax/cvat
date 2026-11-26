@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import jsonLogic from 'json-logic-js';
@@ -131,7 +132,7 @@ function JobListComponent(props: Readonly<Props>): JSX.Element {
             <div className='cvat-jobs-list-wrapper'>
                 <Row>
                     <Col>
-                        <Text className='cvat-text-color cvat-jobs-header'> Jobs </Text>
+                        <Text className='cvat-text-color cvat-jobs-header'> {t('Jobs')} </Text>
                         <ResourceSelectionInfo selectedCount={selectedCount} onSelectAll={onSelectAll} />
                     </Col>
                 </Row>
@@ -202,7 +203,7 @@ function JobListComponent(props: Readonly<Props>): JSX.Element {
                     </Col>
                 </div>
             ) : (
-                <Empty description='No jobs found' />
+                <Empty description={t('No jobs found')} />
             )}
             <Row justify='center' align='middle'>
                 <Col>

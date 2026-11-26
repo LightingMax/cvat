@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
@@ -283,12 +284,14 @@ function CVATTable(props: Props): JSX.Element {
                     <Space align='center'>
                         {Array.isArray(searchDataIndex) && !!searchDataIndex.length && (
                             <CVATTooltip
-                                title={`Search across fields: ${searchDataIndex
-                                    .map((dataIndex) => stringifyDataIndex(dataIndex)).join(', ')}`}
+                                title={t('Search across fields: {{value1}}', {
+                                    value1: searchDataIndex
+                                        .map((dataIndex) => stringifyDataIndex(dataIndex)).join(', '),
+                                })}
                             >
                                 <Input.Search
                                     className='cvat-table-search-bar'
-                                    placeholder='Search ..'
+                                    placeholder={t('Search ..')}
                                     value={searchInput}
                                     onChange={(event) => setSearchInput(event.target.value)}
                                     onSearch={setSearchPhrase}
@@ -339,7 +342,7 @@ function CVATTable(props: Props): JSX.Element {
                                     return (
                                         <Text key={group} type='secondary' className='cvat-table-columns-settings-hint'>
                                             {params.hint ?? `You can select up to ${params.maxVisible} columns`}
-                                            {` (${visibleCount} of ${params.maxVisible})`}
+                                            {t(' ({{visibleCount}} of {{maxVisible}})', { visibleCount, maxVisible: params.maxVisible })}
                                         </Text>
                                     );
                                 }).filter((item): item is JSX.Element => item !== null);
@@ -397,7 +400,7 @@ function CVATTable(props: Props): JSX.Element {
                                     <div className='cvat-table-columns-settings-menu'>
                                         <Input
                                             size='small'
-                                            placeholder='Search'
+                                            placeholder={t('Search')}
                                             prefix={<SearchOutlined />}
                                             onChange={(event) => setColumnSearchPhrase(event.target.value)}
                                             value={columnSearchPhrase}

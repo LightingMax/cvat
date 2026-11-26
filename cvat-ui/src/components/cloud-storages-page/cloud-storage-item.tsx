@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
@@ -66,11 +67,11 @@ export default function CloudStorageItemComponent(props: Readonly<Props>): JSX.E
         const cloudStoragesToDelete = currentCloudStorages.filter((storage) => selectedIds.includes(storage.id));
         Modal.confirm({
             title: isBulkMode ?
-                `Delete ${cloudStoragesToDelete.length} selected cloud storages` :
-                'Please, confirm your action',
+                t('Delete {{length}} selected cloud storages', { length: cloudStoragesToDelete.length }) :
+                t('Please, confirm your action'),
             content: isBulkMode ?
-                'All selected cloud storages will be permanently removed. Continue?' :
-                `You are going to remove the cloudstorage "${displayName}". Continue?`,
+                t('All selected cloud storages will be permanently removed. Continue?') :
+                t('You are going to remove the cloudstorage "{{displayName}}". Continue?', { displayName }),
             className: 'cvat-modal-confirm-delete-cloud-storage',
             onOk: () => {
                 dispatch(makeBulkOperationAsync(
@@ -78,14 +79,14 @@ export default function CloudStorageItemComponent(props: Readonly<Props>): JSX.E
                     async (storage) => {
                         await dispatch(deleteCloudStorageAsync(storage));
                     },
-                    (storage, idx, total) => `Deleting cloud storage #${storage.id} (${idx + 1}/${total})`,
+                    (storage, idx, total) => t('Deleting cloud storage #{{id}} ({{value2}}/{{total}})', { id: storage.id, value2: idx + 1, total }),
                 ));
             },
             okButtonProps: {
                 type: 'primary',
                 danger: true,
             },
-            okText: isBulkMode ? 'Delete selected' : 'Delete',
+            okText: isBulkMode ? t('Delete selected') : t('Delete'),
         });
     }, [cloudStorage, currentCloudStorages, selectedIds, isBulkMode, displayName]);
 
@@ -119,7 +120,7 @@ export default function CloudStorageItemComponent(props: Readonly<Props>): JSX.E
             )}
             descriptions={[
                 {
-                    label: 'Owner',
+                    label: t('Owner'),
                     value: (
                         <Text
                             ellipsis={{ tooltip: ownerName }}
@@ -129,7 +130,7 @@ export default function CloudStorageItemComponent(props: Readonly<Props>): JSX.E
                         </Text>
                     ),
                 },
-                { label: 'Updated', value: dayjs(updatedDate).fromNow() },
+                { label: t('Updated'), value: dayjs(updatedDate).fromNow() },
             ]}
             menu={(
                 <Button

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -52,7 +53,7 @@ export default function UpdateCloudStoragePageComponent(): JSX.Element {
     return (
         <Row justify='center' align='top' className='cvat-update-cloud-storage-form-wrapper'>
             <Col md={20} lg={16} xl={14} xxl={9}>
-                <Text className='cvat-title'>{`Update cloud storage #${cloudStorageId}`}</Text>
+                <Text className='cvat-title'>{t('Update cloud storage #{{cloudStorageId}}', { cloudStorageId })}</Text>
                 <CreateCloudStorageForm cloudStorage={cloudStorage} />
             </Col>
         </Row>

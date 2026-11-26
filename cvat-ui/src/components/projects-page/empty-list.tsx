@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Text from 'antd/lib/typography/Text';
@@ -19,22 +20,22 @@ export default function EmptyListComponent(props: Props): JSX.Element {
     return (
         <div className='cvat-empty-projects-list'>
             <Empty description={notFound ? (
-                <Text strong>No results matched your search...</Text>
+                <Text strong>{t('No results matched your search...')}</Text>
             ) : (
                 <>
                     <Row justify='center' align='middle'>
                         <Col>
-                            <Text strong>No projects created yet...</Text>
+                            <Text strong>{t('No projects created yet...')}</Text>
                         </Col>
                     </Row>
                     <Row justify='center' align='middle'>
                         <Col>
-                            <Text type='secondary'>To get started with your annotation project</Text>
+                            <Text type='secondary'>{t('To get started with your annotation project')}</Text>
                         </Col>
                     </Row>
                     <Row justify='center' align='middle'>
                         <Col>
-                            <Link to='/projects/create'>create a new one</Link>
+                            <Link to='/projects/create'>{t('create a new one')}</Link>
                         </Col>
                     </Row>
                 </>

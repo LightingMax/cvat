@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { RefObject } from 'react';
 
@@ -126,7 +127,7 @@ export class FileManager extends React.PureComponent<Props, State> {
 
         return {
             key: 'local',
-            label: 'My computer',
+            label: t('My computer'),
             className: 'cvat-file-manager-local-tab',
             children: (
                 <LocalFiles
@@ -150,7 +151,7 @@ export class FileManager extends React.PureComponent<Props, State> {
     private renderShareSelector(): NonNullable<TabsProps['items']>[0] {
         return {
             key: 'share',
-            label: 'Connected file share',
+            label: t('Connected file share'),
             className: 'cvat-file-manager-share-tab',
             children: (
                 <RemoteBrowser
@@ -167,12 +168,12 @@ export class FileManager extends React.PureComponent<Props, State> {
 
         return {
             key: 'remote',
-            label: 'Remote sources',
+            label: t('Remote sources'),
             className: 'cvat-file-manager-remote-tab',
             children: (
                 <Input.TextArea
                     className='cvat-file-selector-remote'
-                    placeholder='Enter one URL per line'
+                    placeholder={t('Enter one URL per line')}
                     rows={6}
                     value={[...files.remote].join('\n')}
                     onChange={(event: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -195,7 +196,7 @@ export class FileManager extends React.PureComponent<Props, State> {
 
         return {
             key: 'cloudStorage',
-            label: 'Cloud storage',
+            label: t('Cloud storage'),
             className: 'cvat-create-task-page-cloud-storage-tab',
             children: (
                 <CloudStorageTab

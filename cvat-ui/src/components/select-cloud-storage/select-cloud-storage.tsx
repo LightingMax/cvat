@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import Form from 'antd/lib/form';
 import notification from 'antd/lib/notification';
@@ -27,7 +28,7 @@ async function searchCloudStorages(filter: Record<string, string>): Promise<Clou
         return data;
     } catch (error) {
         notification.error({
-            message: 'Could not fetch a list of cloud storages',
+            message: t('Could not fetch a list of cloud storages'),
             description: error.toString(),
         });
     }
@@ -95,14 +96,14 @@ function SelectCloudStorage(props: Props): JSX.Element {
         <Form.Item
             label={label || 'Select cloud storage'}
             name={name || 'cloudStorageSelect'}
-            rules={[{ required: true, message: 'Please, specify a cloud storage' }]}
+            rules={[{ required: true, message: t('Please, specify a cloud storage') }]}
             valuePropName='label'
             colon={false}
         >
             <AutoComplete
                 onBlur={onBlur}
                 value={searchPhrase}
-                placeholder='Search...'
+                placeholder={t('Search...')}
                 showSearch
                 onSearch={(phrase: string) => {
                     setSearchPhrase(phrase);

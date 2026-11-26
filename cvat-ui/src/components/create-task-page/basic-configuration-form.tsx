@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { RefObject } from 'react';
 import Input from 'antd/lib/input';
 import Text from 'antd/lib/typography/Text';
@@ -55,7 +56,7 @@ export default class BasicConfigurationForm extends React.PureComponent<Props> {
             return this.formRef.current.validateFields();
         }
 
-        return Promise.reject(new Error('Form ref is empty'));
+        return Promise.reject(new Error(t('Form ref is empty')));
     }
 
     public resetFields(): void {
@@ -79,11 +80,11 @@ export default class BasicConfigurationForm extends React.PureComponent<Props> {
                     className={many ? 'cvat-task-name-field-has-tooltip' : ''}
                     hasFeedback
                     name='name'
-                    label={<span>Name</span>}
+                    label={<span>{t('Name')}</span>}
                     rules={[
                         {
                             required: true,
-                            message: 'Task name cannot be empty',
+                            message: t('Task name cannot be empty'),
                         },
                     ]}
                     initialValue={this.initialName}
@@ -97,32 +98,32 @@ export default class BasicConfigurationForm extends React.PureComponent<Props> {
                     <Text type='secondary'>
                         <Tooltip title={() => (
                             <>
-                                You can use in the template:
+                                {t('You can use in the template:')}
                                 <ul>
                                     <li>
-                                        some_text - any text
+                                        {t('some_text - any text')}
                                     </li>
                                     <li>
                                         {'{{'}
-                                        index
+                                        {t('index')}
                                         {'}}'}
-                                        &nbsp;- index file in set
+                                        &nbsp;{t('- index file in set')}
                                     </li>
                                     <li>
                                         {'{{'}
                                         file_name
                                         {'}}'}
-                                        &nbsp;- name of file
+                                        &nbsp;{t('- name of file')}
                                     </li>
                                 </ul>
-                                Example:&nbsp;
+                                {t('Example:')}&nbsp;
                                 <i>
                                     {exampleMultiTaskName || 'Task name 1 - video_1.mp4'}
                                 </i>
                             </>
                         )}
                         >
-                            When forming the name, a template is used.
+                            {t('When forming the name, a template is used.')}
                             {' '}
                             <QuestionCircleOutlined />
                         </Tooltip>

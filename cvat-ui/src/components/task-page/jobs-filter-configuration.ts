@@ -2,40 +2,41 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { Config } from '@react-awesome-query-builder/antd';
 import asyncFetchUsers from 'components/resource-sorting-filtering/request-users';
 
 export const config: Partial<Config> = {
     fields: {
         state: {
-            label: 'State',
+            label: t('State'),
             type: 'select',
             operators: ['select_any_in', 'select_equals'], // ['select_equals', 'select_not_equals', 'select_any_in', 'select_not_any_in']
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'new', title: 'new' },
-                    { value: 'in progress', title: 'in progress' },
-                    { value: 'rejected', title: 'rejected' },
-                    { value: 'completed', title: 'completed' },
+                    { value: 'new', title: t('new') },
+                    { value: 'in progress', title: t('in progress') },
+                    { value: 'rejected', title: t('rejected') },
+                    { value: 'completed', title: t('completed') },
                 ],
             },
         },
         stage: {
-            label: 'Stage',
+            label: t('Stage'),
             type: 'select',
             operators: ['select_any_in', 'select_equals'],
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'annotation', title: 'annotation' },
-                    { value: 'validation', title: 'validation' },
-                    { value: 'acceptance', title: 'acceptance' },
+                    { value: 'annotation', title: t('annotation') },
+                    { value: 'validation', title: t('validation') },
+                    { value: 'acceptance', title: t('acceptance') },
                 ],
             },
         },
         dimension: {
-            label: 'Dimension',
+            label: t('Dimension'),
             type: 'select',
             operators: ['select_equals'],
             valueSources: ['value'],
@@ -48,7 +49,7 @@ export const config: Partial<Config> = {
             },
         },
         assignee: {
-            label: 'Assignee',
+            label: t('Assignee'),
             type: 'select',
             valueSources: ['value'],
             operators: ['select_equals', 'is_empty', 'is_not_empty'],
@@ -59,20 +60,20 @@ export const config: Partial<Config> = {
             },
         },
         updatedDate: {
-            label: 'Last updated',
+            label: t('Last updated'),
             type: 'datetime',
             operators: ['between', 'greater', 'greater_or_equal', 'less', 'less_or_equal'],
         },
         type: {
-            label: 'Type',
+            label: t('Type'),
             type: 'select',
             operators: ['select_equals'],
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'annotation', title: 'Annotation' },
-                    { value: 'ground_truth', title: 'Ground truth' },
-                    { value: 'replica', title: 'Replica' },
+                    { value: 'annotation', title: t('Annotation') },
+                    { value: 'ground_truth', title: t('Ground truth') },
+                    { value: 'replica', title: t('Replica') },
                 ],
             },
         },
@@ -84,7 +85,7 @@ export const config: Partial<Config> = {
             valueSources: ['value'],
         },
         parent_job_id: {
-            label: 'Parent ID',
+            label: t('Parent ID'),
             type: 'number',
             operators: ['is_empty', 'is_not_empty', 'equal', 'between', 'greater', 'greater_or_equal', 'less', 'less_or_equal'],
             fieldSettings: { min: 0 },
