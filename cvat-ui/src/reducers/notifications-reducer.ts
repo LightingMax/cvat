@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 import { t } from 'i18n';
+import resourceName from 'i18n/resource-name';
 import { AnyAction } from 'redux';
 
 import { ServerError, RequestError, StorageLocation } from 'cvat-core-wrapper';
@@ -575,7 +576,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                             message:
                                 `${t('Could not export dataset for the')} ${
                                     t('[{{instanceType}} {{id}}](/{{instanceType3}}s/{{id4}})', {
-                                        instanceType, id: instance.id, instanceType3: instanceType, id4: instance.id,
+                                        instanceType: resourceName(instanceType), id: instance.id, instanceType3: instanceType, id4: instance.id,
                                     })}`,
                             reason: action.payload.error,
                             shouldLog: shouldLog(action.payload.error),
@@ -588,12 +589,12 @@ export default function (state = defaultState, action: AnyAction): Notifications
             const {
                 instance, instanceType, resource, target,
             } = action.payload;
-            let description = t('Export {{resource}} for {{instanceType}} {{id}} is finished. ', { resource, instanceType, id: instance.id });
+            let description = t('Export {{resource}} for {{instanceType}} {{id}} is finished. ', { resource: resourceName(resource), instanceType: resourceName(instanceType), id: instance.id });
             if (target === StorageLocation.LOCAL) {
-                description += 'You can [download it here](/requests).';
+                description += t('You can [download it here](/requests).');
             } else if (target === StorageLocation.CLOUD_STORAGE) {
                 description =
-                    t('Export {{resource}} for {{instanceType}} {{id}} has been uploaded to cloud storage.', { resource, instanceType, id: instance.id });
+                    t('Export {{resource}} for {{instanceType}} {{id}} has been uploaded to cloud storage.', { resource: resourceName(resource), instanceType: resourceName(instanceType), id: instance.id });
             }
             return {
                 ...state,
@@ -621,7 +622,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         ...state.errors.exporting,
                         backup: {
                             message:
-                                t('Could not export the {{instanceType}} №{{id}}', { instanceType, id: instance.id }),
+                                t('Could not export the {{instanceType}} №{{id}}', { instanceType: resourceName(instanceType), id: instance.id }),
                             reason: action.payload.error,
                             shouldLog: shouldLog(action.payload.error),
                         },
@@ -633,12 +634,12 @@ export default function (state = defaultState, action: AnyAction): Notifications
             const {
                 instance, instanceType, target,
             } = action.payload;
-            let description = t('Backup for the {{instanceType}} {{id}} is finished. ', { instanceType, id: instance.id });
+            let description = t('Backup for the {{instanceType}} {{id}} is finished. ', { instanceType: resourceName(instanceType), id: instance.id });
             if (target === StorageLocation.LOCAL) {
-                description += 'You can [download it here](/requests).';
+                description += t('You can [download it here](/requests).');
             } else if (target === StorageLocation.CLOUD_STORAGE) {
                 description =
-                    t('Backup for the {{instanceType}} {{id}} has been uploaded to cloud storage.', { instanceType, id: instance.id });
+                    t('Backup for the {{instanceType}} {{id}} has been uploaded to cloud storage.', { instanceType: resourceName(instanceType), id: instance.id });
             }
             return {
                 ...state,
@@ -709,7 +710,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
         }
         case ImportActionTypes.IMPORT_BACKUP_SUCCESS: {
             const { instanceId, instanceType } = action.payload;
-            const description = t('The {{instanceType}} has been restored successfully.\n                Click [here](/{{instanceType2}}s/{{instanceId}}) to open', { instanceType, instanceType2: instanceType, instanceId });
+            const description = t('The {{instanceType}} has been restored successfully.\n                Click [here](/{{instanceType2}}s/{{instanceId}}) to open', { instanceType: resourceName(instanceType), instanceType2: instanceType, instanceId });
             return {
                 ...state,
                 messages: {
@@ -735,7 +736,7 @@ export default function (state = defaultState, action: AnyAction): Notifications
                         ...state.errors.importing,
                         backup: {
                             message:
-                                t('Could not restore {{instanceType}} backup.', { instanceType }),
+                                t('Could not restore {{instanceType}} backup.', { instanceType: resourceName(instanceType) }),
                             reason: action.payload.error,
                             shouldLog: shouldLog(action.payload.error),
                         },

@@ -324,7 +324,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                                     className={
                                                         `cvat-action-phase-handle cvat-action-phase-handle-${edge}`
                                                     }
-                                                    aria-label={t('Drag {{edge}} of {{name}}', { edge, name })}
+                                                    aria-label={t('Drag {{edge}} of {{name}}', { edge: edge === 'start' ? t('start') : t('end'), name })}
                                                     data-edge-target={hoveredEdge === edge}
                                                     tabIndex={-1}
                                                     {...pointerHandlers(phase, edge)}

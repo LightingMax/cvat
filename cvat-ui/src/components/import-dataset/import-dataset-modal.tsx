@@ -4,6 +4,8 @@
 // SPDX-License-Identifier: MIT
 
 import { t } from 'i18n';
+import { getInstanceType } from 'actions/common';
+import resourceName from 'i18n/resource-name';
 import './styles.scss';
 import React, { useCallback, useEffect, useReducer } from 'react';
 import { connect, useDispatch } from 'react-redux';
@@ -342,6 +344,7 @@ function ImportDatasetModal(props: StateToProps): JSX.Element {
         uploadParams,
         resource,
     } = state;
+    const instanceTitle = instance ? `${resourceName(getInstanceType(instance))} #${instance.id}` : instanceType;
 
     useEffect(() => {
         if (instanceT === 'project') {
@@ -497,8 +500,8 @@ function ImportDatasetModal(props: StateToProps): JSX.Element {
                     uploadParams.convMaskToPoly,
                     uploadParams.importMode,
                 ));
-            const resToPrint = uploadParams.resource.charAt(0).toUpperCase() + uploadParams.resource.slice(1);
-            const description = `${t('{{resToPrint}} import was started for {{instanceType}}.', { resToPrint, instanceType })
+            const resToPrint = resourceName(uploadParams.resource.charAt(0).toUpperCase() + uploadParams.resource.slice(1));
+            const description = `${t('{{resToPrint}} import was started for {{instanceType}}.', { resToPrint, instanceType: instanceTitle })
             } ${t('You can check progress [here](/requests).')}`;
             Notification.info({
                 message: t('{{resToPrint}} import started', { resToPrint }),
@@ -558,7 +561,7 @@ function ImportDatasetModal(props: StateToProps): JSX.Element {
             title={(
                 <>
                     <Text strong>
-                        {t('Import {{resource}} to {{instanceType}}', { resource, instanceType })}
+                        {t('Import {{resource}} to {{instanceType}}', { resource: resourceName(resource), instanceType: instanceTitle })}
                     </Text>
                     {
                         instance instanceof core.classes.Project && (
@@ -598,7 +601,7 @@ function ImportDatasetModal(props: StateToProps): JSX.Element {
                     hasFeedback
                 >
                     <Select
-                        placeholder={t('Select {{resource}} format', { resource })}
+                        placeholder={t('Select {{resource}} format', { resource: resourceName(resource) })}
                         className='cvat-modal-import-select'
                         virtual={false}
                         onChange={(format: string) => {

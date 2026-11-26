@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 import { t } from 'i18n';
+import resourceName from 'i18n/resource-name';
 import './styles.scss';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -165,7 +166,9 @@ function ExportBackupModal(): JSX.Element {
                         );
                     },
                     (inst: Exclude<ProjectOrTaskOrJob, Job>, idx: number, total: number) => (
-                        `Exporting backup for ${instanceType}#${inst.id} [${idx + 1}/${total}]`
+                        t('Exporting backup for {{resource}}#{{id}} [{{current}}/{{total}}]', {
+                            resource: resourceName(instanceType), id: inst.id, current: idx + 1, total,
+                        })
                     ),
                 ));
                 closeModal();
@@ -236,10 +239,10 @@ function ExportBackupModal(): JSX.Element {
             title={
                 isBulkMode ? (
                     <Text strong>
-                        {t('Export {{length}} {{instanceType}}s', { length: selectedInstances.length, instanceType })}
+                        {t('Export {{length}} {{instanceType}}s', { length: selectedInstances.length, instanceType: resourceName(instanceType) })}
                     </Text>
                 ) : (
-                    <Text strong>{t('Export {{instanceType}} #{{id}}', { instanceType, id: instance?.id })}</Text>
+                    <Text strong>{t('Export {{instanceType}} #{{id}}', { instanceType: resourceName(instanceType), id: instance?.id })}</Text>
                 )
             }
             open={!!instance}
@@ -291,7 +294,7 @@ function ExportBackupModal(): JSX.Element {
                     switchDescription={t('Use default settings')}
                     switchHelpMessage={helpMessage}
                     useDefaultStorage={isBulkMode ? false : useDefaultStorage}
-                    storageDescription={`Specify target storage for export ${instanceType}`}
+                    storageDescription={t('Specify target storage for export {{resource}}', { resource: resourceName(instanceType) })}
                     locationValue={storageLocation}
                     onChangeUseDefaultStorage={isBulkMode ? undefined : (value: boolean) => setUseDefaultStorage(value)}
                     onChangeLocationValue={(value: StorageLocation) => setStorageLocation(value)}

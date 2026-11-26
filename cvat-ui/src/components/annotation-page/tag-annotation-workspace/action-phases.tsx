@@ -394,7 +394,7 @@ export default function ActionPhases(props: Props): JSX.Element {
             return;
         }
 
-        const scope = job.projectId === null ? 'task' : 'project';
+        const scope = job.projectId === null ? t('task') : t('project');
         const willSave = job.annotations.hasUnsavedChanges() ||
             !!Object.keys(state.job.meta?.getUpdated() ?? {}).length;
         Modal.confirm({

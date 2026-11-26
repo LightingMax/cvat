@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 import { t } from 'i18n';
+import resourceName from 'i18n/resource-name';
 import './styles.scss';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
@@ -218,16 +219,18 @@ function ExportDatasetModal(props: Readonly<StateToProps>): JSX.Element {
                         );
                     },
                     (inst: ProjectOrTaskOrJob, idx: number, total: number) => (
-                        `Exporting dataset for ${instanceType}#${inst.id} [${idx + 1}/${total}]`
+                        t('Exporting dataset for {{resource}}#{{id}} [{{current}}/{{total}}]', {
+                            resource: resourceName(instanceType), id: inst.id, current: idx + 1, total,
+                        })
                     ),
                 ));
                 closeModal();
                 const resource = values.saveImages ? 'Dataset' : 'Annotations';
                 const description =
-                    t('Bulk {{value1}} export was started. ', { value1: resource.toLowerCase() }) +
+                    t('Bulk {{value1}} export was started. ', { value1: resourceName(resource.toLowerCase()) }) +
                     t('You can check progress and download the file [here](/requests).');
                 Notification.info({
-                    message: t('Bulk {{value1}} export started', { value1: resource.toLowerCase() }),
+                    message: t('Bulk {{value1}} export started', { value1: resourceName(resource.toLowerCase()) }),
                     description: (
                         <CVATMarkdown history={history}>{description}</CVATMarkdown>
                     ),
@@ -251,10 +254,10 @@ function ExportDatasetModal(props: Readonly<StateToProps>): JSX.Element {
             );
             closeModal();
             const resource = values.saveImages ? 'Dataset' : 'Annotations';
-            const description = t('{{resource}} export was started for {{instanceType}}. ', { resource, instanceType }) +
+            const description = t('{{resource}} export was started for {{instanceType}}. ', { resource: resourceName(resource), instanceType: resourceName(instanceType) }) +
             t('You can check progress and download the file [here](/requests).');
             Notification.info({
-                message: t('{{resource}} export started', { resource }),
+                message: t('{{resource}} export started', { resource: resourceName(resource) }),
                 description: (
                     <CVATMarkdown history={history}>{description}</CVATMarkdown>
                 ),
@@ -295,10 +298,10 @@ function ExportDatasetModal(props: Readonly<StateToProps>): JSX.Element {
             title={
                 isBulkMode ? (
                     <Text strong>
-                        {t('Export {{length}} {{instanceType}}s as datasets', { length: selectedInstances.length, instanceType })}
+                        {t('Export {{length}} {{instanceType}}s as datasets', { length: selectedInstances.length, instanceType: resourceName(instanceType) })}
                     </Text>
                 ) : (
-                    <Text strong>{t('Export {{instanceType}} as a dataset', { instanceType })}</Text>
+                    <Text strong>{t('Export {{instanceType}} as a dataset', { instanceType: resourceName(instanceType) })}</Text>
                 )
             }
             open={!!instance}

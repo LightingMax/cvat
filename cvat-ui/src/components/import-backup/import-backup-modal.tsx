@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: MIT
 
 import { t } from 'i18n';
+import resourceName from 'i18n/resource-name';
 import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'antd/lib/modal';
@@ -146,7 +147,7 @@ function ImportBackupModal(): JSX.Element {
             );
 
             Notification.info({
-                message: t('The {{instanceType}} creating from the backup has been started', { instanceType }),
+                message: t('The {{instanceType}} creating from the backup has been started', { instanceType: resourceName(instanceType) }),
                 className: 'cvat-notification-notice-import-backup-start',
             });
             closeModal();
@@ -158,7 +159,7 @@ function ImportBackupModal(): JSX.Element {
         <Modal
             title={(
                 <Text strong>
-                    {t('Create {{instanceType}} from backup', { instanceType })}
+                    {t('Create {{instanceType}} from backup', { instanceType: resourceName(instanceType) })}
                 </Text>
             )}
             open={modalVisible}
