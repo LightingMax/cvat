@@ -7,8 +7,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
 import {
-    Builder, Config, ImmutableTree, JsonLogicTree, Query, Utils as QbUtils, AntdConfig, AntdWidgets,
+    Builder, Config, ImmutableTree, JsonLogicTree, Query, Utils as QbUtils, AntdWidgets,
 } from '@react-awesome-query-builder/antd';
+import queryBuilderConfig from 'i18n/query-builder';
 
 import { omit } from 'lodash';
 import { DownOutlined } from '@ant-design/icons';
@@ -78,7 +79,7 @@ function AudioFiltersModalComponent(): JSX.Element {
         }),
         shallowEqual,
     );
-    const [config, setConfig] = useState<Config>(AntdConfig);
+    const [config, setConfig] = useState<Config>(queryBuilderConfig);
 
     const dispatch = useDispatch();
     const [immutableTree, setImmutableTree] = useState<ImmutableTree>(defaultTree);
@@ -135,17 +136,17 @@ function AudioFiltersModalComponent(): JSX.Element {
                         { value: 'auto', title: t('auto') },
                         { value: 'consensus', title: t('consensus') },
                         { value: 'semi-auto', title: t('semi-auto') },
-                        { value: 'file', title: 'file' },
+                        { value: 'file', title: t('file') },
                     ],
                 },
             },
         };
 
         const initialConfig = {
-            ...AntdConfig,
+            ...queryBuilderConfig,
             fields,
             settings: {
-                ...AntdConfig.settings,
+                ...queryBuilderConfig.settings,
                 renderField: (_props) => (
                     <FieldDropdown {..._props} customProps={omit(_props.customProps, 'showSearch')} />
                 ),

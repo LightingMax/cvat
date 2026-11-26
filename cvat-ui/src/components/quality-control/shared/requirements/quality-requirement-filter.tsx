@@ -5,7 +5,6 @@
 import { t } from 'i18n';
 import React, { useMemo, useState } from 'react';
 import {
-    AntdConfig,
     AntdWidgets,
     Builder,
     Config,
@@ -13,6 +12,7 @@ import {
     Query,
     Utils as QbUtils,
 } from '@react-awesome-query-builder/antd';
+import queryBuilderConfig from 'i18n/query-builder';
 import { DownOutlined, FilterOutlined } from '@ant-design/icons';
 import Button from 'antd/lib/button';
 import Input from 'antd/lib/input';
@@ -454,7 +454,7 @@ export default function QualityRequirementFilter(props: Readonly<Props>): JSX.El
         const attributeSubfields = getAttributesSubfields(labels);
         const shapeSubfields = getShapeSubfields(labels);
         return {
-            ...AntdConfig,
+            ...queryBuilderConfig,
             fields: {
                 'shape.label': {
                     label: t('Label'),
@@ -562,7 +562,7 @@ export default function QualityRequirementFilter(props: Readonly<Props>): JSX.El
                 },
             },
             settings: {
-                ...AntdConfig.settings,
+                ...queryBuilderConfig.settings,
                 renderField: (_props: any) => <FieldDropdown {..._props} />,
             },
         };

@@ -6,8 +6,9 @@
 import { t } from 'i18n';
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    Builder, Config, AntdConfig, ImmutableTree, Query, Utils as QbUtils,
+    Builder, Config, ImmutableTree, Query, Utils as QbUtils,
 } from '@react-awesome-query-builder/antd';
+import queryBuilderConfig from 'i18n/query-builder';
 import '@modules/@react-awesome-query-builder/antd/css/styles.css';
 import {
     DownOutlined, FilterFilled, FilterOutlined,
@@ -172,42 +173,7 @@ export default function ResourceFilterHOC(
     localStorageRecentCapacity: number,
     predefinedFilterValues?: Record<string, string>,
 ): React.FunctionComponent<ResourceFilterProps> {
-    const config: Config = {
-        ...AntdConfig,
-        ...filtrationCfg,
-        conjunctions: {
-            ...AntdConfig.conjunctions,
-            AND: { ...AntdConfig.conjunctions.AND, label: t('And') },
-            OR: { ...AntdConfig.conjunctions.OR, label: t('Or') },
-        },
-        operators: {
-            ...AntdConfig.operators,
-            like: { ...AntdConfig.operators.like, label: t('Contains') },
-            not_like: { ...AntdConfig.operators.not_like, label: t('Not contains') },
-            between: { ...AntdConfig.operators.between, label: t('Between') },
-            is_empty: { ...AntdConfig.operators.is_empty, label: t('Is empty') },
-            is_not_empty: { ...AntdConfig.operators.is_not_empty, label: t('Is not empty') },
-            select_any_in: { ...AntdConfig.operators.select_any_in, label: t('Any in') },
-            select_not_any_in: { ...AntdConfig.operators.select_not_any_in, label: t('Not in') },
-        },
-        settings: {
-            ...AntdConfig.settings,
-            ...filtrationCfg.settings,
-            fieldPlaceholder: t('Select field'),
-            operatorPlaceholder: t('Select operator'),
-            addRuleLabel: t('Add rule'),
-            addGroupLabel: t('Add group'),
-            delGroupLabel: t('Delete'),
-            deleteLabel: t('Delete'),
-            valueLabel: t('Value'),
-            valuePlaceholder: t('Value'),
-            fieldLabel: t('Field'),
-            operatorLabel: t('Operator'),
-            notLabel: t('Not'),
-            lockLabel: t('Lock'),
-            lockedLabel: t('Locked'),
-        },
-    };
+    const config: Config = { ...queryBuilderConfig, ...filtrationCfg };
     const defaultTree = QbUtils.checkTree(
         QbUtils.loadTree({ id: QbUtils.uuid(), type: 'group' }), config,
     ) as ImmutableTree;

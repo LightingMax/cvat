@@ -14,9 +14,9 @@ import {
     JsonLogicTree,
     Query,
     Utils as QbUtils,
-    AntdConfig,
     AntdWidgets,
 } from '@react-awesome-query-builder/antd';
+import queryBuilderConfig from 'i18n/query-builder';
 
 import { DownOutlined } from '@ant-design/icons';
 import Popover from 'antd/lib/popover';
@@ -143,8 +143,8 @@ function FiltersModalComponent(): JSX.Element {
         }),
         shallowEqual,
     );
-    const [config, setConfig] = useState<Config>(AntdConfig);
-    const [keypointConfig, setKeypointConfig] = useState<Config>(AntdConfig);
+    const [config, setConfig] = useState<Config>(queryBuilderConfig);
+    const [keypointConfig, setKeypointConfig] = useState<Config>(queryBuilderConfig);
 
     const dispatch = useDispatch();
     const [immutableTree, setImmutableTree] = useState<ImmutableTree>(defaultTree);
@@ -155,7 +155,7 @@ function FiltersModalComponent(): JSX.Element {
         const keypointLabelValues = getKeypointLabelValues(labels);
         const keypointAttributesSubfields = getKeypointAttributesSubfields(labels);
         const initialConfig = {
-            ...AntdConfig,
+            ...queryBuilderConfig,
             fields: {
                 label: {
                     label: t('Label'),
@@ -265,14 +265,14 @@ function FiltersModalComponent(): JSX.Element {
                 },
             },
             settings: {
-                ...AntdConfig.settings,
+                ...queryBuilderConfig.settings,
                 renderField: (_props: any) => <FieldDropdown {..._props} />,
                 // using FieldDropdown because we cannot use antd because of antd-related bugs
                 // https://github.com/ukrbublik/react-awesome-query-builder/issues/224
             },
         };
         const initialKeypointConfig = {
-            ...AntdConfig,
+            ...queryBuilderConfig,
             fields: {
                 label: {
                     label: t('Label'),
@@ -301,7 +301,7 @@ function FiltersModalComponent(): JSX.Element {
                 } : {}),
             },
             settings: {
-                ...AntdConfig.settings,
+                ...queryBuilderConfig.settings,
                 renderField: (_props: any) => <FieldDropdown {..._props} />,
             },
         };
