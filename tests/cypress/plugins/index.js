@@ -91,7 +91,7 @@ module.exports = (on, config) => {
     // Try to resolve "Cypress failed to make a connection to the Chrome DevTools Protocol"
     // https://github.com/cypress-io/cypress/issues/7450
     on('before:browser:launch', (browser, launchOptions) => {
-        if (browser.name === 'chrome') {
+        if (browser.name === 'chrome' || browser.name === 'chrome-for-testing') {
             if (browser.isHeadless) {
                 launchOptions.args.push('--disable-gpu');
             }

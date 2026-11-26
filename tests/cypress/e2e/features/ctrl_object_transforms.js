@@ -16,10 +16,9 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
         objectType: 'shape', type: 'points', labelName, frame: 0, points: [500, 150, 550, 200],
     });
     let taskId = null;
-    let jobId = null;
 
     function holdCtrl() {
-        cy.get('body').trigger('keydown', {
+        cy.document().trigger('keydown', {
             key: 'Control', code: 'ControlLeft', keyCode: 17, ctrlKey: true,
         });
     }
@@ -41,7 +40,8 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
         });
     }
 
-    before(() => {
+    beforeEach(() => {
+        taskId = null;
         cy.visit('/auth/login');
         cy.headlessLogin();
         const { taskSpec, dataSpec, extras } = defaultTaskSpec({
@@ -49,32 +49,21 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
         });
         cy.headlessCreateTask(taskSpec, dataSpec, extras).then(({ taskId: tid, jobIds: [jid] }) => {
             taskId = tid;
-            jobId = jid;
-        });
-    });
-
-    beforeEach(() => {
-        cy.getCookie('csrftoken').then(({ value }) => {
-            cy.request({
-                method: 'DELETE',
-                url: `/api/jobs/${jobId}/annotations`,
-                headers: { 'X-CSRFToken': value },
+            cy.headlessCreateObjects(objects, jid);
+            cy.visit(`/tasks/${tid}/jobs/${jid}`, {
+                onBeforeLoad(win) {
+                    // Exercise Ctrl-based multiselection even when the test runner is on macOS.
+                    Object.defineProperty(win.navigator, 'platform', { configurable: true, value: 'Win32' });
+                    Object.defineProperty(win.navigator, 'userAgentData', {
+                        configurable: true, value: { platform: 'Windows' },
+                    });
+                },
             });
-        });
-        cy.headlessCreateObjects(objects, jobId);
-        cy.visit(`/tasks/${taskId}/jobs/${jobId}`, {
-            onBeforeLoad(win) {
-                // Exercise Ctrl-based multiselection even when the test runner is on macOS.
-                Object.defineProperty(win.navigator, 'platform', { configurable: true, value: 'Win32' });
-                Object.defineProperty(win.navigator, 'userAgentData', {
-                    configurable: true, value: { platform: 'Windows' },
-                });
-            },
         });
         cy.checkFrameNum(0);
         cy.get('.cvat_canvas_shape').should('have.length', 3);
         cy.get('.cvat-spinner').should('not.exist');
-        cy.get(shapeSelector).trigger('mousemove', 20, 20, { eventConstructor: 'MouseEvent' });
+        cy.getObjectSidebarItem(1).trigger('mouseover');
         cy.get(shapeSelector).should('have.class', 'cvat_canvas_shape_activated');
         cy.get('.svg_select_points_rot').should('be.visible');
         holdCtrl();
@@ -82,16 +71,15 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
     });
 
     afterEach(() => {
-        cy.get('body').trigger('keyup', {
+        cy.document().trigger('keyup', {
             key: 'Control', code: 'ControlLeft', keyCode: 17, ctrlKey: false,
         });
-        cy.clickSaveAnnotationView();
-        cy.get('.cvat-annotation-header-save-button')
-            .should('not.have.class', 'cvat-annotation-disabled-header-button');
-    });
-
-    after(() => {
-        if (taskId !== null) cy.headlessDeleteTask(taskId);
+        if (taskId !== null) {
+            cy.clickSaveAnnotationView();
+            cy.get('.cvat-annotation-header-save-button')
+                .should('not.have.class', 'cvat-annotation-disabled-header-button');
+            cy.headlessDeleteTask(taskId);
+        }
     });
 
     it('Resizes the focused rectangle with Ctrl without changing the selection', () => {
