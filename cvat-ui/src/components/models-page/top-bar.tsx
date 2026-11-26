@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import Input from 'antd/lib/input';
@@ -64,7 +65,7 @@ export default function TopBarComponent(props: Readonly<VisibleTopBarProps>): JS
                             }}
                             defaultValue={query.search || ''}
                             className='cvat-models-page-search-bar'
-                            placeholder='Search ...'
+                            placeholder={t('Search ...')}
                         />
                         <ResourceSelectionInfo selectedCount={selectedCount} onSelectAll={onSelectAll} />
                     </div>

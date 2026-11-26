@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import {
     Label, QualityRequirement, QualityRequirementSaveFields, QualitySettings,
 } from 'cvat-core-wrapper';
@@ -45,18 +46,18 @@ export const METRIC_OPTION_GROUPS: Array<{
     options: QualityRequirementMetric[];
 }> = [
     {
-        label: 'Micro average',
+        label: t('Micro average'),
         options: Object.values(QualityRequirementMetric),
     },
     {
-        label: 'Macro average',
+        label: t('Macro average'),
         options: Object.values(QualityRequirementMetric).map((metric) => serializeQualityTargetMetric({
             metric,
             aggregation: QualityMetricAggregation.MEAN,
         })),
     },
     {
-        label: 'Worst label',
+        label: t('Worst label'),
         options: Object.values(QualityRequirementMetric).map((metric) => serializeQualityTargetMetric({
             metric,
             aggregation: QualityMetricAggregation.LABEL,
@@ -881,12 +882,12 @@ export function validateJsonLogic(_: unknown, value: string | undefined): Promis
     try {
         const parsedValue = JSON.parse(value);
         if (!parsedValue || Array.isArray(parsedValue) || typeof parsedValue !== 'object') {
-            return Promise.reject(new Error('Filter must be a JSON logic object'));
+            return Promise.reject(new Error(t('Filter must be a JSON logic object')));
         }
 
         return Promise.resolve();
     } catch (_error: unknown) {
-        return Promise.reject(new Error('Filter must be valid JSON logic'));
+        return Promise.reject(new Error(t('Filter must be valid JSON logic')));
     }
 }
 

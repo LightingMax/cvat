@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -86,7 +87,7 @@ function RequestActionsComponent(props: Readonly<Props>): JSX.Element | null {
             async (request) => {
                 await dispatch(cancelRequestAsync(request));
             },
-            (request, idx, total) => `Canceling request #${request.id} (${idx + 1}/${total})`,
+            (request, idx, total) => t('Canceling request #{{id}} ({{value2}}/{{total}})', { id: request.id, value2: idx + 1, total }),
         ));
     }, [requestsToAct]);
 
@@ -104,14 +105,14 @@ function RequestActionsComponent(props: Readonly<Props>): JSX.Element | null {
     if (downloadableCount > 0) {
         menuItems.push({
             key: 'download',
-            label: withCount('Download', downloadableCount),
+            label: withCount(t('Download'), downloadableCount),
             onClick: onDownload,
         });
     }
     if (queuedCount > 0) {
         menuItems.push({
             key: 'cancel',
-            label: withCount('Cancel', queuedCount),
+            label: withCount(t('Cancel'), queuedCount),
             onClick: onCancel,
         });
     }

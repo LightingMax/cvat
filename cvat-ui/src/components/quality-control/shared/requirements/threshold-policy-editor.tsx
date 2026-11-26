@@ -5,6 +5,7 @@
 /* eslint jsx-a11y/label-has-associated-control:
     ["error", { "controlComponents": ["Select", "ThresholdPolicyInput"] }] */
 
+import { t } from 'i18n';
 import React, {
     useCallback, useEffect, useId, useRef, useState,
 } from 'react';
@@ -253,16 +254,16 @@ export default function ThresholdPolicyEditor(props: Readonly<Props>): JSX.Eleme
         <div className='cvat-threshold-policy-editor'>
             <div className='cvat-threshold-policy-controls'>
                 <label htmlFor={`${controlID}-mode`}>
-                    Mode
+                    {t('Mode')}
                     <Select id={`${controlID}-mode`} value={policy.mode} onChange={changeMode} disabled={disabled}>
-                        <Select.Option value='constant'>Constant</Select.Option>
-                        <Select.Option value='linear'>Linear interpolation</Select.Option>
+                        <Select.Option value='constant'>{t('Constant')}</Select.Option>
+                        <Select.Option value='linear'>{t('Linear interpolation')}</Select.Option>
                     </Select>
                 </label>
                 {policy.mode === 'constant' && (
                     <div>
-                        <label htmlFor={`${controlID}-constant`}>IoU threshold (%)</label>
-                        <ThresholdPolicyInput id={`${controlID}-constant`} label='IoU threshold (%)'
+                        <label htmlFor={`${controlID}-constant`}>{t('IoU threshold (%)')}</label>
+                        <ThresholdPolicyInput id={`${controlID}-constant`} label={t('IoU threshold (%)')}
                             value={policy.value} percentage error={thresholdValueError(policy.value)}
                             disabled={disabled}
                             onCommit={finishNumericEdit}
@@ -274,11 +275,11 @@ export default function ThresholdPolicyEditor(props: Readonly<Props>): JSX.Eleme
                     </div>
                 )}
                 <CVATTooltip title={history.length ?
-                    `Undo: ${history.at(-1).action}. Only changes in this curve editor are undone.` :
-                    'No changes to undo in this curve editor.'}>
+                    t('Undo: {{action}}. Only changes in this curve editor are undone.', { action: history.at(-1).action }) :
+                    t('No changes to undo in this curve editor.')}>
                     <span className='cvat-threshold-policy-undo'>
                         <Button disabled={disabled || !history.length} icon={<UndoOutlined />} onClick={undo}>
-                            Undo
+                            {t('Undo')}
                         </Button>
                     </span>
                 </CVATTooltip>

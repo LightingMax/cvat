@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React from 'react';
 import { Row, Col } from 'antd/lib/grid';
@@ -13,7 +14,7 @@ function CreateOrganizationComponent(): JSX.Element {
     return (
         <Row justify='center' align='top' className='cvat-create-organization-page'>
             <Col md={20} lg={16} xl={14} xxl={9}>
-                <Text className='cvat-title'>Create a new organization</Text>
+                <Text className='cvat-title'>{t('Create a new organization')}</Text>
                 <CreateOrganizationForm />
             </Col>
         </Row>

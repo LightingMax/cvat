@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 
 import React, {
@@ -258,7 +259,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
             dispatch(reducerActions.setInstanceType(type));
         } catch (error: unknown) {
             notification.error({
-                message: `Could not receive requested ${type}`,
+                message: t('Could not receive requested {{type}}', { type }),
                 description: `${error instanceof Error ? error.message : ''}`,
             });
             throw error;
@@ -296,7 +297,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
             dispatch(reducerActions.setQualitySettings(settings, childrenSettings, parentSettings));
         } catch (error: unknown) {
             notification.error({
-                message: 'Could not receive quality settings',
+                message: t('Could not receive quality settings'),
                 description: `${error instanceof Error ? error.message : ''}`,
             });
             throw error;
@@ -311,7 +312,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
             await receiveSettings(requestedInstanceType, requestedInstanceID, receivedInstance);
             setActiveTab(getQualityTabFromHash());
         } catch (error: unknown) {
-            dispatch(reducerActions.setError(error instanceof Error ? error : new Error('Unknown error')));
+            dispatch(reducerActions.setError(error instanceof Error ? error : new Error(t('Unknown error'))));
         } finally {
             dispatch(reducerActions.setFetching(false));
         }
@@ -352,11 +353,11 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
             dispatch(reducerActions.setQualitySettings(
                 updatedInstanceSettings, updatedChildrenSettings, parentSettings,
             ));
-            notification.info({ message: 'Settings have been updated' });
+            notification.info({ message: t('Settings have been updated') });
         } catch (error: unknown) {
             notification.error({
-                message: 'Could not save quality settings',
-                description: error instanceof Error ? error.message : 'Unknown error',
+                message: t('Could not save quality settings'),
+                description: error instanceof Error ? error.message : t('Unknown error'),
             });
             throw error;
         } finally {
@@ -409,7 +410,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
             .then(() => receiveInstance(requestedInstanceType, requestedInstanceID).catch(() => undefined))
             .catch((error: unknown) => {
                 notification.error({
-                    message: 'Could not update job',
+                    message: t('Could not update job'),
                     description: error instanceof Error ? error.message : '',
                 });
             }).finally(() => {
@@ -466,7 +467,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
                 <div className='cvat-quality-control-page-error'>
                     <Result
                         status='error'
-                        title='Could not open the page'
+                        title={t('Could not open the page')}
                         subTitle={error.message}
                         extra={backNavigation}
                     />
@@ -489,7 +490,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
         title = (
             <Col className='cvat-quality-page-header'>
                 <Title level={4} className='cvat-text-color'>
-                    {'Quality control for '}
+                    {`${t('Quality control for')} `}
                     <ResourceLink resource={instance} />
                 </Title>
             </Col>
@@ -517,7 +518,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
         if (!pluginTabs.length && qualitySettings) {
             tabsItems.push({
                 key: 'requirements',
-                label: 'Requirements',
+                label: t('Requirements'),
                 children: (
                     <QualityRequirementsTab
                         instance={instance}
@@ -530,7 +531,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
         if (isTaskWithGT && validationLayout && qualitySettings) {
             tabsItems.push({
                 key: 'management',
-                label: 'Management',
+                label: t('Management'),
                 children: (
                     <QualityManagementTab
                         task={instance}
@@ -550,7 +551,7 @@ function QualityControlPageContent({ requestedInstanceType, requestedInstanceID 
         if ((isTaskWithGT || isProject) && qualitySettings) {
             tabsItems.push({
                 key: 'settings',
-                label: 'Settings',
+                label: t('Settings'),
                 children: (
                     <QualitySettingsTab
                         instance={instance}

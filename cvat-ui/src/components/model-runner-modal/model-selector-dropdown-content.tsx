@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Divider from 'antd/lib/divider';
 import { ExportOutlined, PlusOutlined } from '@ant-design/icons';
@@ -20,7 +21,7 @@ export default function ModelSelectorDropdownContent({ children }: { children?: 
                 className='cvat-model-selector-add-model'
             >
                 <PlusOutlined />
-                <span>Add your own model</span>
+                <span>{t('Add your own model')}</span>
                 <ExportOutlined className='cvat-model-selector-external-link' />
             </a>
         </>

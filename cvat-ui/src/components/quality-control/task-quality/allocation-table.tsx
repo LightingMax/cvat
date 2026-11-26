@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState, useCallback } from 'react';
 import { useHistory } from 'react-router';
 import { useSelector } from 'react-redux';
@@ -95,7 +96,7 @@ function AllocationTable(props: Readonly<Props>): JSX.Element | null {
 
     const columns = [
         {
-            title: 'Frame',
+            title: t('Frame'),
             dataIndex: 'frame',
             key: 'frame',
             align: 'center' as const,
@@ -116,7 +117,7 @@ function AllocationTable(props: Readonly<Props>): JSX.Element | null {
             ),
         },
         {
-            title: 'Name',
+            title: t('Name'),
             dataIndex: 'name',
             key: 'name',
             align: 'center' as const,
@@ -143,12 +144,12 @@ function AllocationTable(props: Readonly<Props>): JSX.Element | null {
             },
         },
         {
-            title: 'Actions',
+            title: t('Actions'),
             dataIndex: 'active',
             key: 'actions',
             filters: [
-                { text: 'Active', value: true },
-                { text: 'Excluded', value: false },
+                { text: t('Active'), value: true },
+                { text: t('Excluded'), value: false },
             ],
             align: 'center' as const,
             sorter: sorter('active'),

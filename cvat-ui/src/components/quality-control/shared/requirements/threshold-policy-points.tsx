@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, {
     useEffect, useId, useRef, useState,
 } from 'react';
@@ -91,11 +92,11 @@ export default function ThresholdPolicyPoints(props: Readonly<Props>): JSX.Eleme
                 )}
                 renderExtraActions={() => (
                     <Input.Search className='cvat-table-search-bar'
-                        aria-label='Search key points' placeholder='Search points' value={search}
+                        aria-label={t('Search key points')} placeholder={t('Search points')} value={search}
                         allowClear enterButton onChange={(event) => { setSearch(event.target.value); setPage(1); }} />
                 )}
                 renderHeaderActions={() => (
-                    <Button type='primary' aria-label='Add point'
+                    <Button type='primary' aria-label={t('Add point')}
                         disabled={disabled || !valid || points.length >= MAX_THRESHOLD_POINTS}
                         icon={<PlusOutlined />} onClick={onAdd} />
                 )}
@@ -104,10 +105,10 @@ export default function ThresholdPolicyPoints(props: Readonly<Props>): JSX.Eleme
                     width: 48,
                     render: (_, point: typeof data[number]) => point.index + 1,
                 }, {
-                    title: 'GT area (px²)',
+                    title: t('GT area (px²)'),
                     render: (_, point: typeof data[number]) => (
                         <ThresholdPolicyInput id={`${controlID}-area-${point.id}`}
-                            label={`GT area for point ${point.index + 1}`} value={point.x}
+                            label={t('GT area for point {{value1}}', { value1: point.index + 1 })} value={point.x}
                             error={point.areaError} disabled={disabled} onFocus={() => focus(point.id)}
                             onChange={(number) => onUpdate(point.id, 'x', number)} onCommit={commit} />
                     ),
@@ -115,25 +116,25 @@ export default function ThresholdPolicyPoints(props: Readonly<Props>): JSX.Eleme
                     title: 'IoU (%)',
                     render: (_, point: typeof data[number]) => (
                         <ThresholdPolicyInput id={`${controlID}-iou-${point.id}`} percentage
-                            label={`IoU for point ${point.index + 1}`} value={point.y}
+                            label={t('IoU for point {{value1}}', { value1: point.index + 1 })} value={point.y}
                             error={point.iouError} disabled={disabled} onFocus={() => focus(point.id)}
                             onChange={(number) => onUpdate(point.id, 'y', number)} onCommit={commit} />
                     ),
                 }, {
-                    title: 'Actions',
+                    title: t('Actions'),
                     width: 80,
                     align: 'center',
                     render: (_, point: typeof data[number]) => (
-                        <CVATTooltip title='Delete point'>
+                        <CVATTooltip title={t('Delete point')}>
                             <Button type='text' size='small' className='cvat-quality-requirements-action-button'
-                                icon={<DeleteOutlined />} aria-label={`Delete point ${point.index + 1}`}
+                                icon={<DeleteOutlined />} aria-label={t('Delete point {{value1}}', { value1: point.index + 1 })}
                                 disabled={disabled || points.length <= 2} onClick={() => onDelete(point.id)} />
                         </CVATTooltip>
                     ),
                 }]}
             />
             <p className='cvat-threshold-policy-hint'>
-                Linear interpolation between 2–200 points. Outside their range, the nearest endpoint is used.
+                {t('Linear interpolation between 2–200 points. Outside their range, the nearest endpoint is used.')}
             </p>
         </>
     );

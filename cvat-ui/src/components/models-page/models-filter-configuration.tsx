@@ -2,24 +2,25 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { Config } from '@react-awesome-query-builder/antd';
 
 export const config: Partial<Config> = {
     fields: {
         name: {
-            label: 'Name',
+            label: t('Name'),
             type: 'text',
             valueSources: ['value'],
             operators: ['like'],
         },
         description: {
-            label: 'Description',
+            label: t('Description'),
             type: 'text',
             valueSources: ['value'],
             operators: ['like'],
         },
         provider: {
-            label: 'Provider',
+            label: t('Provider'),
             type: 'select',
             valueSources: ['value'],
             operators: ['select_equals'],
@@ -27,34 +28,34 @@ export const config: Partial<Config> = {
                 listValues: [
                     { value: 'cvat', title: 'CVAT' },
                     { value: 'huggingface', title: 'Hugging Face' },
-                    { value: 'native', title: 'Native' },
+                    { value: 'native', title: t('Native') },
                     { value: 'roboflow', title: 'Roboflow' },
                 ],
             },
         },
         owner: {
-            label: 'Owner',
+            label: t('Owner'),
             type: 'text',
             valueSources: ['value'],
             operators: ['like'],
         },
         created_date: {
-            label: 'Created date',
+            label: t('Created date'),
             type: 'datetime',
             operators: ['between', 'greater', 'greater_or_equal', 'less', 'less_or_equal'],
         },
         kind: {
-            label: 'Kind',
+            label: t('Kind'),
             type: 'select',
             valueSources: ['value'],
             fieldSettings: {
                 listValues: [
-                    { value: 'classifier', title: 'Classifier' },
-                    { value: 'detector', title: 'Detector' },
-                    { value: 'segmenter', title: 'Segmenter' },
-                    { value: 'interactor', title: 'Interactor' },
-                    { value: 'tracker', title: 'Tracker' },
-                    { value: 'reid', title: 'ReID' },
+                    { value: 'classifier', title: t('Classifier') },
+                    { value: 'detector', title: t('Detector') },
+                    { value: 'segmenter', title: t('Segmenter') },
+                    { value: 'interactor', title: t('Interactor') },
+                    { value: 'tracker', title: t('Tracker') },
+                    { value: 'reid', title: t('ReID') },
                 ],
             },
         },

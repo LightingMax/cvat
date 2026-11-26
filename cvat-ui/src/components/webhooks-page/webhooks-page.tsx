@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -68,7 +69,7 @@ function WebhooksPage(): JSX.Element | null {
             size='large'
         >
             <LeftOutlined />
-            {projectsMatch ? 'Back to project' : 'Back to organization'}
+            {projectsMatch ? t('Back to project') : t('Back to organization')}
         </Button>
     );
 

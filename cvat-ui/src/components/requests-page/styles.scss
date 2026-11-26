@@ -73,10 +73,10 @@
     display: flex;
     align-items: center;
     line-height: 14px;
-    color: black;
+    color: var(--cvat-text-color, black);
 
     &:hover, &:focus {
-        color: black;
+        color: var(--cvat-text-color, black);
     }
 }
 

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -89,7 +90,7 @@ function AnalyticsReportPage(): JSX.Element {
             }
         } catch (error: unknown) {
             notification.error({
-                message: 'Could not export events for the target resource',
+                message: t('Could not export events for the target resource'),
                 description: error instanceof Error ? error.message : '',
             });
         } finally {
@@ -122,7 +123,7 @@ function AnalyticsReportPage(): JSX.Element {
                 setResource(_resource[0]);
             }).catch((error: unknown) => {
                 notification.error({
-                    message: 'Could not receive the target resource from the server',
+                    message: t('Could not receive the target resource from the server'),
                     description: error instanceof Error ? error.message : '',
                 });
             }).finally(() => {

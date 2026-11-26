@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import React from 'react';
 import Button from 'antd/lib/button';
@@ -32,7 +33,7 @@ function CreateWebhookPage(): JSX.Element {
                         size='large'
                     >
                         <LeftOutlined />
-                        Back to webhooks
+                        {t('Back to webhooks')}
                     </Button>
                 </Col>
             </Row>
