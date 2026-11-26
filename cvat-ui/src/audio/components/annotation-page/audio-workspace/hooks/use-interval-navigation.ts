@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { audioActions } from 'actions/audio-actions';
@@ -19,14 +20,14 @@ import { WaveformViewport } from './use-waveform-viewport';
 
 const componentShortcuts = {
     NEXT_OBJECT: {
-        name: 'Next object',
-        description: 'Go to the next audio interval and center it on the waveform',
+        name: t('Next object'),
+        description: t('Go to the next audio interval and center it on the waveform'),
         sequences: ['tab'],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },
     PREVIOUS_OBJECT: {
-        name: 'Previous object',
-        description: 'Go to the previous audio interval and center it on the waveform',
+        name: t('Previous object'),
+        description: t('Go to the previous audio interval and center it on the waveform'),
         sequences: ['shift+tab'],
         scope: ShortcutScope.ANNOTATION_PAGE,
     },

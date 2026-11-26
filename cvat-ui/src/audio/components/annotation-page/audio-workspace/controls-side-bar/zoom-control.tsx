@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { ZoomInOutlined } from '@ant-design/icons';
 
@@ -24,7 +25,7 @@ function ZoomControl(props: Props): JSX.Element {
     return (
         <AudioSliderControl
             icon={<ZoomInOutlined />}
-            tooltip='Zoom'
+            tooltip={t('Zoom')}
             value={currentZoom}
             min={ZOOM_MIN}
             max={ZOOM_MAX}

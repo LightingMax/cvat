@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import createElement from 'wavesurfer.js/dist/dom';
 import TimelinePlugin, { type TimelinePluginOptions } from 'wavesurfer.js/dist/plugins/timeline';
 
@@ -40,7 +41,7 @@ export default class OptimizedTimelinePlugin extends TimelinePlugin {
     public onInit(): void {
         const { wavesurfer } = this;
         if (!wavesurfer) {
-            throw new Error('Timeline plugin cannot initialize without a WaveSurfer instance');
+            throw new Error(t('Timeline plugin cannot initialize without a WaveSurfer instance'));
         }
 
         const { timelineWrapper } = this.getTimelinePlugin();
@@ -50,7 +51,7 @@ export default class OptimizedTimelinePlugin extends TimelinePlugin {
         } else if (typeof this.options.container === 'string') {
             const element = document.querySelector(this.options.container);
             if (!element) {
-                throw new Error(`No Timeline container found matching ${this.options.container}`);
+                throw new Error(t('No Timeline container found matching {{container}}', { container: this.options.container }));
             }
             container = element as HTMLElement;
         }

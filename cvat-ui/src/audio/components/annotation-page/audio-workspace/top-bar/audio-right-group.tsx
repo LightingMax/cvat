@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useCallback } from 'react';
 import { Col } from 'antd/lib/grid';
 import Icon, { InfoCircleOutlined } from '@ant-design/icons';
@@ -64,8 +65,8 @@ function AudioRightGroup(props: Props): JSX.Element {
             }
         }).catch((error: unknown) => {
             notification.error({
-                message: 'Could not receive annotation guide',
-                description: error instanceof Error ? error.message : 'Unknown error',
+                message: t('Could not receive annotation guide'),
+                description: error instanceof Error ? error.message : t('Unknown error'),
             });
         });
     }, [jobInstance]);
@@ -83,7 +84,7 @@ function AudioRightGroup(props: Props): JSX.Element {
             try {
                 seenGuides = JSON.parse(localStorage.getItem('seenGuides') || '[]');
                 if (!Array.isArray(seenGuides) || seenGuides.some((el) => !Number.isInteger(el))) {
-                    throw new Error('Wrong structure stored in local storage');
+                    throw new Error(t('Wrong structure stored in local storage'));
                 }
             } catch (_error: unknown) {
                 seenGuides = [];
@@ -117,7 +118,7 @@ function AudioRightGroup(props: Props): JSX.Element {
                 }}
             >
                 <Icon component={FullscreenIcon} />
-                Fullscreen
+                {t('Fullscreen')}
             </Button>
             { jobInstance.guideId !== null && (
                 <Button
@@ -126,7 +127,7 @@ function AudioRightGroup(props: Props): JSX.Element {
                     onClick={openGuide}
                 >
                     <Icon component={GuideIcon} />
-                    Guide
+                    {t('Guide')}
                 </Button>
             )}
             <Button
@@ -135,7 +136,7 @@ function AudioRightGroup(props: Props): JSX.Element {
                 onClick={showStatistics}
             >
                 <InfoCircleOutlined />
-                Info
+                {t('Info')}
             </Button>
             <Button
                 type='link'
@@ -145,7 +146,7 @@ function AudioRightGroup(props: Props): JSX.Element {
                 onClick={showFilters}
             >
                 <Icon component={FilterIcon} />
-                Filters
+                {t('Filters')}
             </Button>
             <div>
                 <Select

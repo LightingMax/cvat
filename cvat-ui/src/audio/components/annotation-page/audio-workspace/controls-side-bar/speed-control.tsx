@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { DashboardOutlined } from '@ant-design/icons';
 
@@ -18,7 +19,7 @@ function SpeedControl(props: Props): JSX.Element {
     return (
         <AudioSliderControl
             icon={<DashboardOutlined />}
-            tooltip='Speed'
+            tooltip={t('Speed')}
             value={playbackRate}
             min={0.1}
             max={4}

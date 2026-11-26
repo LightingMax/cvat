@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import Icon from '@ant-design/icons';
@@ -34,32 +35,32 @@ interface Props {
 
 const componentShortcuts = {
     PLAY_PAUSE_AUDIO: {
-        name: 'Play/Pause audio',
-        description: 'Play or pause audio playback',
+        name: t('Play/Pause audio'),
+        description: t('Play or pause audio playback'),
         sequences: ['space'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
     AUDIO_BACKWARD: {
-        name: 'Audio backward',
-        description: 'Rewind audio by a short step',
+        name: t('Audio backward'),
+        description: t('Rewind audio by a short step'),
         sequences: ['d'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
     AUDIO_FORWARD: {
-        name: 'Audio forward',
-        description: 'Forward audio by a short step',
+        name: t('Audio forward'),
+        description: t('Forward audio by a short step'),
         sequences: ['f'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
     AUDIO_FAST_BACKWARD: {
-        name: 'Audio fast backward',
-        description: 'Rewind audio by a long step',
+        name: t('Audio fast backward'),
+        description: t('Rewind audio by a long step'),
         sequences: ['c'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
     AUDIO_FAST_FORWARD: {
-        name: 'Audio fast forward',
-        description: 'Forward audio by a long step',
+        name: t('Audio fast forward'),
+        description: t('Forward audio by a long step'),
         sequences: ['v'],
         scope: ShortcutScope.AUDIO_WORKSPACE_CONTROLS,
     },
@@ -89,7 +90,7 @@ type SeekButton = {
 
 const LEFT_BUTTONS: SeekButton[] = [
     {
-        title: 'Jump to start',
+        title: t('Jump to start'),
         className: 'cvat-player-begin-button',
         icon: FirstIcon,
         request: AUDIO_SEEK_REQUESTS.START,
@@ -126,7 +127,7 @@ const RIGHT_BUTTONS: SeekButton[] = [
         shortcut: 'fastForwardShortcut',
     },
     {
-        title: 'Jump to end',
+        title: t('Jump to end'),
         className: 'cvat-player-end-button',
         icon: LastIcon,
         request: AUDIO_SEEK_REQUESTS.END,
@@ -190,10 +191,10 @@ function AudioPlayerNavigation(props: Props): JSX.Element {
         title, icon, request, className, shortcut,
     }: SeekButton): JSX.Element => {
         let tooltip = title;
-        if (title === 'short-backward') tooltip = 'Short step backward';
-        if (title === 'short-forward') tooltip = 'Short step forward';
-        if (title === 'long-backward') tooltip = 'Long step backward';
-        if (title === 'long-forward') tooltip = 'Long step forward';
+        if (title === 'short-backward') tooltip = t('Short step backward');
+        if (title === 'short-forward') tooltip = t('Short step forward');
+        if (title === 'long-backward') tooltip = t('Long step backward');
+        if (title === 'long-forward') tooltip = t('Long step forward');
 
         const shortcutValue = shortcut ? {
             backwardShortcut,
@@ -226,7 +227,7 @@ function AudioPlayerNavigation(props: Props): JSX.Element {
                 <Col>
                     <div style={blockStyle} className='cvat-player-buttons'>
                         {LEFT_BUTTONS.map(renderSeekButton)}
-                        <CVATTooltip title={`${playing ? 'Pause' : 'Play'} ${playPauseShortcut}`}>
+                        <CVATTooltip title={`${playing ? t('Pause') : t('Play')} ${playPauseShortcut}`}>
                             <Icon
                                 className={playing ? 'cvat-player-pause-button' : 'cvat-player-play-button'}
                                 component={playing ? PauseIcon : PlayIcon}
