@@ -19,7 +19,7 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
     let jobId = null;
 
     function holdCtrl() {
-        cy.get('body').trigger('keydown', {
+        cy.document().trigger('keydown', {
             key: 'Control', code: 'ControlLeft', keyCode: 17, ctrlKey: true,
         });
     }
@@ -74,7 +74,7 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
         cy.checkFrameNum(0);
         cy.get('.cvat_canvas_shape').should('have.length', 3);
         cy.get('.cvat-spinner').should('not.exist');
-        cy.get(shapeSelector).trigger('mousemove', 20, 20, { eventConstructor: 'MouseEvent' });
+        cy.get(shapeSelector).realMouseMove(20, 20, { scrollBehavior: false });
         cy.get(shapeSelector).should('have.class', 'cvat_canvas_shape_activated');
         cy.get('.svg_select_points_rot').should('be.visible');
         holdCtrl();
@@ -82,7 +82,7 @@ context('Object transforms while holding Ctrl', { scrollBehavior: false }, () =>
     });
 
     afterEach(() => {
-        cy.get('body').trigger('keyup', {
+        cy.document().trigger('keyup', {
             key: 'Control', code: 'ControlLeft', keyCode: 17, ctrlKey: false,
         });
         cy.clickSaveAnnotationView();
