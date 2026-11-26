@@ -302,8 +302,16 @@ jobs:
             (( max_tries-- ))
           done
 
+      # Cypress 14 fails between specs on Chrome 158 (cypress-io/cypress#35195).
+      - name: Set up Chrome for Cypress
+        id: chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: '157.0.8103.78'
+
       - name: Run E2E tests
         env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
           DJANGO_SU_NAME: 'admin'
           DJANGO_SU_EMAIL: 'admin@localhost.company'
           DJANGO_SU_PASSWORD: '12qwaszx'
@@ -316,20 +324,20 @@ jobs:
           if [[ ${{ matrix.specs }} == canvas3d_* ]]; then
             npx cypress run \
               --headed \
-              --browser chrome \
+              --browser "$CHROME_PATH" \
               --env coverage=false \
               --config-file cypress_canvas3d.config.js \
               --spec 'cypress/e2e/setup/setup_canvas3d.js,cypress/e2e/canvas3d_*/**/*.js,cypress/e2e/remove_users_tasks_projects_organizations.js'
           elif [[ ${{ matrix.specs }} == audio_* ]]; then
             npx cypress run \
               --headed \
-              --browser chrome \
+              --browser "$CHROME_PATH" \
               --env coverage=false \
               --config-file cypress_audio.config.js \
               --spec 'cypress/e2e/setup/setup_audio.js,cypress/e2e/audio_workspace/**/*.js,cypress/e2e/remove_users_tasks_projects_organizations.js'
           else
             npx cypress run \
-              --browser chrome \
+              --browser "$CHROME_PATH" \
               --env coverage=false \
               --spec 'cypress/e2e/setup/setup.js,cypress/e2e/setup/setup_project.js,cypress/e2e/${{ matrix.specs }}/**/*.js,cypress/e2e/remove_users_tasks_projects_organizations.js'
           fi
