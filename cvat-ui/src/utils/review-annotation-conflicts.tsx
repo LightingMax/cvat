@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Button from 'antd/lib/button';
 import Modal from 'antd/lib/modal';
@@ -33,16 +34,16 @@ export default function reviewAnnotationConflicts(
     return new Promise((resolve) => {
         const choices = new Set<string>();
         Modal.confirm({
-            title: 'Review annotation conflicts',
+            title: t('Review annotation conflicts'),
             width: 720,
             closable: true,
             icon: null,
-            okText: 'Save selected changes',
-            cancelText: 'Keep editing',
+            okText: t('Save selected changes'),
+            cancelText: t('Keep editing'),
             content: (
                 <>
                     <p>
-                        Both versions are kept locally. Choose which version to save for each conflict.
+                        {t('Both versions are kept locally. Choose which version to save for each conflict.')}
                     </p>
                     <div style={{ maxHeight: '50vh', overflowY: 'auto' }}>
                         {conflicts.map((item) => {
@@ -54,10 +55,12 @@ export default function reviewAnnotationConflicts(
                             return (
                                 <div key={item.key} style={{ paddingBlock: 10 }}>
                                     <strong>
-                                        {`${kinds[item.kind]} #${item.id} · ${label} · Frame ${frameRange}`}
+                                        {t('{{value1}} #{{id}} · {{label}} · Frame {{frameRange}}', {
+                                            value1: kinds[item.kind], id: item.id, label, frameRange,
+                                        })}
                                     </strong>
                                     {nearby && (
-                                        <div>{`Server also edited nearby keyframes ${nearby}`}</div>
+                                        <div>{t('Server also edited nearby keyframes {{nearby}}', { nearby })}</div>
                                     )}
                                     <Radio.Group defaultValue='server' onChange={({ target }) => {
                                         if (target.value === 'local') choices.add(item.key);
@@ -65,17 +68,17 @@ export default function reviewAnnotationConflicts(
                                     }}
                                     >
                                         <Radio value='server'>
-                                            {`Keep server · ${describe(item.remote)}`}
+                                            {t('Keep server · {{value1}}', { value1: describe(item.remote) })}
                                         </Radio>
                                         <Radio value='local'>
-                                            {`Apply mine · ${describe(item.local)}`}
+                                            {t('Apply mine · {{value1}}', { value1: describe(item.local) })}
                                         </Radio>
                                     </Radio.Group>
                                 </div>
                             );
                         })}
                     </div>
-                    <Button type='link' onClick={download}>Download both versions</Button>
+                    <Button type='link' onClick={download}>{t('Download both versions')}</Button>
                 </>
             ),
             onOk: () => { resolve(choices); },

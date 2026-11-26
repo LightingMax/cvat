@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useContext, useState } from 'react';
 import { EnvironmentFilled, EnvironmentOutlined } from '@ant-design/icons';
 import { Col } from 'antd/lib/grid';
@@ -38,7 +39,7 @@ export function TrackerButton({ objectState }: { objectState: ObjectState }): JS
 
     const isTracked = controls.trackedClientIDs.has(objectState.clientID as number);
     const isSaving = controls.savingClientIDs.has(objectState.clientID as number);
-    const title = isTracked ? 'Disable tracking' : `Enable tracking using ${controls.trackerName}`;
+    const title = isTracked ? t('Disable tracking') : t('Enable tracking using {{trackerName}}', { trackerName: controls.trackerName });
     const onClick = (): void => {
         controls.toggleTracking(objectState);
     };

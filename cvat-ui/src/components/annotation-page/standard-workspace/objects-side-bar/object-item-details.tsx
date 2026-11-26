@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import { Row, Col } from 'antd/lib/grid';
 import Text from 'antd/lib/typography/Text';
@@ -54,19 +55,19 @@ const sizeFields: {
         key: 'length',
         type: SizeType.LENGTH,
         label: 'L',
-        tooltip: 'Length along X axis',
+        tooltip: t('Length along X axis'),
     },
     {
         key: 'width',
         type: SizeType.WIDTH,
         label: 'W',
-        tooltip: 'Width along Y axis',
+        tooltip: t('Width along Y axis'),
     },
     {
         key: 'height',
         type: SizeType.HEIGHT,
         label: 'H',
-        tooltip: 'Height along Z axis',
+        tooltip: t('Height along Z axis'),
     },
 ];
 
@@ -118,7 +119,7 @@ function ItemAttributesComponent(props: Props): JSX.Element | null {
 
     const scoreTag = withScore ? (
         <CVATTooltip
-            title='Consensus score'
+            title={t('Consensus score')}
             align={{
                 ...baseTooltipAlign,
                 targetOffset: ['25%', '40%'],
@@ -131,7 +132,7 @@ function ItemAttributesComponent(props: Props): JSX.Element | null {
     ) : null;
     const votesTag = withVotes ? (
         <CVATTooltip
-            title='Number of votes'
+            title={t('Number of votes')}
             align={{
                 ...baseTooltipAlign,
                 targetOffset: ['40%', '40%'],

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import {
     Attribute, ObjectState, ObjectType, ShapeType,
 } from 'cvat-core-wrapper';
@@ -29,10 +30,10 @@ interface SelectionAttributeState {
     attributes: Attribute[];
 }
 
-const LOCK_DISABLED_REASON = 'Ground truth objects cannot be locked or unlocked';
-const PIN_DISABLED_REASON = 'Locked, ground truth, tag, and skeleton element objects cannot be pinned';
-const OCCLUDED_DISABLED_REASON = 'Locked and ground truth objects cannot be occluded or unoccluded';
-const HIDDEN_DISABLED_REASON = 'Locked and ground truth objects cannot be hidden or shown';
+const LOCK_DISABLED_REASON = t('Ground truth objects cannot be locked or unlocked');
+const PIN_DISABLED_REASON = t('Locked, ground truth, tag, and skeleton element objects cannot be pinned');
+const OCCLUDED_DISABLED_REASON = t('Locked and ground truth objects cannot be occluded or unoccluded');
+const HIDDEN_DISABLED_REASON = t('Locked and ground truth objects cannot be hidden or shown');
 
 export function getSelectedStates(states: ObjectState[], selectedStatesID: number[]): ObjectState[] {
     const selectedIDs = new Set(selectedStatesID);
@@ -123,7 +124,7 @@ export function getSelectionGroupState(states: ObjectState[]): SelectionGroupSta
     const alreadyInSameGroup = states.length > 1 && !!groupID &&
         states.every((state: ObjectState): boolean => state.group?.id === groupID);
     const disabledReason = states.some((state: ObjectState): boolean => state.isGroundTruth) ?
-        'Ground truth objects cannot be grouped or ungrouped' : null;
+        t('Ground truth objects cannot be grouped or ungrouped') : null;
 
     return {
         canGroup: disabledReason === null && states.length > 1 && !alreadyInSameGroup,
@@ -144,7 +145,7 @@ export function getSelectionAttributeState(states: ObjectState[]): SelectionAttr
     } else if (states.some((state: ObjectState): boolean => state.lock)) {
         disabledReason = 'Attributes cannot be changed for locked objects';
     } else if (states.some((state: ObjectState): boolean => state.isGroundTruth)) {
-        disabledReason = 'Ground truth objects cannot be updated';
+        disabledReason = t('Ground truth objects cannot be updated');
     } else if (!sameLabel) {
         disabledReason = 'Selected objects have different labels';
     } else if (!attributes.length) {

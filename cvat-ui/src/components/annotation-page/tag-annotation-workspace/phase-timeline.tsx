@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useRef, useState } from 'react';
 import {
     DeleteOutlined, EyeInvisibleOutlined, EyeOutlined, MoreOutlined, PlayCircleOutlined, PauseCircleOutlined,
@@ -158,24 +159,24 @@ export default function PhaseTimeline(props: Props): JSX.Element {
     }
 
     return (
-        <div className='cvat-action-phase-tracks' aria-label='Action tracks' ref={tracks}>
+        <div className='cvat-action-phase-tracks' aria-label={t('Action tracks')} ref={tracks}>
             <div
                 className='cvat-action-phase-track cvat-action-phase-playback'
                 data-active={activeTrack === null}
             >
-                <CVATTooltip title={`Playback track ${playbackShortcut} · Switch tracks [Tab / Shift+Tab]`}>
+                <CVATTooltip title={t('Playback track {{playbackShortcut}} · Switch tracks [Tab / Shift+Tab]', { playbackShortcut })}>
                     <Button
                         type='text'
                         size='small'
                         autoFocus
-                        aria-label='Playback'
+                        aria-label={t('Playback')}
                         aria-pressed={activeTrack === null}
                         className='cvat-action-phase-track-label'
                         icon={playing ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
                         onClick={() => onActivate(null)}
                         onDoubleClick={onPlay}
                     >
-                        Playback
+                        {t('Playback')}
                     </Button>
                 </CVATTooltip>
                 <Slider
@@ -215,7 +216,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                     size='small'
                                     className='cvat-action-phase-track-label'
                                     aria-pressed={activeTrack === id}
-                                    aria-label={`${name} action track`}
+                                    aria-label={t('{{name}} action track', { name })}
                                     onClick={() => onActivate(id)}
                                     onDoubleClick={() => onRecord(label)}
                                 >
@@ -224,15 +225,15 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                         <span className='cvat-action-phase-track-number'>{slot + 1}</span>
                                     )}
                                     <span className='cvat-action-phase-track-name'>{name}</span>
-                                    {draft && <span className='cvat-action-phase-recording-dot' aria-label='Recording' />}
+                                    {draft && <span className='cvat-action-phase-recording-dot' aria-label={t('Recording')} />}
                                 </Button>
                             </CVATTooltip>
                             {slot !== undefined && (
-                                <CVATTooltip title={binding ? `Record track with ${binding}. Click to change the key.` : 'Assign a recording shortcut'}>
+                                <CVATTooltip title={binding ? t('Record track with {{binding}}. Click to change the key.', { binding }) : t('Assign a recording shortcut')}>
                                     <Button
                                         type='text'
                                         size='small'
-                                        aria-label={`Change ${name} shortcut`}
+                                        aria-label={t('Change {{name}} shortcut', { name })}
                                         className='cvat-action-phase-track-shortcut'
                                         onClick={() => onEditShortcut(label)}
                                     >
@@ -240,12 +241,12 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                     </Button>
                                 </CVATTooltip>
                             )}
-                            <CVATTooltip title={hidden.has(id) ? 'Show track' : 'Hide track'}>
+                            <CVATTooltip title={hidden.has(id) ? t('Show track') : t('Hide track')}>
                                 <Button
                                     type='text'
                                     size='small'
                                     icon={hidden.has(id) ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-                                    aria-label={`${hidden.has(id) ? 'Show' : 'Hide'} ${name} track`}
+                                    aria-label={t('{{value1}} {{name}} track', { value1: hidden.has(id) ? 'Show' : 'Hide', name })}
                                     onClick={() => onVisibility(id)}
                                 />
                             </CVATTooltip>
@@ -255,7 +256,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                     items: [{
                                         key: 'delete',
                                         icon: <DeleteOutlined />,
-                                        label: 'Delete track',
+                                        label: t('Delete track'),
                                         danger: true,
                                     }],
                                     onClick: () => onDeleteTrack(label),
@@ -265,19 +266,19 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                     type='text'
                                     size='small'
                                     icon={<MoreOutlined />}
-                                    aria-label={`Options for ${name}`}
+                                    aria-label={t('Options for {{name}}', { name })}
                                 />
                             </Dropdown>
                         </div>
                         <div
                             className='cvat-action-phase-timeline'
                             role='group'
-                            aria-label={`${name} track`}
+                            aria-label={t('{{name}} track', { name })}
                         >
                             <button
                                 type='button'
                                 className='cvat-action-phase-track-background'
-                                aria-label={`Select a frame on ${name}`}
+                                aria-label={t('Select a frame on {{name}}', { name })}
                                 onClick={(event) => {
                                     onActivate(id);
                                     if (event.detail) onSeek(positionAt(event.currentTarget, event.clientX));
@@ -323,7 +324,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                                     className={
                                                         `cvat-action-phase-handle cvat-action-phase-handle-${edge}`
                                                     }
-                                                    aria-label={`Drag ${edge} of ${name}`}
+                                                    aria-label={t('Drag {{edge}} of {{name}}', { edge, name })}
                                                     data-edge-target={hoveredEdge === edge}
                                                     tabIndex={-1}
                                                     {...pointerHandlers(phase, edge)}
@@ -348,8 +349,8 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                         type='text'
                                         size='small'
                                         className='cvat-action-phase-draft-body'
-                                        aria-label={`Draft ${name}`}
-                                        title={`${name} · ${draft.start}–${draftStop - 1} · Double-click to confirm`}
+                                        aria-label={t('Draft {{name}}', { name })}
+                                        title={t('{{name}} · {{start}}–{{value3}} · Double-click to confirm', { name, start: draft.start, value3: draftStop - 1 })}
                                         onClick={(event) => {
                                             if (event.detail) onActivate(id);
                                             else onRecord(label, draftStop - 1);
@@ -359,7 +360,7 @@ export default function PhaseTimeline(props: Props): JSX.Element {
                                     <button
                                         type='button'
                                         className='cvat-action-phase-handle cvat-action-phase-handle-end'
-                                        aria-label={`Drag recording end of ${name}`}
+                                        aria-label={t('Drag recording end of {{name}}', { name })}
                                         onPointerDown={(event) => {
                                             event.currentTarget.setPointerCapture(event.pointerId);
                                         }}

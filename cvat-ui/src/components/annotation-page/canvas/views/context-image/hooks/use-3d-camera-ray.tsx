@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import notification from 'antd/lib/notification';
@@ -31,8 +32,8 @@ interface CameraRayInteraction {
 
 const cameraRayMarkerTooltip = (
     <>
-        <div>Click to clear the ray.</div>
-        <div>Shift+click to clear all rays on this image.</div>
+        <div>{t('Click to clear the ray.')}</div>
+        <div>{t('Shift+click to clear all rays on this image.')}</div>
     </>
 );
 
@@ -71,8 +72,8 @@ export default function useCameraRay({ contextImageName }: Params): CameraRayInt
 
         if (!dispatch(addCameraRayFromContextImagePoint(contextImageName, point))) {
             notification.warning({
-                message: 'Camera calibration is unavailable',
-                description: 'A 3D camera ray cannot be calculated for this related image.',
+                message: t('Camera calibration is unavailable'),
+                description: t('A 3D camera ray cannot be calculated for this related image.'),
             });
         }
     }, [contextImageName, dispatch]);

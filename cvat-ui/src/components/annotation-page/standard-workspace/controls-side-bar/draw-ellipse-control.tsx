@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Popover from 'antd/lib/popover';
 import Icon from '@ant-design/icons';
@@ -47,7 +48,7 @@ function DrawEllipseControl(props: Props): JSX.Element {
             placement='right'
             content={<DrawShapePopoverContainer shapeType={ShapeType.ELLIPSE} />}
         >
-            <CVATTooltip title='Draw an ellipse' placement='right'>
+            <CVATTooltip title={t('Draw an ellipse')} placement='right'>
                 <Icon {...dynamicIconProps} component={EllipseIcon} />
             </CVATTooltip>
         </CustomPopover>

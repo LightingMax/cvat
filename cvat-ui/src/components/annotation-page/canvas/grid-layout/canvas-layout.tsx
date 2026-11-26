@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 import 'react-grid-layout/css/styles.css';
 
@@ -73,7 +74,7 @@ const ViewFabric = (itemLayout: ItemLayout, dimension: DimensionType, overlays: 
             component = <TopViewComponent />;
             break;
         default:
-            component = <div> Undefined view </div>;
+            component = <div> {t('Undefined view')} </div>;
     }
 
     return component;
@@ -256,7 +257,7 @@ function CanvasLayout({
     const showCommonSetups = Boolean(relatedFiles) || children.length > 1;
     const commonSetups = (
         <div className='cvat-grid-layout-common-setups'>
-            <CVATTooltip title='Fit views'>
+            <CVATTooltip title={t('Fit views')}>
                 <PicCenterOutlined
                     onClick={() => {
                         setLayoutConfig(fitLayout(type as DimensionType, layoutConfig));
@@ -264,7 +265,7 @@ function CanvasLayout({
                     }}
                 />
             </CVATTooltip>
-            <CVATTooltip title='Add context image'>
+            <CVATTooltip title={t('Add context image')}>
                 <PlusOutlined
                     style={{
                         pointerEvents: !relatedFiles ? 'none' : undefined,
@@ -303,7 +304,7 @@ function CanvasLayout({
                     }}
                 />
             </CVATTooltip>
-            <CVATTooltip title='Reload layout'>
+            <CVATTooltip title={t('Reload layout')}>
                 <ReloadOutlined onClick={() => {
                     setLayoutConfig([...getLayout()]);
                     window.dispatchEvent(new Event('resize'));

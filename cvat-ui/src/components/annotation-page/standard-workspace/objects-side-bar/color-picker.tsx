@@ -2,6 +2,7 @@
 // Copyright (C) CVAT.ai Corporation
 //
 // SPDX-License-Identifier: MIT
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import { Row, Col } from 'antd/lib/grid';
 
@@ -78,7 +79,7 @@ function ColorPicker(props: Props, ref: React.Ref<any>): JSX.Element {
                                         changeVisible(false);
                                     }}
                                 >
-                                    Reset
+                                    {t('Reset')}
                                 </Button>
                             )}
                         </Col>
@@ -89,7 +90,7 @@ function ColorPicker(props: Props, ref: React.Ref<any>): JSX.Element {
                                     changeVisible(false);
                                 }}
                             >
-                                Cancel
+                                {t('Cancel')}
                             </Button>
                         </Col>
                         <Col span={6}>
@@ -101,7 +102,7 @@ function ColorPicker(props: Props, ref: React.Ref<any>): JSX.Element {
                                     changeVisible(false);
                                 }}
                             >
-                                Ok
+                                {t('Ok')}
                             </Button>
                         </Col>
                     </Row>
@@ -110,10 +111,10 @@ function ColorPicker(props: Props, ref: React.Ref<any>): JSX.Element {
             title={(
                 <Row justify='space-between' align='middle'>
                     <Col span={12}>
-                        <Text strong>Select color</Text>
+                        <Text strong>{t('Select color')}</Text>
                     </Col>
                     <Col span={4}>
-                        <CVATTooltip title='Close'>
+                        <CVATTooltip title={t('Close')}>
                             <Button
                                 className='cvat-color-picker-close-button'
                                 type='link'

@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import Button from 'antd/lib/button';
@@ -109,14 +110,14 @@ function CanvasPointContextMenu(props: Props): React.ReactPortal | null {
                     (contextMenuFor.shapeType === ShapeType.POLYLINE && contextMenuFor.points.length > 4) ||
                     (contextMenuFor.shapeType === ShapeType.POINTS && contextMenuFor.points.length > 2)) &&
                 (
-                    <CVATTooltip title='Delete point [Alt + dblclick]'>
+                    <CVATTooltip title={t('Delete point [Alt + dblclick]')}>
                         <Button
                             type='link'
                             icon={<DeleteOutlined />}
                             onClick={onPointDelete}
                             className='cvat-canvas-point-context-menu-delete'
                         >
-                            Delete point
+                            {t('Delete point')}
                         </Button>
                     </CVATTooltip>
                 )}
@@ -128,7 +129,7 @@ function CanvasPointContextMenu(props: Props): React.ReactPortal | null {
                         onClick={onSetStartPoint}
                         className='cvat-canvas-point-context-menu-set-start'
                     >
-                        Set start point
+                        {t('Set start point')}
                     </Button>
                 )}
             </div>,

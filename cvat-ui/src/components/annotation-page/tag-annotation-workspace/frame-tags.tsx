@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import './styles.scss';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -79,7 +80,7 @@ function FrameTags(): JSX.Element {
                         >
                             {tag.label.name}
                             {' '}
-                            (GT)
+                            {t('(GT)')}
                         </Tag>
                     ))}
             </div>

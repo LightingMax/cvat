@@ -1,3 +1,4 @@
+import { t } from 'i18n';
 import { ObjectState } from 'cvat-core-wrapper';
 import { ColorBy } from 'reducers';
 
@@ -21,7 +22,7 @@ export function getObjectStateColor(state: ObjectState, colorBy: ColorBy): {
         }
 
         if (!/^([0-9a-f]{6})$/i.test(color)) {
-            throw new Error('Invalid hex color format');
+            throw new Error(t('Invalid hex color format'));
         }
     } catch (_: unknown) {
         // fallback

@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { ReactPortal } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
@@ -228,7 +229,7 @@ function registerPlugin(): (callback: null | (() => void)) => void {
     let onTrigger: null | (() => void) = null;
     const listener = {
         name: 'Remove annotations listener',
-        description: 'Tracker needs to know when annotations is reset in the job',
+        description: t('Tracker needs to know when annotations is reset in the job'),
         cvat: {
             classes: {
                 Job: {
@@ -536,7 +537,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
 
         try {
             this.interaction.closeFetchingMessage = message.loading({
-                content: `Waiting for a response from ${activeInteractor?.name}`,
+                content: t('Waiting for a response from {{name}}', { name: activeInteractor?.name }),
                 duration: 0,
                 className: 'cvat-tracking-notice',
             });
@@ -603,7 +604,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
         } catch (error: any) {
             notification.error({
                 description: <CVATMarkdown>{error.message}</CVATMarkdown>,
-                message: 'Interaction error occurred',
+                message: t('Interaction error occurred'),
                 duration: null,
             });
         }
@@ -727,7 +728,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
         } catch (error: any) {
             notification.error({
                 description: <CVATMarkdown>{error.message}</CVATMarkdown>,
-                message: 'Tracking error occurred',
+                message: t('Tracking error occurred'),
                 duration: null,
             });
         }
@@ -842,7 +843,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
         if (!shapesToBeDrawn.length) {
             if (!this.interaction.noShapesMessage) {
                 this.interaction.noShapesMessage = message.info({
-                    content: 'No shapes to display',
+                    content: t('No shapes to display'),
                     duration: 0,
                 });
             }
@@ -899,7 +900,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
             objectState.descriptions = originalDescriptions;
             objectState.keyframe = originalKeyframe;
             notification.error({
-                message: 'Tracking error occurred',
+                message: t('Tracking error occurred'),
                 description: <CVATMarkdown>{error instanceof Error ? error.message : String(error)}</CVATMarkdown>,
                 duration: null,
             });
@@ -999,14 +1000,12 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                     try {
                         const [tracker] = trackers.filter((_tracker: MLModel) => _tracker.id === trackerID);
                         if (!tracker) {
-                            throw new Error(`Suitable tracker with ID ${trackerID} not found in tracker list`);
+                            throw new Error(t('Suitable tracker with ID {{trackerID}} not found in tracker list', { trackerID }));
                         }
 
                         const numOfObjects = trackableObjects.clientIDs.length;
                         hideMessage = message.loading({
-                            content: `${tracker.name}: states are being initialized for ${numOfObjects} ${
-                                numOfObjects > 1 ? 'objects' : 'object'
-                            } ..`,
+                            content: t('{{name}}: states are being initialized for {{numOfObjects}} {{value3}} ..', { name: tracker.name, numOfObjects, value3: numOfObjects > 1 ? 'objects' : 'object' }),
                             duration: 0,
                             className: 'cvat-tracking-notice',
                         });
@@ -1032,7 +1031,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                         trackingData.stateless.delete(trackerID);
                     } catch (error: any) {
                         notification.error({
-                            message: 'Tracker initialization error',
+                            message: t('Tracker initialization error'),
                             description: <CVATMarkdown>{error.message}</CVATMarkdown>,
                             duration: null,
                         });
@@ -1047,14 +1046,12 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                     try {
                         const [tracker] = trackers.filter((_tracker: MLModel) => _tracker.id === trackerID);
                         if (!tracker) {
-                            throw new Error(`Suitable tracker with ID ${trackerID} not found in tracker list`);
+                            throw new Error(t('Suitable tracker with ID {{trackerID}} not found in tracker list', { trackerID }));
                         }
 
                         const numOfObjects = trackableObjects.clientIDs.length;
                         hideMessage = message.loading({
-                            content: `${tracker.name}: ${numOfObjects} ${
-                                numOfObjects > 1 ? 'objects are' : 'object is'
-                            } being tracked..`,
+                            content: t('{{name}}: {{numOfObjects}} {{value3}} being tracked..', { name: tracker.name, numOfObjects, value3: numOfObjects > 1 ? 'objects are' : 'object is' }),
                             duration: 0,
                             className: 'cvat-tracking-notice',
                         });
@@ -1085,7 +1082,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                         }
                     } catch (error: any) {
                         notification.error({
-                            message: 'Tracking error',
+                            message: t('Tracking error'),
                             description: <CVATMarkdown>{error.message}</CVATMarkdown>,
                             duration: null,
                         });
@@ -1152,12 +1149,12 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
 
     private async initializeOpenCV(): Promise<void> {
         if (!openCVWrapper.isInitialized) {
-            const hide = message.loading('Initializing contour utilities..', 0);
+            const hide = message.loading(t('Initializing contour utilities..'), 0);
             try {
                 await openCVWrapper.initialize(() => {});
             } catch (error: any) {
                 notification.error({
-                    message: 'Could not initialize contour utilities',
+                    message: t('Could not initialize contour utilities'),
                     description: <CVATMarkdown>{error.message}</CVATMarkdown>,
                     duration: null,
                 });
@@ -1177,7 +1174,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
 
     private receiveContoursFromMask(mask: Int32Array): [number, number][][] {
         if (!openCVWrapper.isInitialized) {
-            throw new Error('OpenCV was not initialized');
+            throw new Error(t('OpenCV was not initialized'));
         }
 
         if (mask.length < 6) {
@@ -1190,7 +1187,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
 
     private approximateResponsePoints(points: [number, number][]): [number, number][] {
         if (!openCVWrapper.isInitialized) {
-            throw new Error('OpenCV was not initialized');
+            throw new Error(t('OpenCV was not initialized'));
         }
 
         const { approxPolyAccuracy } = this.state;
@@ -1209,7 +1206,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
             <>
                 <Row justify='start'>
                     <Col>
-                        <Text className='cvat-text-color'>Label</Text>
+                        <Text className='cvat-text-color'>{t('Label')}</Text>
                     </Col>
                 </Row>
                 <Row justify='center'>
@@ -1238,7 +1235,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
             <>
                 <Row justify='start'>
                     <Col>
-                        <Text className='cvat-text-color'>Model</Text>
+                        <Text className='cvat-text-color'>{t('Model')}</Text>
                     </Col>
                 </Row>
                 <Row align='middle' justify='center'>
@@ -1246,7 +1243,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                         <Select
                             style={{ width: '100%' }}
                             defaultValue={supportedTrackers[0]?.name}
-                            placeholder='Select a model'
+                            placeholder={t('Select a model')}
                             onChange={this.setActiveTracker}
                             dropdownRender={(menu) => (
                                 <ModelSelectorDropdownContent>{menu}</ModelSelectorDropdownContent>
@@ -1283,7 +1280,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                                 }
                             }}
                         >
-                            Track
+                            {t('Track')}
                         </Button>
                     </Col>
                 </Row>
@@ -1320,7 +1317,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
             <>
                 <Row justify='start'>
                     <Col>
-                        <Text className='cvat-text-color'>Model</Text>
+                        <Text className='cvat-text-color'>{t('Model')}</Text>
                     </Col>
                 </Row>
                 <Row align='middle' justify='space-between'>
@@ -1328,7 +1325,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                         <Select
                             style={{ width: '100%' }}
                             defaultValue={interactors.length ? `${interactors[0].id}` : undefined}
-                            placeholder='Select a model'
+                            placeholder={t('Select a model')}
                             onChange={this.setActiveInteractor}
                             dropdownRender={(menu) => (
                                 <ModelSelectorDropdownContent>{menu}</ModelSelectorDropdownContent>
@@ -1372,7 +1369,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                                 this.setState({ convertMasksToPolygons: checked });
                             }}
                         />
-                        <Text>Convert masks to polygons</Text>
+                        <Text>{t('Convert masks to polygons')}</Text>
                     </div>
                     {renderStartWithBox && (
                         <div>
@@ -1383,7 +1380,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                                     this.setState({ startInteractingWithBox: value });
                                 }}
                             />
-                            <Text>Start with a bounding box</Text>
+                            <Text>{t('Start with a bounding box')}</Text>
                         </div>
                     )}
                 </div>
@@ -1421,7 +1418,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                                 }
                             }}
                         >
-                            Add visual prompts
+                            {t('Add visual prompts')}
                         </Button>
                     </Col>
                 </Row>
@@ -1515,7 +1512,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                     } catch (error: any) {
                         notification.error({
                             description: <CVATMarkdown>{error.message}</CVATMarkdown>,
-                            message: 'Detection error occurred',
+                            message: t('Detection error occurred'),
                             duration: null,
                         });
                     } finally {
@@ -1532,7 +1529,7 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                 <Row justify='start'>
                     <Col>
                         <Text className='cvat-text-color' strong>
-                            AI assistance
+                            {t('AI assistance')}
                         </Text>
                     </Col>
                 </Row>
@@ -1543,15 +1540,15 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
                     onChange={(key) => this.setState({ activeTab: key as 'interactors' | 'detectors' | 'trackers' })}
                     items={[{
                         key: 'interactors',
-                        label: 'Prompting',
+                        label: t('Prompting'),
                         children: this.renderInteractorBlock(),
                     }, {
                         key: 'detectors',
-                        label: 'Auto-labeling',
+                        label: t('Auto-labeling'),
                         children: this.renderDetectorBlock(),
                     }, {
                         key: 'trackers',
-                        label: 'Tracking',
+                        label: t('Tracking'),
                         children: this.renderTrackerBlock(),
                     }]}
                 />
@@ -1615,14 +1612,14 @@ export class ToolsControlComponent extends React.PureComponent<Props, State> {
 
         const detectionContent: JSX.Element | null = showDetectionContent ? (
             <Modal
-                title='Making a server request'
+                title={t('Making a server request')}
                 zIndex={Number.MAX_SAFE_INTEGER}
                 open
                 destroyOnClose
                 closable={false}
                 footer={[]}
             >
-                <Text>Waiting for a server response..</Text>
+                <Text>{t('Waiting for a server response..')}</Text>
                 <LoadingOutlined style={{ marginLeft: '10px' }} />
             </Modal>
         ) : null;

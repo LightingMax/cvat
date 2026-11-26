@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import { range, cloneDeep } from 'lodash';
 
 import {
@@ -140,14 +141,14 @@ export default class OpenCVTrackerMIL extends BaseCollectionAction {
         }, [[], [], []] as [number[][], (Shape | Track)[], ObjectState[]]);
 
         if (!this.#openCVWrapper.isInitialized) {
-            onProgress('OpenCV library initialization', 0);
+            onProgress(t('OpenCV library initialization'), 0);
             await this.#openCVWrapper.initialize(() => {});
             if (cancelled()) {
                 return noChanges;
             }
         }
 
-        onProgress('Action is running', 0);
+        onProgress(t('Action is running'), 0);
         if (cancelled()) {
             return noChanges;
         }
@@ -171,7 +172,7 @@ export default class OpenCVTrackerMIL extends BaseCollectionAction {
                 for (let j = 0; j < targetFrameNumbers.length; j++) {
                     currentProgress = i * targetFrameNumbers.length + j;
 
-                    onProgress('Action is running', Math.ceil((currentProgress / progressPieces) * 100));
+                    onProgress(t('Action is running'), Math.ceil((currentProgress / progressPieces) * 100));
                     await new Promise((resolve) => {
                         setTimeout(resolve);
                     });

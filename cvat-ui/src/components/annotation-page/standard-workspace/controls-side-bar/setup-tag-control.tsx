@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React from 'react';
 import Popover from 'antd/lib/popover';
 import Icon from '@ant-design/icons';
@@ -26,7 +27,7 @@ function SetupTagControl(props: Props): JSX.Element {
         <Icon className='cvat-setup-tag-control cvat-disabled-canvas-control' component={TagIcon} />
     ) : (
         <CustomPopover placement='right' content={<SetupTagPopoverContainer />}>
-            <CVATTooltip title='Create a tag' placement='right'>
+            <CVATTooltip title={t('Create a tag')} placement='right'>
                 <Icon className='cvat-setup-tag-control' component={TagIcon} />
             </CVATTooltip>
         </CustomPopover>

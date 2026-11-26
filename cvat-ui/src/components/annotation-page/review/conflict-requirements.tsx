@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import Button from 'antd/lib/button';
@@ -29,7 +30,7 @@ export default function ConflictRequirements(props: Readonly<Props>): JSX.Elemen
 
     return (
         <div className='cvat-conflict-requirements'>
-            <Text type='secondary'>Requirements:</Text>
+            <Text type='secondary'>{t('Requirements:')}</Text>
             <div className='cvat-conflict-requirement-list'>
                 {visibleRequirements.map((requirement) => (
                     <CVATTooltip key={requirement.id} title={requirement.name}>
@@ -49,7 +50,7 @@ export default function ConflictRequirements(props: Readonly<Props>): JSX.Elemen
                     aria-expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                 >
-                    {expanded ? 'Show less' : `Show all (${requirements.length})`}
+                    {expanded ? t('Show less') : t('Show all ({{length}})', { length: requirements.length })}
                 </Button>
             )}
         </div>

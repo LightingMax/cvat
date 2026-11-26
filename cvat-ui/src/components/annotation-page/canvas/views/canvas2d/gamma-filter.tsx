@@ -2,6 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'antd/lib/grid';
@@ -55,7 +56,7 @@ export default function GammaFilter(): JSX.Element {
                 <Col span={24}>
                     <Row className='cvat-image-setups-gamma'>
                         <Col span={6}>
-                            <Text className='cvat-text-color'> Gamma </Text>
+                            <Text className='cvat-text-color'> {t('Gamma')} </Text>
                         </Col>
                         <Col span={12}>
                             <Slider

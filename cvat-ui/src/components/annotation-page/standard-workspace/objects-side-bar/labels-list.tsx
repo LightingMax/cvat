@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shallowEqual } from 'utils/redux';
@@ -38,8 +39,8 @@ const makeKey = (index: number): string => `SWITCH_LABEL_${index}`;
 
 for (const index of [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]) {
     componentShortcuts[makeKey(index)] = {
-        name: 'Switch label',
-        description: 'Change label of selected objects, an activated object, or the next created object',
+        name: t('Switch label'),
+        description: t('Change label of selected objects, an activated object, or the next created object'),
         sequences: [`ctrl+${index}`],
         nonActive: true,
         scope: ShortcutScope.OBJECTS_SIDEBAR,
@@ -103,9 +104,8 @@ function LabelsListComponent(): JSX.Element {
                 updatedComponentShortcuts[key] = {
                     ...updatedComponentShortcuts[key],
                     nonActive: false,
-                    name: `Switch label to ${labelName}`,
-                    description: `Changes the label to ${labelName} for selected objects, the activated
-                        object, or the next drawn object if no objects are selected or activated`,
+                    name: t('Switch label to {{name}}', { name: labelName }),
+                    description: t('Changes the label to {{labelName}} for selected objects, the activated\n                        object, or the next drawn object if no objects are selected or activated', { labelName }),
                 };
             }
         }
@@ -136,7 +136,7 @@ function LabelsListComponent(): JSX.Element {
 
                 if (!labelIsApplicable) {
                     message.destroy();
-                    message.warning(`Label "${label.name}" cannot be applied to every selected object`);
+                    message.warning(t('Label "{{name}}" cannot be applied to every selected object', { name: label.name }));
                     return;
                 }
 
@@ -178,7 +178,7 @@ function LabelsListComponent(): JSX.Element {
                 }
 
                 message.destroy();
-                message.success(`Default label has been changed to "${label.name}"`);
+                message.success(t('Default label has been changed to "{{name}}"', { name: label.name }));
             }
         }
     };
@@ -227,7 +227,7 @@ function LabelsListComponent(): JSX.Element {
         <div className='cvat-objects-sidebar-labels-list'>
             <GlobalHotKeys keyMap={subKeyMap(componentShortcuts, keyMap)} handlers={handlers} />
             <div className='cvat-objects-sidebar-labels-list-header'>
-                <Text>{`Items: ${labels.length}`}</Text>
+                <Text>{t('Items: {{length}}', { length: labels.length })}</Text>
             </div>
             {labelIDs.map(
                 (labelID: number): JSX.Element => (

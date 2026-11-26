@@ -3,6 +3,7 @@
 //
 // SPDX-License-Identifier: MIT
 
+import { t } from 'i18n';
 import React, { useEffect, useState } from 'react';
 import Text from 'antd/lib/typography/Text';
 import Select, { SelectProps } from 'antd/lib/select';
@@ -97,7 +98,7 @@ export default function LabelSelector(props: Props): JSX.Element {
                 if (label) {
                     onChange(label);
                 } else {
-                    throw new Error(`Label with id ${newValue} was not found within the list`);
+                    throw new Error(t('Label with id {{newValue}} was not found within the list', { newValue }));
                 }
             }}
             onInputKeyDown={(event) => {
