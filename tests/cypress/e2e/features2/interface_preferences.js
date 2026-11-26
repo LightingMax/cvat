@@ -5,6 +5,8 @@
 /// <reference types="cypress" />
 
 context('Interface language and appearance', () => {
+    let projectId;
+
     function choose(option) {
         cy.get('.cvat-appearance-menu').click();
         cy.contains('.ant-dropdown-menu-item', option).click();
@@ -21,6 +23,10 @@ context('Interface language and appearance', () => {
     });
 
     afterEach(() => {
+        if (projectId) {
+            cy.headlessDeleteProject(projectId);
+            projectId = undefined;
+        }
         cy.window().then((win) => {
             win.localStorage.removeItem('cvat-ui-theme');
             win.localStorage.removeItem('cvat-ui-language');
@@ -38,6 +44,22 @@ context('Interface language and appearance', () => {
         choose('English');
         cy.get('html').should('have.attr', 'lang', 'en');
         cy.get('.cvat-header-tasks-button').should('contain.text', 'Tasks');
+    });
+
+    it('preserves project and label names that match interface messages', () => {
+        cy.headlessLogin({ nextURL: '/projects' });
+        cy.headlessCreateProject({
+            name: 'Settings',
+            labels: ['Save', 'n_positioning'].map((name) => ({ name, type: 'tag', attributes: [] })),
+        }).then((created) => {
+            projectId = created.projectId;
+            cy.visit(`/projects/${projectId}`);
+        });
+        choose('简体中文');
+        cy.get('html').should('have.attr', 'lang', 'zh-CN');
+        cy.get('.cvat-project-name').should('contain.text', 'Settings');
+        cy.contains('.cvat-constructor-viewer-item', 'Save').should('be.visible');
+        cy.contains('.cvat-constructor-viewer-item', 'n_positioning').should('be.visible');
     });
 
     it('changes the theme in place and remembers the selection', () => {
